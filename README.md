@@ -1,6 +1,6 @@
 # Java implementation of PASETO: Platform-Agnostic Security Tokens
 [![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE)
-[![Build Status](http://img.shields.io/travis/o1egl/paseto.svg?style=flat-square)](https://travis-ci.org/o1egl/paseto)
+[![Build Status](http://img.shields.io/travis/nbaars/paseto4j.svg?style=flat-square)](https://travis-ci.org/nbaars/paseto4j)
 
 ## WARNING: IMPLEMENTATION IS A PRE-RELEASE.
 
