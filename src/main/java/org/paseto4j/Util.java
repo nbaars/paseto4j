@@ -22,4 +22,15 @@ public class Util {
         return accumulator.snapshot().hex();
     }
 
+    public static byte[] pae(byte[] ... pieces) {
+        Buffer accumulator = new Buffer();
+        accumulator.writeLongLe(pieces.length);
+
+        for (byte[] piece : pieces) {
+            accumulator.writeLongLe(piece.length);
+            accumulator.write(piece);
+        }
+        return accumulator.snapshot().toByteArray();
+    }
+
 }

@@ -31,4 +31,15 @@ class PasetoTest {
                 Arguments.of("{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}", "Paragon Initiative Enterprises", "v2.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwaXJlcyI6IjIwMTktMDEtMDFUMDA6MDA6MDArMDA6MDAifcMYjoUaEYXAtzTDwlcOlxdcZWIZp8qZga3jFS8JwdEjEvurZhs6AmTU3bRW5pB9fOQwm43rzmibZXcAkQ4AzQs.UGFyYWdvbiBJbml0aWF0aXZlIEVudGVycHJpc2Vz")
         );
     }
+
+    @ParameterizedTest
+    @MethodSource("sign")
+    public void verify(String payload, String footer, String signedMessage) {
+        byte[] publicKey = Utils.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
+
+
+        assertEquals(payload, Paseto.parse(publicKey, signedMessage, footer));
+    }
+
+
 }
