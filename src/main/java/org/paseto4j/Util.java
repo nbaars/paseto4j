@@ -1,5 +1,7 @@
 package org.paseto4j;
 
+import okio.Buffer;
+
 public class Util {
 
     /**
@@ -10,7 +12,7 @@ public class Util {
      * @param pieces string[] of the pieces
      */
     public static String pae(String... pieces) {
-        okio.Buffer accumulator = new okio.Buffer();
+        Buffer accumulator = new Buffer();
         accumulator.writeLongLe(pieces.length);
 
         for (String piece : pieces) {
@@ -19,4 +21,5 @@ public class Util {
         }
         return accumulator.snapshot().hex();
     }
+
 }
