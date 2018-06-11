@@ -1,7 +1,13 @@
 package org.paseto4j;
 
 
+import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.Utils;
+import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
+import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
+import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -41,5 +47,19 @@ class PasetoTest {
         assertEquals(payload, Paseto.parse(publicKey, signedMessage, footer));
     }
 
+
+    @Test
+    public void end_to_end_test() {
+        byte[] seed = Utils.hexToBytes("b4cbfb45df4ce210d27d953e4a71f307fa19bb7d9f85341431d9e13b942a3774");
+        EdDSAParameterSpec parameterSpec   = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519);
+        EdDSAPrivateKeySpec privateKeySpec  = new EdDSAPrivateKeySpec(seed, parameterSpec);
+        EdDSAPrivateKey privateKey      = new EdDSAPrivateKey(privateKeySpec);
+        String              expectedPayload = "Payload";
+
+        String signed = Paseto.sign(seed, expectedPayload, "");
+        String actual = Paseto.parse(privateKey.getAbyte(), signed, "");
+
+        Assertions.assertEquals(expectedPayload, actual);
+    }
 
 }
