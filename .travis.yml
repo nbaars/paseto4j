@@ -1,17 +1,20 @@
 services:
-- docker
+  - docker
 language: java
 jdk:
-- oraclejdk8
-install: "/bin/true"
+  - oraclejdk8
+install:
+  - ./travis-install-libsodium.sh
+  - "/bin/true"
+  - export LD_LIBRARY_PATH=$HOME/libsodium/lib:$LD_LIBRARY_PATH
 script:
-- export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
-- echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH TRAVIS_TAG=$TRAVIS_TAG"
-- if [ ! -z "${TRAVIS_TAG}" ]; then mvn versions:set -DnewVersion=${TRAVIS_TAG}; fi
-- mvn clean install
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH TRAVIS_TAG=$TRAVIS_TAG"
+  - if [ ! -z "${TRAVIS_TAG}" ]; then mvn versions:set -DnewVersion=${TRAVIS_TAG}; fi
+  - mvn clean install
 cache:
   directories:
-  - "$HOME/.m2"
+    - "$HOME/.m2"
 before_deploy:
   - export ARTIFACTS_FOLDER=$HOME/build/$TRAVIS_REPO_SLUG/Deployable_Artifacts/
   - mkdir -p $ARTIFACTS_FOLDER

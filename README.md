@@ -37,7 +37,12 @@ use Paseto in [an insecure way](https://auth0.com/blog/critical-vulnerabilities-
 # Supported Paseto Versions
 
 ## Version 2
-Version 2 (the recommended version by the specification) is supported for signing. 
+Version 2 (the recommended version by the specification) is supported. 
 
 ## Version 1 
 Not supported
+
+# Usage
+
+This library depends on Libsodium being present on the machine, see [here](https://download.libsodium.org/doc/installation/)
+on how to install this library. The Dockerfile contains an example how to install it on a Linux based system.

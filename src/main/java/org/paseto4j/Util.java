@@ -22,7 +22,7 @@ public class Util {
         return accumulator.snapshot().hex();
     }
 
-    public static byte[] pae(byte[] ... pieces) {
+    public static byte[] pae(byte[]... pieces) {
         Buffer accumulator = new Buffer();
         accumulator.writeLongLe(pieces.length);
 
@@ -32,5 +32,4 @@ public class Util {
         }
         return accumulator.snapshot().toByteArray();
     }
-
 }
