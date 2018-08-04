@@ -6,13 +6,9 @@ import com.google.common.base.Verify;
 import com.google.common.io.BaseEncoding;
 import com.google.common.primitives.Bytes;
 import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
-import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import net.i2p.crypto.eddsa.EdDSASecurityProvider;
-import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
-import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
-import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 
-import java.security.*;
+import java.security.Security;
 import java.util.Arrays;
 
 import static com.google.common.io.BaseEncoding.base64Url;
@@ -50,7 +46,7 @@ class PasetoPublic {
     private static byte[] sign(byte[] key, byte[] message) {
         byte[] result = new byte[64];
         byte[] secretKey = new byte[64];
-        if (key.length == 32) {
+        if (key.length == 32) { //take the seed and reconstruct the keypair
             byte[] pk = new byte[64];
             CryptoCavaWrapper.crypto_sign_ed25519_seed_keypair(key, pk, secretKey);
         } else {

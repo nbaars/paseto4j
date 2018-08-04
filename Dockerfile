@@ -12,5 +12,6 @@ RUN apt-get update && apt-get install -y curl make gcc g++ && \
     make install
 
 RUN apt-get update && apt-get install -y maven openjdk-8-jdk git && \
-    git clone https://github.com/nbaars/paseto4j
+    git clone https://github.com/nbaars/paseto4j && \
+    cd paseto4j; mvn clean install
 

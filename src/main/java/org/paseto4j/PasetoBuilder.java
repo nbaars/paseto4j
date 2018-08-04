@@ -1,5 +1,7 @@
 package org.paseto4j;
 
+import com.google.common.base.Preconditions;
+
 public class PasetoBuilder {
 
     private byte[] key;
@@ -33,12 +35,8 @@ public class PasetoBuilder {
     }
 
     public String build() {
-        if ( this.purpose == null ) {
-            throw new IllegalArgumentException("Purpose must be set, either call localPurpose or publicPurpose");
-        }
-        if ( this.key == null) {
-            throw new IllegalArgumentException("Key cannot be null");
-        }
+        Preconditions.checkNotNull(this.purpose, "Purpose must be set, either call localPurpose or publicPurpose");
+        Preconditions.checkNotNull(this.key, "Key cannot be null");
 
         if (Purpose.LOCAL == this.purpose) {
             return Paseto.encrypt(key, payload, footer);
@@ -48,12 +46,8 @@ public class PasetoBuilder {
     }
 
     public String decode(String token) {
-        if ( this.purpose == null ) {
-            throw new IllegalArgumentException("Purpose must be set, either call localPurpose or publicPurpose");
-        }
-        if ( this.key == null) {
-            throw new IllegalArgumentException("Key cannot be null");
-        }
+        Preconditions.checkNotNull(this.purpose, "Purpose must be set, either call localPurpose or publicPurpose");
+        Preconditions.checkNotNull(this.key, "Key cannot be null");
 
         if (Purpose.LOCAL == this.purpose) {
             return Paseto.decrypt(key, token, footer);

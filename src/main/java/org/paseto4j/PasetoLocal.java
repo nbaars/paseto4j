@@ -3,7 +3,6 @@ package org.paseto4j;
 import com.google.common.base.Verify;
 import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
 import net.consensys.cava.crypto.sodium.XChaCha20Poly1305;
-import net.i2p.crypto.eddsa.Utils;
 
 import java.util.Arrays;
 import java.util.Base64;
@@ -93,6 +92,6 @@ class PasetoLocal {
 
         //5
         byte[] message = XChaCha20Poly1305.decrypt(encrypedMessage, preAuth, XChaCha20Poly1305.Key.fromBytes(key), XChaCha20Poly1305.Nonce.fromBytes(nonce));
-        return new String(message);
+        return new String(message, UTF_8);
     }
 }

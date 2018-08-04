@@ -3,7 +3,6 @@ package net.consensys.cava.crypto.sodium;
 import com.google.common.base.Verify;
 import jnr.ffi.byref.LongLongByReference;
 
-import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
