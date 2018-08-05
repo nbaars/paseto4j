@@ -1,7 +1,6 @@
 package org.paseto4j;
 
 import com.google.common.base.VerifyException;
-import net.i2p.crypto.eddsa.Utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +16,7 @@ public class PasetoLocalTest {
     @ParameterizedTest
     @MethodSource("encrypt")
     void encrypt(String key, String nonce, String payload, String footer, String expectedToken) {
-        assertEquals(expectedToken, PasetoLocal.encrypt(Utils.hexToBytes(key), Utils.hexToBytes(nonce), payload, footer));
+        assertEquals(expectedToken, PasetoLocal.encrypt(Util.hexToBytes(key), Util.hexToBytes(nonce), payload, footer));
     }
 
     private static Stream<Arguments> encrypt() {
@@ -60,16 +59,7 @@ public class PasetoLocalTest {
     public void invalidTokenShouldGiveException() {
         Assertions.assertThrows(
                 VerifyException.class,
-                () -> PasetoLocal.decrypt(Utils.hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"), "v2.local.", ""));
+                () -> PasetoLocal.decrypt(Util.hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"), "v2.local.", ""));
     }
 
-//v2.local.97TTOvgwIxNGvV80XKiGZg_kD3tsXM_-qB4dZGHOeN1cTkgQ4PnW8888l802W8d9AvEGnoNBY3BnqHORy8a5cC8aKpbA0En8XELw2yDk2f1sVODyfnDbi6rEGMY3pSfCbLWMM2oHJxvlEl2XbQ
 }
-//v2.local.97TTOvgwIxNGvV80XKiGZg_kD3tsXM_-qB4dZGHOeN1cTkgQ4PnW8888l802W8d9AvEGnoNBY3BnqHORy8a5cC8aKpbA0En8XELw2yDk2f1sVODyfnDbi6rEGMY3pSfCbLWMM2oHJxvlEl2XbQ
-//v2.local.FOEUHiNw52Jb-G2zQ0p-YaQ3BRiWQtlVa_R3ycO5Tfv1d-0WPPoIEltLRfsYGcS9ohCZt4E8RyWNocmf4FGG1m04ZUrszF7lXTC8FQQ3atQsF7deEaxr8wet_2I2WIJVY36L9UJB2qKOINm0RMS0GsE
-//v2.local.3Dq3kIycPH5-3w8SlhzIYluZ0lqqlH3IsZ0bU-VhbpVYDisZgiVKrY99hhenMGOfGnKb0oBcA31kw23t3uwbga7FqLp0xtzr5tFAKKFqoVf90D79l_UdCXCKZjrsa28_3UWhmya9rI9HnHZlrmoDFvw
-
-
-//v2.local.CH50H-HM5tzdK4kOmQ8KbIvrzJfjYUGuu5Vy9ARSFHy9owVDMYg3-8rwtJZQjN9ABHb2njzFkvpr5cOYuRyt7CRXnHt42L5yZ7siD-4l-FoNsC7J2OlvLlIwlG06mzQVunrFNb7Z3_CHM0PK5w
-//v2.local.CH50H-HM5tzdK4kOmQ8KbIvrzJfjYUGuu5Vy9ARSFHy9owVDMYg3-8rwtJZQjN9ABHb2njzFkvpr5cOYuRyt7CRXnHt42L5yZ7siD-4l-FoNsC7J2OlvLlIwlG06mzQVunrFNb7Z3_CHM0PK5w
-//v2.local.CH50H-HM5tzdK4kOmQ8KbIvrzJfjYUGuu5Vy9ARSFHy9owVDMYg3-8rwtJZQjN9ABHb2njzFkvpr5cOYuRyt7CRXnHt42L5yZ7siD-4l-FoNsC7J2OlvLlIwlG06mzQVunrFNb7Z3_CHM0PK5w.

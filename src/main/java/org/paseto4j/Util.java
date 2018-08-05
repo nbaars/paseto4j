@@ -1,5 +1,6 @@
 package org.paseto4j;
 
+import com.google.common.io.BaseEncoding;
 import okio.Buffer;
 
 public class Util {
@@ -31,5 +32,9 @@ public class Util {
             accumulator.write(piece);
         }
         return accumulator.snapshot().toByteArray();
+    }
+
+    public static byte[] hexToBytes(String hex) {
+        return BaseEncoding.base16().lowerCase().decode(hex);
     }
 }

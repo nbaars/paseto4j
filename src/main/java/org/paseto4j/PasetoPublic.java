@@ -6,9 +6,7 @@ import com.google.common.base.Verify;
 import com.google.common.io.BaseEncoding;
 import com.google.common.primitives.Bytes;
 import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
-import net.i2p.crypto.eddsa.EdDSASecurityProvider;
 
-import java.security.Security;
 import java.util.Arrays;
 
 import static com.google.common.io.BaseEncoding.base64Url;
@@ -19,20 +17,17 @@ import static org.paseto4j.Purpose.PUBLIC;
 
 class PasetoPublic {
 
-    static {
-        Security.addProvider(new EdDSASecurityProvider());
-    }
-
     /**
      * Sign the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#sign
      */
     static String sign(byte[] privateKey, String payload, String footer) {
         Preconditions.checkNotNull(privateKey);
         Preconditions.checkNotNull(payload);
-        Preconditions.checkArgument(privateKey.length == 32 || privateKey.length == 64, "Private key should be 32 or 64 bytes");
+        Preconditions.checkArgument(privateKey.length == 64, "Private key should be 64 bytes");
 
         byte[] m2 = BaseEncoding.base16().lowerCase().decode(Util.pae(PUBLIC.toString(), payload, footer));
-        byte[] signature = sign(privateKey, m2);
+        byte[] signature = new byte[64];
+        CryptoCavaWrapper.crypto_sign_detached(signature, m2, privateKey);
 
         String signedToken = PUBLIC + getUrlEncoder().withoutPadding().encodeToString(Bytes.concat(payload.getBytes(UTF_8), signature));
 
@@ -42,27 +37,13 @@ class PasetoPublic {
         return signedToken;
     }
 
-    //https://blog.mozilla.org/warner/2011/11/29/ed25519-keys/
-    private static byte[] sign(byte[] key, byte[] message) {
-        byte[] result = new byte[64];
-        byte[] secretKey = new byte[64];
-        if (key.length == 32) { //take the seed and reconstruct the keypair
-            byte[] pk = new byte[64];
-            CryptoCavaWrapper.crypto_sign_ed25519_seed_keypair(key, pk, secretKey);
-        } else {
-            secretKey = key;
-        }
-        CryptoCavaWrapper.crypto_sign_detached(result, message, secretKey);
-        return result;
-    }
-
     /**
      * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#verify
      */
     static String parse(byte[] publicKey, String signedMessage, String footer) {
         Preconditions.checkNotNull(publicKey);
         Preconditions.checkNotNull(signedMessage);
-        Preconditions.checkArgument(publicKey.length == 32 || publicKey.length == 64, "Public key should be 32 bytes");
+        Preconditions.checkArgument(publicKey.length == 32, "Public key should be 32 bytes");
 
         String[] tokenParts = signedMessage.split("\\.");
 

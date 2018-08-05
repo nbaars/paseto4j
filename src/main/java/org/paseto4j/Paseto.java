@@ -1,14 +1,6 @@
 package org.paseto4j;
 
-import net.i2p.crypto.eddsa.EdDSASecurityProvider;
-
-import java.security.Security;
-
 public class Paseto {
-
-    static {
-        Security.addProvider(new EdDSASecurityProvider());
-    }
 
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt

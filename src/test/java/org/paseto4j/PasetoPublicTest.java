@@ -1,7 +1,6 @@
 package org.paseto4j;
 
 
-import net.i2p.crypto.eddsa.Utils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,14 +16,7 @@ class PasetoPublicTest {
     @ParameterizedTest
     @MethodSource
     void sign(String payload, String footer, String expectedToken) {
-        byte[] privateKey = Utils.hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a37741eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
-        assertEquals(expectedToken, Paseto.sign(privateKey, payload, footer));
-    }
-
-    @ParameterizedTest
-    @MethodSource("sign")
-    void signSeed(String payload, String footer, String expectedToken) {
-        byte[] privateKey = Utils.hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a3774");
+        byte[] privateKey = Util.hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a37741eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
         assertEquals(expectedToken, Paseto.sign(privateKey, payload, footer));
     }
 
@@ -50,14 +42,14 @@ class PasetoPublicTest {
     @ParameterizedTest
     @MethodSource("sign")
     public void verify(String payload, String footer, String signedMessage) {
-        byte[] publicKey = Utils.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
+        byte[] publicKey = Util.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
         assertEquals(payload, Paseto.parse(publicKey, signedMessage, footer));
     }
 
     @Test
     public void invalidSignature() {
-        byte[] publicKey = Utils.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
+        byte[] publicKey = Util.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
         assertThrows(RuntimeException.class, () ->
                 Paseto.parse(publicKey, "v2.public.RnJhbmsgRGVuaXMgcm9ja3O7MPuu90WKNyvBUUhAGFmi4PiPOr2bN2ytUSU-QWlj8eNefki2MubssfN1b8figynnY0WusRPwIQ-o0HSZOS0A.Q3VvbiBBbHBpbnVz", "Cuon Alpinus"));
