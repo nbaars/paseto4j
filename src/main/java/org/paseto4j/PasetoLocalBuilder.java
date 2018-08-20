@@ -5,7 +5,6 @@ import com.google.common.base.Preconditions;
 public class PasetoLocalBuilder {
 
     private byte[] key;
-    private Purpose purpose;
     private String payload;
     private String footer;
 
