@@ -17,9 +17,10 @@ import static java.util.Base64.getUrlEncoder;
 import static net.consensys.cava.bytes.Bytes.concatenate;
 import static net.consensys.cava.bytes.Bytes.wrap;
 import static net.consensys.cava.crypto.sodium.CryptoCavaWrapper.randomBytes;
-import static org.paseto4j.Purpose.LOCAL;
 
 class PasetoLocal {
+
+    private static final String LOCAL = "v2.local.";
 
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt

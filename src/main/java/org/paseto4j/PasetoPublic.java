@@ -13,9 +13,10 @@ import static com.google.common.io.BaseEncoding.base64Url;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Base64.getUrlEncoder;
-import static org.paseto4j.Purpose.PUBLIC;
 
 class PasetoPublic {
+
+    private static final String PUBLIC = "v2.public.";
 
     /**
      * Sign the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#sign
