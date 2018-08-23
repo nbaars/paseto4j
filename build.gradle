@@ -2,7 +2,7 @@ description = "Library for Paseto in Java, see https://github.com/paragonie/pase
 apply plugin: 'java'
 compileJava {
     group = 'org.paseto4j'
-    version = System.properties['buildNumber'] ?: '0.0.7'
+    version = System.properties['buildNumber'] ?: '0.0.8'
     sourceCompatibility = 1.8
 }
 
