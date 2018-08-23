@@ -1,1 +1,6 @@
-rootProject.name = 'paseto4j'
+
+include 'version1'
+include 'version2'
+
+project(":version1").name = "paseto4j-version1"
+project(":version2").name = "paseto4j-version2"

@@ -1,33 +1,28 @@
 description = "Library for Paseto in Java, see https://github.com/paragonie/paseto for more information"
-apply plugin: 'java'
-compileJava {
+
+allprojects {
     group = 'org.paseto4j'
-    version = System.properties['buildNumber'] ?: '0.0.8'
+    version = System.properties['buildNumber'] ?: '0.0.7'
+}
+
+subprojects {
+    apply plugin: 'java'
     sourceCompatibility = 1.8
-}
 
-repositories {
-	mavenCentral()
-    maven { url "https://consensys.bintray.com/consensys" }
-}
-
-dependencies {
-	compile('com.google.guava:guava:23.5-jre')
-	compile('com.github.jnr:jnr-ffi:2.1.8')
-	compile('net.consensys.cava:cava-crypto:0.3.0')
-	compile('net.consensys.cava:cava-bytes:0.3.0')
-	compile('com.squareup.okio:okio:1.14.1')
-	testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
-	testCompile('org.junit.jupiter:junit-jupiter-params:5.2.0')
-	testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
-}
-
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
+    dependencies {
+        testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
+        testCompile('org.junit.jupiter:junit-jupiter-params:5.2.0')
+        testRuntime('org.junit.jupiter:junit-jupiter-engine:5.2.0')
     }
-    reports {
-        html.enabled = true
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+        reports {
+            html.enabled = true
+        }
     }
 }
+
