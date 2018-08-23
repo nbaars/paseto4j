@@ -1,5 +1,3 @@
-services:
-- docker
 language: java
 jdk:
 - oraclejdk8
@@ -8,19 +6,16 @@ install:
 - "/bin/true"
 - export LD_LIBRARY_PATH=$HOME/libsodium/lib:$LD_LIBRARY_PATH
 script:
-- export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH;
-  else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
-- echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH TRAVIS_TAG=$TRAVIS_TAG"
-- if [ ! -z "${TRAVIS_TAG}" ]; then mvn versions:set -DnewVersion=${TRAVIS_TAG}; fi
-- mvn clean install
+- export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+- if [ ! -z "${TRAVIS_TAG}" ]; then ./gradlew -DbuildNumber=${TRAVIS_TAG} clean build; else ./gradlew clean build; fi
 cache:
   directories:
-  - "$HOME/.m2"
+  - "$HOME/.gradle"
 deploy:
   provider: releases
   api_key:
     secure: SfpFUq0aJ3vYICs0FO7tKCwVTNffXSnwx2dMDs3diVwHuOtj1yl0lWk++NxkXzq6KGPzN9oj2Zmx0GBdOWs8vyCm1xdTWtswocFhnPlqmgR44fAJ1IS7AOs6jdTqr9UHccm1dSFMjz+8KYLHbfcgj+LYYrz6uAig4Lsk6n8z7pzop8U/pzcPnFDviTk3WJ/soTiRg5j1LYaqPVvR7ezS1U2YdQiCDidoWjvAn8H0QhyaCnw61JoSAXxO8nMrDVDJhuJT7rFtNBgNBLeXSVx35wWXadqWzmqBrn9boT79L0MJ+YbClsBhWFcV2ojwCcZhb3h9jaLKWxgdBRqyXbpRISs3pI1xoFNeaK+fqnD03ZvKlHBpSw2WEnSiJiev1WtrZMV4lL3PsJtILpu9K9VUttP9jFQDE0ZUoynpUnOhpFij8Hh4K86UzLTL/86fKDvIQUNzw/52uemaVYEOMZGhvTcC5RVPMBcAQHOjW0mKOzYqG5Dv3weQ0spDFY8gNM4B7h+GR80wAZdMyx3/YF+ZZ27hWIWN4QtJMJICrN8Mm9/iVlfav77ocSsQDelLlcTzxe0229XcRpdNC5M/Q+71CZGC4f4uIpyPg7XGoodeca4qFuJ/tU3zGlaVeM115fljwDjs/vbI4Qs7JUPgh3uscayxBUBG/4rEzrPlL1e6sZM=
-  file: "target/*.jar"
+  file: "build/libs/*.jar"
   on:
     repo: nbaars/paseto4j
     tags: true
