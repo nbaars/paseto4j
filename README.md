@@ -53,8 +53,3 @@ dependencies {
 
 ## Version 1 
 Not supported
-
-
-
-
-This library depends on Libsodium being present on the machine, 

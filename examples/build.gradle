@@ -8,6 +8,6 @@ dependencies {
     }
 
     dependencies {
-        implementation 'com.github.nbaars:paseto4j:0.0.7'
+        implementation 'com.github.nbaars:paseto4j:0.0.8'
     }
 }

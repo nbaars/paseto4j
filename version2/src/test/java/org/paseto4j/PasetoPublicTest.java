@@ -1,6 +1,7 @@
 package org.paseto4j;
 
 
+import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -53,5 +54,18 @@ class PasetoPublicTest {
 
         assertThrows(RuntimeException.class, () ->
                 Paseto.parse(publicKey, "v2.public.RnJhbmsgRGVuaXMgcm9ja3O7MPuu90WKNyvBUUhAGFmi4PiPOr2bN2ytUSU-QWlj8eNefki2MubssfN1b8figynnY0WusRPwIQ-o0HSZOS0A.Q3VvbiBBbHBpbnVz", "Cuon Alpinus"));
+    }
+
+    @Test
+    public void signTokenWithSeed() {
+        byte[] seed = Util.hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a3774");
+        byte[] privateKey = new byte[64];
+        byte[] publicKey = new byte[64];
+        CryptoCavaWrapper.crypto_sign_ed25519_seed_keypair(seed, publicKey, privateKey);
+        String token = PasetoPublic.sign(
+                privateKey,
+                "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}",
+                "Paragon Initiative Enterprises");
+        assertEquals("v2.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwaXJlcyI6IjIwMTktMDEtMDFUMDA6MDA6MDArMDA6MDAifcMYjoUaEYXAtzTDwlcOlxdcZWIZp8qZga3jFS8JwdEjEvurZhs6AmTU3bRW5pB9fOQwm43rzmibZXcAkQ4AzQs.UGFyYWdvbiBJbml0aWF0aXZlIEVudGVycHJpc2Vz", token);
     }
 }

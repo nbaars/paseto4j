@@ -1,7 +1,7 @@
 package org.paseto4j;
 
 import com.google.common.base.VerifyException;
-import org.junit.jupiter.api.Assertions;
+import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PasetoLocalTest {
 
@@ -57,9 +58,20 @@ public class PasetoLocalTest {
 
     @Test
     public void invalidTokenShouldGiveException() {
-        Assertions.assertThrows(
+        assertThrows(
                 VerifyException.class,
                 () -> PasetoLocal.decrypt(Util.hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"), "v2.local.", ""));
+    }
+
+    @Test
+    public void encryptDecryptWrongFooter() {
+        byte[] key = CryptoCavaWrapper.randomBytes(32);
+        String encryptedToken = Paseto.encrypt(
+                key,
+                "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}",
+                "Paragon Initiative Enterprises");
+
+        assertThrows(VerifyException.class, () -> Paseto.decrypt(key, encryptedToken, "Incorrect footer"));
     }
 
 }

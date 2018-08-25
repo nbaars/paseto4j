@@ -1,5 +1,7 @@
 package org.paseto4j;
 
+import com.google.common.base.Preconditions;
+
 public class Paseto {
 
     /**

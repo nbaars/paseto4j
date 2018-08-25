@@ -24,7 +24,7 @@ class PasetoPublic {
     static String sign(byte[] privateKey, String payload, String footer) {
         Preconditions.checkNotNull(privateKey);
         Preconditions.checkNotNull(payload);
-        Preconditions.checkArgument(privateKey.length == 64, "Private key should be 64 bytes");
+        Preconditions.checkArgument(privateKey.length == 64, "Private signing key should be 64 bytes");
 
         byte[] m2 = BaseEncoding.base16().lowerCase().decode(Util.pae(PUBLIC.toString(), payload, footer));
         byte[] signature = new byte[64];
