@@ -1,6 +1,7 @@
-package org.paseto4j;
+package org.paseto4j.version2;
 
 import org.junit.jupiter.api.Test;
+import org.paseto4j.version2.Util;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

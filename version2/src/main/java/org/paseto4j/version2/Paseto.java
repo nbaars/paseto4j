@@ -1,6 +1,4 @@
-package org.paseto4j;
-
-import com.google.common.base.Preconditions;
+package org.paseto4j.version2;
 
 public class Paseto {
 

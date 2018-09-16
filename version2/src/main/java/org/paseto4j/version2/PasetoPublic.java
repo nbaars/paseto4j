@@ -1,4 +1,4 @@
-package org.paseto4j;
+package org.paseto4j.version2;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;

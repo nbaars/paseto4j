@@ -1,7 +1,6 @@
 package org.paseto4j.version2;
 
 import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
-import org.paseto4j.Paseto;
 
 import static net.consensys.cava.crypto.sodium.CryptoCavaWrapper.crypto_sign_ed25519_seed_keypair;
 

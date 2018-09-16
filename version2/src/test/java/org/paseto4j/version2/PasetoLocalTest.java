@@ -1,4 +1,4 @@
-package org.paseto4j;
+package org.paseto4j.version2;
 
 import com.google.common.base.VerifyException;
 import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.paseto4j.version2.Paseto;
+import org.paseto4j.version2.PasetoLocal;
+import org.paseto4j.version2.Util;
 
 import java.util.stream.Stream;
 
@@ -66,7 +69,7 @@ public class PasetoLocalTest {
     @Test
     public void encryptDecryptWrongFooter() {
         byte[] key = CryptoCavaWrapper.randomBytes(32);
-        String encryptedToken = Paseto.encrypt(
+        String encryptedToken = org.paseto4j.version2.Paseto.encrypt(
                 key,
                 "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}",
                 "Paragon Initiative Enterprises");

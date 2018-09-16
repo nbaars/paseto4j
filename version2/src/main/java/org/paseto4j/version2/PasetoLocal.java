@@ -1,4 +1,4 @@
-package org.paseto4j;
+package org.paseto4j.version2;
 
 import com.google.common.base.Verify;
 import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;

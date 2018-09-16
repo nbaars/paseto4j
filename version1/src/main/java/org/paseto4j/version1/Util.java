@@ -1,4 +1,4 @@
-package org.paseto4j;
+package org.paseto4j.version1;
 
 import com.google.common.io.BaseEncoding;
 import okio.Buffer;
