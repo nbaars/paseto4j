@@ -26,7 +26,7 @@ class PasetoPublic {
         Preconditions.checkNotNull(payload);
         Preconditions.checkArgument(privateKey.length == 64, "Private signing key should be 64 bytes");
 
-        byte[] m2 = BaseEncoding.base16().lowerCase().decode(Util.pae(PUBLIC.toString(), payload, footer));
+        byte[] m2 = BaseEncoding.base16().lowerCase().decode(Util.pae(PUBLIC, payload, footer));
         byte[] signature = new byte[64];
         CryptoCavaWrapper.crypto_sign_detached(signature, m2, privateKey);
 
@@ -62,7 +62,7 @@ class PasetoPublic {
         byte[] message = Arrays.copyOfRange(sm, 0, sm.length - 64);
 
         //4
-        byte[] m2 = Util.pae(PUBLIC.toString().getBytes(UTF_8), message, footer.getBytes(UTF_8));
+        byte[] m2 = Util.pae(PUBLIC.getBytes(UTF_8), message, footer.getBytes(UTF_8));
 
         //5
         verify(publicKey, m2, signature);

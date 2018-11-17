@@ -48,7 +48,7 @@ class PasetoPublicTest {
     public void verify(String payload, String footer, String signedMessage) {
         byte[] publicKey = Util.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
-        assertEquals(payload, org.paseto4j.version2.Paseto.verify(publicKey, signedMessage, footer));
+        assertEquals(payload, org.paseto4j.version2.Paseto.parse(publicKey, signedMessage, footer));
     }
 
     @Test
@@ -56,7 +56,7 @@ class PasetoPublicTest {
         byte[] publicKey = Util.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
         assertThrows(RuntimeException.class, () ->
-                Paseto.verify(publicKey, "v2.public.RnJhbmsgRGVuaXMgcm9ja3O7MPuu90WKNyvBUUhAGFmi4PiPOr2bN2ytUSU-QWlj8eNefki2MubssfN1b8figynnY0WusRPwIQ-o0HSZOS0A.Q3VvbiBBbHBpbnVz", "Cuon Alpinus"));
+                Paseto.parse(publicKey, "v2.public.RnJhbmsgRGVuaXMgcm9ja3O7MPuu90WKNyvBUUhAGFmi4PiPOr2bN2ytUSU-QWlj8eNefki2MubssfN1b8figynnY0WusRPwIQ-o0HSZOS0A.Q3VvbiBBbHBpbnVz", "Cuon Alpinus"));
     }
 
     @Test

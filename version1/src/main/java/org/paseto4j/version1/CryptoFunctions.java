@@ -1,9 +1,14 @@
 package org.paseto4j.version1;
 
+import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SHA384Digest;
+import org.bouncycastle.crypto.engines.RSAEngine;
 import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
 import org.bouncycastle.crypto.params.HKDFParameters;
+import org.bouncycastle.crypto.signers.PSSSigner;
+import org.bouncycastle.crypto.util.PrivateKeyFactory;
+import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
@@ -11,6 +16,7 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.security.*;
 
 public class CryptoFunctions {
@@ -101,5 +107,30 @@ public class CryptoFunctions {
         hkdf.generateBytes(out, 0, out.length);
         return out;
     }
+
+    public static byte[] signRsaPssSha384(byte[] privateKey, byte[] msg) {
+        PSSSigner signer = new PSSSigner(new RSAEngine(), new SHA384Digest(), new SHA384Digest(), new SHA384Digest().getDigestSize());
+
+        try {
+            signer.init(true, PrivateKeyFactory.createKey(privateKey));
+            signer.update(msg, 0, msg.length);
+            return signer.generateSignature();
+        } catch (IOException | CryptoException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public static boolean verifyRsaPssSha384(byte[] publicKey, byte[] msg, byte[] signature) {
+        PSSSigner signer = new PSSSigner(new RSAEngine(), new SHA384Digest(), new SHA384Digest(), new SHA384Digest().getDigestSize());
+
+        try {
+            signer.init(false, PublicKeyFactory.createKey(publicKey));
+            signer.update(msg, 0, msg.length);
+            return signer.verifySignature(signature);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 
 }

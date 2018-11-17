@@ -46,7 +46,7 @@ class PasetoLocal {
                 randomKey);
 
         //4
-        byte[] preAuth = Util.pae(LOCAL.toString().getBytes(UTF_8), nonce, footer.getBytes(UTF_8));
+        byte[] preAuth = Util.pae(LOCAL.getBytes(UTF_8), nonce, footer.getBytes(UTF_8));
 
         //5
         byte[] cipherText = XChaCha20Poly1305.encrypt(

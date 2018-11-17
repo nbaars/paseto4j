@@ -50,7 +50,7 @@ class PasetoLocal {
         byte[] cipherText = encryptAesCtr(ek, Arrays.copyOfRange(nonce, 16, 32), payload.getBytes(UTF_8));
 
         //6
-        byte[] preAuth = Util.pae(LOCAL.toString().getBytes(UTF_8), nonce, cipherText, footer.getBytes(UTF_8));
+        byte[] preAuth = Util.pae(LOCAL.getBytes(UTF_8), nonce, cipherText, footer.getBytes(UTF_8));
 
         //7
         byte[] t = hmac384(ak, preAuth);
@@ -93,7 +93,7 @@ class PasetoLocal {
         }
 
         //2
-        verify(token.startsWith(LOCAL.toString()), "Token should start with " + LOCAL);
+        verify(token.startsWith(LOCAL), "Token should start with " + LOCAL);
 
         //3
         byte[] ct = getUrlDecoder().decode(tokenParts[2]);
@@ -106,7 +106,7 @@ class PasetoLocal {
         byte[] ak = authenticationKey(key, nonce);
 
         //5
-        byte[] preAuth = Util.pae(LOCAL.toString().getBytes(UTF_8), nonce, c, footer.getBytes(UTF_8));
+        byte[] preAuth = Util.pae(LOCAL.getBytes(UTF_8), nonce, c, footer.getBytes(UTF_8));
 
         //6
         byte[] t2 = hmac384(ak, preAuth);

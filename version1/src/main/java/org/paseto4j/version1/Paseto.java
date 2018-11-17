@@ -20,15 +20,13 @@ public class Paseto {
      * Sign the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
      */
     public static String sign(byte[] privateKey, String payload, String footer) {
-        //return PasetoPublic.sign(privateKey, payload, footer);
-        return null;
+        return PasetoPublic.sign(privateKey, payload, footer);
     }
 
     /**
      * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
      */
     public static String parse(byte[] publicKey, String signedMessage, String footer) {
-        //return PasetoPublic.verify(publicKey, signedMessage, footer);
-        return null;
+        return PasetoPublic.parse(publicKey, signedMessage, footer);
     }
 }

@@ -12,17 +12,6 @@ public class Util {
      *
      * @param pieces string[] of the pieces
      */
-    public static String pae(String... pieces) {
-        Buffer accumulator = new Buffer();
-        accumulator.writeLongLe(pieces.length);
-
-        for (String piece : pieces) {
-            accumulator.writeLongLe(piece.length());
-            accumulator.writeUtf8(piece);
-        }
-        return accumulator.snapshot().hex();
-    }
-
     public static byte[] pae(byte[]... pieces) {
         Buffer accumulator = new Buffer();
         accumulator.writeLongLe(pieces.length);
