@@ -42,12 +42,14 @@ contains an example how to install it on a Linux based system.
 ### Gradle
 
 ```groovy
-repositories {
-
-}
-
 dependencies {
-	compile 'org.paseto4j.paseto4j-version2:0.0.9'
+    repositories {
+        maven { url 'https://jitpack.io' }
+        jcenter()
+        maven { url 'https://consensys.bintray.com/consensys' }
+    }
+
+    compile('com.github.nbaars.paseto4j:paseto4j-version2:0.0.11')
 }
 
 ```
@@ -57,13 +59,13 @@ dependencies {
 ### Gradle
 
 ```groovy
-repositories {
-
-}
-
 dependencies {
-	compile 'org.paseto4j.paseto4j-version1:0.0.9'
-}
+    repositories {
+        maven { url 'https://jitpack.io' }
+        jcenter()
+    }
 
+    compile('com.github.nbaars.paseto4j:paseto4j-version1:0.0.11')
+}
 ```
 

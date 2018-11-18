@@ -24,12 +24,14 @@
 
 package org.paseto4j.version1;
 
+import com.google.common.base.Verify;
 import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.crypto.engines.RSAEngine;
 import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
 import org.bouncycastle.crypto.params.HKDFParameters;
+import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 import org.bouncycastle.crypto.signers.PSSSigner;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
@@ -136,7 +138,10 @@ public class CryptoFunctions {
         PSSSigner signer = new PSSSigner(new RSAEngine(), new SHA384Digest(), new SHA384Digest(), new SHA384Digest().getDigestSize());
 
         try {
-            signer.init(true, PrivateKeyFactory.createKey(privateKey));
+            RSAPrivateCrtKeyParameters key = (RSAPrivateCrtKeyParameters) PrivateKeyFactory.createKey(privateKey);
+            Verify.verify(key.getModulus().bitLength() == 2048, "RSA 2048 should be used");
+
+            signer.init(true, key);
             signer.update(msg, 0, msg.length);
             return signer.generateSignature();
         } catch (IOException | CryptoException e) {

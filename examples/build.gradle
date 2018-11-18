@@ -7,9 +7,6 @@ dependencies {
         maven { url 'https://consensys.bintray.com/consensys' }
     }
 
-    dependencies {
-        implementation 'com.github.nbaars:paseto4j-version1:0.0.10'
-        implementation 'com.github.nbaars:paseto4j-version2:0.0.10'
-
-    }
+    compile('com.github.nbaars.paseto4j:paseto4j-version2:0.0.11')
+    compile('com.github.nbaars.paseto4j:paseto4j-version1:0.0.11')
 }
