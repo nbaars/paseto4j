@@ -49,7 +49,7 @@ dependencies {
         maven { url 'https://consensys.bintray.com/consensys' }
     }
 
-    compile('com.github.nbaars.paseto4j:paseto4j-version2:0.0.11')
+    compile('com.github.nbaars.paseto4j:paseto4j-version2:0.0.13')
 }
 
 ```
@@ -65,7 +65,10 @@ dependencies {
         jcenter()
     }
 
-    compile('com.github.nbaars.paseto4j:paseto4j-version1:0.0.11')
+    compile('com.github.nbaars.paseto4j:paseto4j-version1:0.0.13')
 }
 ```
 
+## Usage
+
+For usage see the `examples` project which shows how to use Paseto4j in action.
