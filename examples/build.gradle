@@ -2,12 +2,14 @@ apply plugin: 'java'
 
 dependencies {
     repositories {
-        jcenter()
         maven { url 'https://jitpack.io' }
+        jcenter()
         maven { url 'https://consensys.bintray.com/consensys' }
     }
 
     dependencies {
-        implementation 'com.github.nbaars:paseto4j:0.0.8'
+        implementation 'com.github.nbaars:paseto4j-version1:0.0.10'
+        implementation 'com.github.nbaars:paseto4j-version2:0.0.10'
+
     }
 }
