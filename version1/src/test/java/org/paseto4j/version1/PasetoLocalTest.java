@@ -30,6 +30,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -116,5 +119,14 @@ class PasetoLocalTest {
 
         assertThrows(
                 VerifyException.class, () -> Paseto.decrypt(key, encryptedToken, "Wrong footer"), "Wrong footer");
+    }
+
+    @Test
+    public void keySizeShouldBe2048() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(1024);
+        KeyPair keyPair = keyGen.generateKeyPair();
+
+        assertThrows(VerifyException.class, () -> Paseto.sign(keyPair.getPrivate().getEncoded(), "msg", ""));
     }
 }
