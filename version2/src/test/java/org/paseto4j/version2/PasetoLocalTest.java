@@ -51,7 +51,7 @@ public class PasetoLocalTest {
     @MethodSource("encrypt")
     void encryptAndDecryptShouldWork(String key, String nonce, String payload, String footer, String expectedToken) {
         String encryptedToken = PasetoLocal.encrypt(Util.hexToBytes(key), Util.hexToBytes(nonce), payload, footer);
-        assertEquals(payload, PasetoLocal.decrypt(Util.hexToBytes(key), encryptedToken, footer));
+        assertEquals(payload, Paseto.decrypt(Util.hexToBytes(key), encryptedToken, footer));
     }
 
     private static Stream<Arguments> encrypt() {
