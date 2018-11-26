@@ -1,6 +1,6 @@
 # Java implementation of PASETO: Platform-Agnostic Security Tokens
-[(http://img.shields.io/:license-mit-blue.svg)](LICENSE)
-[(https://sonarcloud.io/api/project_badges/quality_gate?project=nbaars_paseto4j)](https://sonarcloud.io/dashboard?id=nbaars_paseto4j)
+[![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE)
+[![Quality](https://sonarcloud.io/api/project_badges/quality_gate?project=nbaars_paseto4j)](https://sonarcloud.io/dashboard?id=nbaars_paseto4j)
 
 Implementation of [PASETO](https://github.com/paragonie/paseto) library written in Java. This library is focused
 on taking part of the encryption/decryption part of the tokens it has a little dependencies as possible. How you
