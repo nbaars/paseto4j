@@ -47,6 +47,13 @@ public class PasetoLocalTest {
         assertEquals(expectedToken, PasetoLocal.encrypt(Util.hexToBytes(key), Util.hexToBytes(nonce), payload, footer));
     }
 
+    @ParameterizedTest
+    @MethodSource("encrypt")
+    void encryptAndDecryptShouldWork(String key, String nonce, String payload, String footer, String expectedToken) {
+        String encryptedToken = PasetoLocal.encrypt(Util.hexToBytes(key), Util.hexToBytes(nonce), payload, footer);
+        assertEquals(payload, PasetoLocal.decrypt(Util.hexToBytes(key), encryptedToken, footer));
+    }
+
     private static Stream<Arguments> encrypt() {
         return Stream.of(
                 Arguments.of(
@@ -99,6 +106,12 @@ public class PasetoLocalTest {
                 "Paragon Initiative Enterprises");
 
         assertThrows(VerifyException.class, () -> Paseto.decrypt(key, encryptedToken, "Incorrect footer"));
+    }
+
+    @Test
+    public void shouldThrowErrorWhenTokenDoesNotStartWithLocal() {
+        byte[] key = CryptoCavaWrapper.randomBytes(32);
+        assertThrows(VerifyException.class, () -> PasetoLocal.decrypt(key, "test.sdfsfs.sdfsdf", ""));
     }
 
 }
