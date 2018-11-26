@@ -32,14 +32,16 @@ import com.google.common.primitives.Bytes;
 import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
 
 import java.security.MessageDigest;
+import java.security.SignatureException;
 import java.util.Arrays;
 
-import static com.google.common.io.BaseEncoding.base64Url;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Base64.getUrlEncoder;
 
 class PasetoPublic {
+
+    private PasetoPublic() {}
 
     private static final String PUBLIC = "v2.public.";
 
@@ -53,12 +55,12 @@ class PasetoPublic {
 
         byte[] m2 = BaseEncoding.base16().lowerCase().decode(Util.pae(PUBLIC, payload, footer));
         byte[] signature = new byte[64];
-        CryptoCavaWrapper.crypto_sign_detached(signature, m2, privateKey);
+        CryptoCavaWrapper.cryptoSignDetached(signature, m2, privateKey);
 
         String signedToken = PUBLIC + getUrlEncoder().withoutPadding().encodeToString(Bytes.concat(payload.getBytes(UTF_8), signature));
 
         if (!Strings.isNullOrEmpty(footer)) {
-            signedToken = signedToken + "." + base64Url().encode(footer.getBytes(UTF_8));
+            signedToken = signedToken + "." + getUrlEncoder().withoutPadding().encodeToString(footer.getBytes(UTF_8));
         }
         return signedToken;
     }
@@ -66,7 +68,7 @@ class PasetoPublic {
     /**
      * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#verify
      */
-    static String parse(byte[] publicKey, String signedMessage, String footer) {
+    static String parse(byte[] publicKey, String signedMessage, String footer) throws SignatureException {
         Preconditions.checkNotNull(publicKey);
         Preconditions.checkNotNull(signedMessage);
         Preconditions.checkArgument(publicKey.length == 32, "Public key should be 32 bytes");
@@ -95,10 +97,10 @@ class PasetoPublic {
         return new String(message);
     }
 
-    private static void verify(byte[] key, byte[] message, byte[] signature) {
-        int valid = CryptoCavaWrapper.crypto_sign_verify_detached(signature, message, key);
+    private static void verify(byte[] key, byte[] message, byte[] signature) throws SignatureException {
+        int valid = CryptoCavaWrapper.cryptoSignVerifyDetached(signature, message, key);
         if (valid != 0) {
-            throw new RuntimeException("Invalid signature");
+            throw new SignatureException("Invalid signature");
         }
     }
 

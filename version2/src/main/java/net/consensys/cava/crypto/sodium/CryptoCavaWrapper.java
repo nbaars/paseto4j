@@ -27,7 +27,7 @@ package net.consensys.cava.crypto.sodium;
 import com.google.common.base.Verify;
 import jnr.ffi.byref.LongLongByReference;
 
-import java.util.function.Supplier;
+import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 
 /**
@@ -40,7 +40,7 @@ public class CryptoCavaWrapper {
     private CryptoCavaWrapper() {
     }
 
-    public static void crypto_generichash_blake2b(byte[] out, byte[] in, byte[] key) {
+    public static void cryptoGenericHashBlake2b(byte[] out, byte[] in, byte[] key) {
         runIt(() -> Sodium.crypto_generichash_blake2b(out, out.length, in, in.length, key, key.length));
     }
 
@@ -53,15 +53,15 @@ public class CryptoCavaWrapper {
         return result;
     }
 
-    public static void crypto_sign_detached(byte[] out, byte[] msg, byte[] privateKey) {
+    public static void cryptoSignDetached(byte[] out, byte[] msg, byte[] privateKey) {
         runIt(() -> Sodium.crypto_sign_detached(out, new LongLongByReference(), msg, msg.length, privateKey));
     }
 
-    public static void crypto_sign_ed25519_seed_keypair(byte[] seed, byte[] pkey, byte[] sk) {
+    public static void cryptoSignEd25519SeedKeypair(byte[] seed, byte[] pkey, byte[] sk) {
         runIt(() -> Sodium.crypto_sign_ed25519_seed_keypair(pkey, sk, seed));
     }
 
-    public static int crypto_sign_verify_detached(byte[] signature, byte[] message, byte[] publicKey) {
+    public static int cryptoSignVerifyDetached(byte[] signature, byte[] message, byte[] publicKey) {
         return Sodium.crypto_sign_verify_detached(signature, message, message.length, publicKey);
     }
 
@@ -69,8 +69,8 @@ public class CryptoCavaWrapper {
         return IntStream.range(0, data.length).parallel().allMatch(i -> data[i] == 0);
     }
 
-    private static void runIt(Supplier<Integer> s) {
-        int returnCode = s.get();
+    private static void runIt(IntSupplier s) {
+        int returnCode = s.getAsInt();
         Verify.verify(returnCode == 0, "Call to Libsodium failed, return code was " + returnCode);
     }
 

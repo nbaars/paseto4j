@@ -45,6 +45,8 @@ import static net.consensys.cava.crypto.sodium.CryptoCavaWrapper.randomBytes;
 
 class PasetoLocal {
 
+    private PasetoLocal() {}
+
     private static final String LOCAL = "v2.local.";
 
     /**
@@ -65,7 +67,7 @@ class PasetoLocal {
         //3
         byte[] nonce = new byte[XChaCha20Poly1305.Nonce.length()];
 
-        CryptoCavaWrapper.crypto_generichash_blake2b(
+        CryptoCavaWrapper.cryptoGenericHashBlake2b(
                 nonce,
                 payload.getBytes(UTF_8),
                 randomKey);

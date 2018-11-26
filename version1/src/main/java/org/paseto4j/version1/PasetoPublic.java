@@ -27,28 +27,12 @@ package org.paseto4j.version1;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Verify;
-import com.google.common.io.BaseEncoding;
 import com.google.common.primitives.Bytes;
-import org.bouncycastle.crypto.CryptoException;
-import org.bouncycastle.crypto.digests.SHA1Digest;
-import org.bouncycastle.crypto.digests.SHA384Digest;
-import org.bouncycastle.crypto.engines.RSAEngine;
-import org.bouncycastle.crypto.params.RSAKeyParameters;
-import org.bouncycastle.crypto.signers.PSSSigner;
-import org.bouncycastle.crypto.util.PrivateKeyFactory;
-import org.bouncycastle.crypto.util.PublicKeyFactory;
 
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.MessageDigest;
+import java.security.SignatureException;
 import java.util.Arrays;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.io.BaseEncoding.base64Url;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Base64.getUrlEncoder;
@@ -56,6 +40,8 @@ import static java.util.Base64.getUrlEncoder;
 class PasetoPublic {
 
     private static final String PUBLIC = "v1.public.";
+
+    private PasetoPublic() {}
 
     /**
      * Sign the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
@@ -82,7 +68,7 @@ class PasetoPublic {
     /**
      * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
      */
-    static String parse(byte[] publicKey, String signedMessage, String footer) {
+    static String parse(byte[] publicKey, String signedMessage, String footer) throws SignatureException {
         Preconditions.checkNotNull(publicKey);
         Preconditions.checkNotNull(signedMessage);
 
@@ -110,9 +96,9 @@ class PasetoPublic {
         return new String(message, UTF_8);
     }
 
-    private static void verify(byte[] key, byte[] m2, byte[] signature) {
+    private static void verify(byte[] key, byte[] m2, byte[] signature) throws SignatureException {
         if (!CryptoFunctions.verifyRsaPssSha384(key, m2, signature)) {
-            throw new RuntimeException("Invalid signature");
+            throw new SignatureException("Invalid signature");
         }
     }
 

@@ -48,6 +48,8 @@ class PasetoLocal {
 
     private static final String LOCAL = "v1.local.";
 
+    private PasetoLocal() {}
+
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#encrypt
      */

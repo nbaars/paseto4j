@@ -49,7 +49,7 @@ class PasetoLocalTest {
     @ParameterizedTest
     @MethodSource("testVectors")
     void decryptTestVectors(String key, String nonce, String payload, String footer, String encryptedToken) {
-        assertEquals(payload, PasetoLocal.decrypt(Util.hexToBytes(key), encryptedToken, footer));
+        assertEquals(payload, Paseto.decrypt(Util.hexToBytes(key), encryptedToken, footer));
     }
 
     private static Stream<Arguments> testVectors() {

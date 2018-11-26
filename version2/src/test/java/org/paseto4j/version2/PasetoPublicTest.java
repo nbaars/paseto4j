@@ -30,10 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.paseto4j.version2.Paseto;
-import org.paseto4j.version2.PasetoPublic;
-import org.paseto4j.version2.Util;
 
+import java.security.SignatureException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,7 +67,7 @@ class PasetoPublicTest {
 
     @ParameterizedTest
     @MethodSource("sign")
-    public void verify(String payload, String footer, String signedMessage) {
+    public void verify(String payload, String footer, String signedMessage) throws SignatureException {
         byte[] publicKey = Util.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
         assertEquals(payload, org.paseto4j.version2.Paseto.parse(publicKey, signedMessage, footer));
@@ -79,7 +77,7 @@ class PasetoPublicTest {
     public void invalidSignature() {
         byte[] publicKey = Util.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
-        assertThrows(RuntimeException.class, () ->
+        assertThrows(SignatureException.class, () ->
                 Paseto.parse(publicKey, "v2.public.RnJhbmsgRGVuaXMgcm9ja3O7MPuu90WKNyvBUUhAGFmi4PiPOr2bN2ytUSU-QWlj8eNefki2MubssfN1b8figynnY0WusRPwIQ-o0HSZOS0A.Q3VvbiBBbHBpbnVz", "Cuon Alpinus"));
     }
 
@@ -88,7 +86,7 @@ class PasetoPublicTest {
         byte[] seed = Util.hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a3774");
         byte[] privateKey = new byte[64];
         byte[] publicKey = new byte[64];
-        CryptoCavaWrapper.crypto_sign_ed25519_seed_keypair(seed, publicKey, privateKey);
+        CryptoCavaWrapper.cryptoSignEd25519SeedKeypair(seed, publicKey, privateKey);
         String token = PasetoPublic.sign(
                 privateKey,
                 "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}",

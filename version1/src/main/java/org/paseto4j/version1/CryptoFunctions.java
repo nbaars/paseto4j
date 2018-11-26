@@ -47,6 +47,8 @@ import java.security.*;
 
 public class CryptoFunctions {
 
+    private CryptoFunctions() {}
+
     /**
      * @return 32 bytes of random data
      */

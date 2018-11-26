@@ -25,21 +25,15 @@
 package org.paseto4j.version1;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import javax.crypto.Cipher;
-import javax.crypto.NoSuchPaddingException;
-
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.Security;
+import java.security.SignatureException;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PasetoPublicTest {
 
@@ -86,9 +80,9 @@ class PasetoPublicTest {
 
     @ParameterizedTest
     @MethodSource("testVectors")
-    void encryptTestVectors(String privateKey, String publicKey, String payload, String footer) {
-        String signedToken = PasetoPublic.sign(Util.hexToBytes(privateKey), payload, footer);
-        assertEquals(payload, PasetoPublic.parse(Util.hexToBytes(publicKey), signedToken, footer));
+    void encryptTestVectors(String privateKey, String publicKey, String payload, String footer) throws SignatureException {
+        String signedToken = Paseto.sign(Util.hexToBytes(privateKey), payload, footer);
+        assertEquals(payload, Paseto.parse(Util.hexToBytes(publicKey), signedToken, footer));
     }
 
     private static Stream<Arguments> testVectors() {

@@ -24,7 +24,11 @@
 
 package org.paseto4j.version2;
 
+import java.security.SignatureException;
+
 public class Paseto {
+
+    private Paseto() {}
 
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt
@@ -50,7 +54,7 @@ public class Paseto {
     /**
      * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#verify
      */
-    public static String parse(byte[] publicKey, String signedMessage, String footer) {
+    public static String parse(byte[] publicKey, String signedMessage, String footer) throws SignatureException {
         return PasetoPublic.parse(publicKey, signedMessage, footer);
     }
 }
