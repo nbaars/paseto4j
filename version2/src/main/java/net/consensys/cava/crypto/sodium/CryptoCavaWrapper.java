@@ -37,7 +37,36 @@ import java.util.stream.IntStream;
  */
 public class CryptoCavaWrapper {
 
+    public static final int VARIANT_URLSAFE_NO_PADDING = 7;
+
     private CryptoCavaWrapper() {
+    }
+
+    private interface SodiumDecoder {
+
+        int call(byte[] in, byte[] out, LongLongByReference reference);
+
+        default byte[] decode(byte[] in) {
+            byte[] out = new byte[in.length];
+            LongLongByReference reference = new LongLongByReference();
+            runIt(() -> call(in, out, reference));
+            byte[] result = new byte[reference.intValue()];
+            System.arraycopy(out, 0, result, 0, reference.intValue());
+            return result;
+        }
+    }
+
+    public static byte[] base64Decode(byte[] base64Decoded) {
+        return ((SodiumDecoder)
+                (in, out, reference) ->
+                        Sodium.sodium_base642bin(out, in.length, in, in.length, null, reference, null, VARIANT_URLSAFE_NO_PADDING)
+        ).decode(base64Decoded);
+    }
+
+    public static byte[] hexToBin(byte[] hex) {
+        return ((SodiumDecoder)
+                (in, out, reference) -> Sodium.sodium_hex2bin(out, hex.length, hex, hex.length, null, reference, null)
+        ).decode(hex);
     }
 
     public static void cryptoGenericHashBlake2b(byte[] out, byte[] in, byte[] key) {

@@ -37,10 +37,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Base64.getUrlDecoder;
 import static java.util.Base64.getUrlEncoder;
 import static net.consensys.cava.bytes.Bytes.concatenate;
 import static net.consensys.cava.bytes.Bytes.wrap;
+import static net.consensys.cava.crypto.sodium.CryptoCavaWrapper.base64Decode;
 import static net.consensys.cava.crypto.sodium.CryptoCavaWrapper.randomBytes;
 
 class PasetoLocal {
@@ -104,23 +104,23 @@ class PasetoLocal {
 
         //1
         if (!isNullOrEmpty(footer)) {
-            verify(MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)), "footer does not match");
+            verify(MessageDigest.isEqual(base64Decode(tokenParts[3].getBytes(UTF_8)), footer.getBytes(UTF_8)), "footer does not match");
         }
 
         //2
         verify(token.startsWith(LOCAL), "Token should start with " + LOCAL);
 
         //3
-        byte[] ct = getUrlDecoder().decode(tokenParts[2]);
+        byte[] ct = base64Decode(tokenParts[2].getBytes(UTF_8));
         byte[] nonce = Arrays.copyOfRange(ct, 0, XChaCha20Poly1305.Nonce.length());
-        byte[] encrypedMessage = Arrays.copyOfRange(ct, XChaCha20Poly1305.Nonce.length(), ct.length);
+        byte[] encryptedMessage = Arrays.copyOfRange(ct, XChaCha20Poly1305.Nonce.length(), ct.length);
 
         //4
         byte[] preAuth = Util.pae(LOCAL.getBytes(UTF_8), nonce, footer.getBytes(UTF_8));
 
         //5
         byte[] message = XChaCha20Poly1305.decrypt(
-                encrypedMessage,
+                encryptedMessage,
                 preAuth,
                 XChaCha20Poly1305.Key.fromBytes(key),
                 XChaCha20Poly1305.Nonce.fromBytes(nonce));

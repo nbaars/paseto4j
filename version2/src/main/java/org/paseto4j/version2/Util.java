@@ -24,12 +24,15 @@
 
 package org.paseto4j.version2;
 
-import com.google.common.io.BaseEncoding;
+import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
 import okio.Buffer;
+
+import java.nio.charset.StandardCharsets;
 
 public class Util {
 
-    private Util() {}
+    private Util() {
+    }
 
     /**
      * Authentication Padding
@@ -63,6 +66,6 @@ public class Util {
     }
 
     public static byte[] hexToBytes(String hex) {
-        return BaseEncoding.base16().lowerCase().decode(hex);
+        return CryptoCavaWrapper.hexToBin(hex.getBytes(StandardCharsets.UTF_8));
     }
 }

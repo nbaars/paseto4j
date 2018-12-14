@@ -26,8 +26,10 @@ package net.consensys.cava.crypto.sodium;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.nio.charset.StandardCharsets;
+
+import static java.util.Base64.getUrlEncoder;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CryptoCavaWrapperTest {
 
@@ -42,5 +44,14 @@ class CryptoCavaWrapperTest {
 
         assertTrue(CryptoCavaWrapper.isEmpty(bytes));
     }
+
+    @Test
+    public void base64Decoding() {
+        byte[] base64Encoded = getUrlEncoder().withoutPadding().encode("test".getBytes());
+
+        assertArrayEquals("test".getBytes(StandardCharsets.UTF_8), CryptoCavaWrapper.base64Decode(base64Encoded));
+    }
+
+
 
 }
