@@ -1,5 +1,5 @@
-FROM debian:buster
-ENV LIBSODIUM_VERSION 1.0.16
+FROM openjdk:14-jdk-slim
+ENV LIBSODIUM_VERSION 1.0.17
 
 RUN apt-get update && apt-get install -y curl make gcc g++ && \
     mkdir -p /tmpbuild/libsodium && \
@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y curl make gcc g++ && \
     make && make check && \
     make install
 
-RUN apt-get update && apt-get install -y maven openjdk-8-jdk git && \
+RUN apt-get update && apt-get install -y git && \
     git clone https://github.com/nbaars/paseto4j && \
-    cd paseto4j; mvn clean install
+    cd paseto4j && \
+    ./gradlew clean build
 
