@@ -5,7 +5,7 @@
 
 set -e
 
-LIBSODIUM_VERSION=1.0.16
+LIBSODIUM_VERSION=1.0.17
 
 # check if libsodium is already installed
 if [ ! -d "$HOME/libsodium/lib" ]; then
