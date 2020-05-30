@@ -22,8 +22,11 @@
  * SOFTWARE.
  */
 
+
+
 plugins {
     id "org.sonarqube" version "2.6"
+    id 'jacoco'
 }
 
 description = "Library for Paseto in Java, see https://github.com/paragonie/paseto for more information"
@@ -33,11 +36,16 @@ allprojects {
     version = System.properties['buildNumber'] ?: '0.0.14-SNAPSHOT'
 }
 
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
     sourceCompatibility = 1.8
-    targetCompatibility = '1.8'
+    targetCompatibility = 1.8
 
     dependencies {
         testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')
