@@ -44,8 +44,8 @@ jacoco {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
     dependencies {
         testCompile('org.junit.jupiter:junit-jupiter-api:5.2.0')

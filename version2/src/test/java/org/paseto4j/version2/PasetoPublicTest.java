@@ -25,7 +25,7 @@
 package org.paseto4j.version2;
 
 
-import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
+import org.apache.tuweni.crypto.sodium.Signature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -84,9 +84,9 @@ class PasetoPublicTest {
     @Test
     public void signTokenWithSeed() {
         byte[] seed = Util.hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a3774");
-        byte[] privateKey = new byte[64];
-        byte[] publicKey = new byte[64];
-        CryptoCavaWrapper.cryptoSignEd25519SeedKeypair(seed, publicKey, privateKey);
+        Signature.KeyPair keyPair = Signature.KeyPair.fromSeed(Signature.Seed.fromBytes(seed));
+        byte[] privateKey = keyPair.secretKey().bytesArray();
+        byte[] publicKey = keyPair.publicKey().bytesArray();
         String token = PasetoPublic.sign(
                 privateKey,
                 "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}",

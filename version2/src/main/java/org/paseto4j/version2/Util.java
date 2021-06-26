@@ -24,10 +24,8 @@
 
 package org.paseto4j.version2;
 
-import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
 import okio.Buffer;
-
-import java.nio.charset.StandardCharsets;
+import org.apache.tuweni.bytes.Bytes;
 
 public class Util {
 
@@ -66,6 +64,6 @@ public class Util {
     }
 
     public static byte[] hexToBytes(String hex) {
-        return CryptoCavaWrapper.hexToBin(hex.getBytes(StandardCharsets.UTF_8));
+        return Bytes.fromHexString(hex).toArray();
     }
 }

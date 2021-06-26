@@ -29,7 +29,8 @@ import com.google.common.base.Strings;
 import com.google.common.base.Verify;
 import com.google.common.io.BaseEncoding;
 import com.google.common.primitives.Bytes;
-import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
+import org.apache.tuweni.crypto.SECP256K1;
+import org.apache.tuweni.crypto.sodium.Signature;
 
 import java.security.MessageDigest;
 import java.security.SignatureException;
@@ -54,8 +55,7 @@ class PasetoPublic {
         Preconditions.checkArgument(privateKey.length == 64, "Private signing key should be 64 bytes");
 
         byte[] m2 = BaseEncoding.base16().lowerCase().decode(Util.pae(PUBLIC, payload, footer));
-        byte[] signature = new byte[64];
-        CryptoCavaWrapper.cryptoSignDetached(signature, m2, privateKey);
+        byte[] signature = Signature.signDetached(m2, Signature.SecretKey.fromBytes(privateKey));
 
         String signedToken = PUBLIC + getUrlEncoder().withoutPadding().encodeToString(Bytes.concat(payload.getBytes(UTF_8), signature));
 
@@ -98,8 +98,8 @@ class PasetoPublic {
     }
 
     private static void verify(byte[] key, byte[] message, byte[] signature) throws SignatureException {
-        int valid = CryptoCavaWrapper.cryptoSignVerifyDetached(signature, message, key);
-        if (valid != 0) {
+        boolean valid = Signature.verifyDetached(message, signature, Signature.PublicKey.fromBytes(key));
+        if (!valid) {
             throw new SignatureException("Invalid signature");
         }
     }

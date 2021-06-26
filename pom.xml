@@ -1,0 +1,42 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.github.nbaars</groupId>
+    <artifactId>paseto4j</artifactId>
+    <version>0.0.14-SNAPSHOT</version>
+    <description>Library for Paseto in Java, see https://github.com/paragonie/paseto for more information</description>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <modules>
+        <module>version1</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

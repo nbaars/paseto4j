@@ -25,8 +25,9 @@
 package org.paseto4j.version2;
 
 import com.google.common.base.Verify;
-import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
-import net.consensys.cava.crypto.sodium.XChaCha20Poly1305;
+import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.crypto.sodium.GenericHash;
+import org.apache.tuweni.crypto.sodium.XChaCha20Poly1305;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -38,10 +39,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Verify.verify;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlEncoder;
-import static net.consensys.cava.bytes.Bytes.concatenate;
-import static net.consensys.cava.bytes.Bytes.wrap;
-import static net.consensys.cava.crypto.sodium.CryptoCavaWrapper.base64Decode;
-import static net.consensys.cava.crypto.sodium.CryptoCavaWrapper.randomBytes;
+import static org.apache.tuweni.bytes.Bytes.concatenate;
+import static org.apache.tuweni.bytes.Bytes.fromBase64String;
+import static org.apache.tuweni.bytes.Bytes.wrap;
 
 class PasetoLocal {
 
@@ -53,7 +53,7 @@ class PasetoLocal {
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt
      */
     static String encrypt(byte[] key, String payload, String footer) {
-        return encrypt(key, randomBytes(XChaCha20Poly1305.Nonce.length()), payload, footer);
+        return encrypt(key, Bytes.random(XChaCha20Poly1305.Nonce.length()).toArray(), payload, footer);
     }
 
     /**
@@ -65,12 +65,11 @@ class PasetoLocal {
         checkArgument(key.length == 32, "key should be 32 bytes");
 
         //3
-        byte[] nonce = new byte[XChaCha20Poly1305.Nonce.length()];
-
-        CryptoCavaWrapper.cryptoGenericHashBlake2b(
-                nonce,
-                payload.getBytes(UTF_8),
-                randomKey);
+        byte[] nonce = GenericHash.hash(
+                24,
+                GenericHash.Input.fromBytes(payload.getBytes(UTF_8)),
+                GenericHash.Key.fromBytes(randomKey)
+        ).bytesArray();
 
         //4
         byte[] preAuth = Util.pae(LOCAL.getBytes(UTF_8), nonce, footer.getBytes(UTF_8));
@@ -104,14 +103,14 @@ class PasetoLocal {
 
         //1
         if (!isNullOrEmpty(footer)) {
-            verify(MessageDigest.isEqual(base64Decode(tokenParts[3].getBytes(UTF_8)), footer.getBytes(UTF_8)), "footer does not match");
+            verify(MessageDigest.isEqual(fromBase64String(tokenParts[3]).toArray(), footer.getBytes(UTF_8)), "footer does not match");
         }
 
         //2
         verify(token.startsWith(LOCAL), "Token should start with " + LOCAL);
 
         //3
-        byte[] ct = base64Decode(tokenParts[2].getBytes(UTF_8));
+        byte[] ct = Base64.getUrlDecoder().decode(tokenParts[2]);
         byte[] nonce = Arrays.copyOfRange(ct, 0, XChaCha20Poly1305.Nonce.length());
         byte[] encryptedMessage = Arrays.copyOfRange(ct, XChaCha20Poly1305.Nonce.length(), ct.length);
 
@@ -127,4 +126,5 @@ class PasetoLocal {
 
         return new String(message, UTF_8);
     }
+
 }
