@@ -7,7 +7,7 @@ addons:
 jdk:
 - openjdk14
 install:
-- "./travis-install-libsodium.sh"
+- "./install-libsodium.sh"
 - "/bin/true"
 - export LD_LIBRARY_PATH=$HOME/libsodium/lib:$LD_LIBRARY_PATH
 script:
