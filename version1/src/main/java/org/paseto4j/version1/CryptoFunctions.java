@@ -111,7 +111,7 @@ public class CryptoFunctions {
             Cipher aes = Cipher.getInstance("AES/CTR/NoPadding", BouncyCastleProvider.PROVIDER_NAME);
             SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
 
-            aes.init(encryption ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(nonce));
+            aes.init(encryption ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(nonce)); //NOSONAR
             return aes.doFinal(message);
         } catch (GeneralSecurityException e) {
             throw new IllegalStateException(e);
