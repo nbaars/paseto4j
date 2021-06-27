@@ -67,14 +67,14 @@ class PasetoPublicTest {
 
     @ParameterizedTest
     @MethodSource("sign")
-    public void verify(String payload, String footer, String signedMessage) throws SignatureException {
+    void verify(String payload, String footer, String signedMessage) throws SignatureException {
         byte[] publicKey = Util.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
         assertEquals(payload, org.paseto4j.version2.Paseto.parse(publicKey, signedMessage, footer));
     }
 
     @Test
-    public void invalidSignature() {
+    void invalidSignature() {
         byte[] publicKey = Util.hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
         assertThrows(SignatureException.class, () ->
@@ -82,7 +82,7 @@ class PasetoPublicTest {
     }
 
     @Test
-    public void signTokenWithSeed() {
+    void signTokenWithSeed() {
         byte[] seed = Util.hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a3774");
         Signature.KeyPair keyPair = Signature.KeyPair.fromSeed(Signature.Seed.fromBytes(seed));
         byte[] privateKey = keyPair.secretKey().bytesArray();

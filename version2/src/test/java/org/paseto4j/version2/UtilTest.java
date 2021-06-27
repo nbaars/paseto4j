@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class UtilTest {
 
     @Test
-    public void pae() {
+    void pae() {
         assertAll(
                 () -> assertEquals("0000000000000000", Util.pae(new String[]{})),
                 () -> assertEquals("01000000000000000000000000000000", Util.pae("")),

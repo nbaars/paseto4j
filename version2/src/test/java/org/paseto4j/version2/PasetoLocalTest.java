@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PasetoLocalTest {
+class PasetoLocalTest {
 
     @ParameterizedTest
     @MethodSource("encrypt")

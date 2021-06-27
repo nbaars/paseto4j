@@ -95,7 +95,7 @@ class PasetoLocalTest {
     }
 
     @Test
-    public void normalUsage() {
+    void normalUsage() {
         byte[] key = Util.hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
         String encryptedToken = PasetoLocal.encrypt(
                 key,
@@ -109,7 +109,7 @@ class PasetoLocalTest {
     }
 
     @Test
-    public void wrongFooter() {
+    void wrongFooter() {
         byte[] key = Util.hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
         String encryptedToken = PasetoLocal.encrypt(
                 key,
@@ -122,7 +122,7 @@ class PasetoLocalTest {
     }
 
     @Test
-    public void keySizeShouldBe2048() throws NoSuchAlgorithmException {
+    void keySizeShouldBe2048() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(1024);
         KeyPair keyPair = keyGen.generateKeyPair();
