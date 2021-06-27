@@ -1,0 +1,30 @@
+name: "Build"
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.txt'
+      - '*.MD'
+      - '*.md'
+      - 'LICENSE'
+
+jobs:
+  build:
+    name: Build and push Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install libsodium
+        run: sudo apt-get install -y libsodium-dev
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Build
+        run: ./mvnw clean install
+      - name: SonarCloud Scan
+        run: ./mvnw sonar:sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}

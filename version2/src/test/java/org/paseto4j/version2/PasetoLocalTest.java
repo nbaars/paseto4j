@@ -25,14 +25,11 @@
 package org.paseto4j.version2;
 
 import com.google.common.base.VerifyException;
-import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
+import org.apache.tuweni.bytes.Bytes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.paseto4j.version2.Paseto;
-import org.paseto4j.version2.PasetoLocal;
-import org.paseto4j.version2.Util;
 
 import java.util.stream.Stream;
 
@@ -99,7 +96,7 @@ public class PasetoLocalTest {
 
     @Test
     public void encryptDecryptWrongFooter() {
-        byte[] key = CryptoCavaWrapper.randomBytes(32);
+        byte[] key = Bytes.random(32).toArray();
         String encryptedToken = org.paseto4j.version2.Paseto.encrypt(
                 key,
                 "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}",
@@ -110,7 +107,7 @@ public class PasetoLocalTest {
 
     @Test
     public void shouldThrowErrorWhenTokenDoesNotStartWithLocal() {
-        byte[] key = CryptoCavaWrapper.randomBytes(32);
+        byte[] key = Bytes.random(32).toArray();
         assertThrows(VerifyException.class, () -> PasetoLocal.decrypt(key, "test.sdfsfs.sdfsdf", ""));
     }
 

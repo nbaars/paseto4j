@@ -24,15 +24,13 @@
 
 repositories {
     mavenCentral()
-    maven { url "https://consensys.bintray.com/consensys" }
 }
 
 dependencies {
     compile('com.google.guava:guava:23.5-jre')
     compile('com.github.jnr:jnr-ffi:2.1.8')
-    compile('net.consensys.cava:cava-crypto:0.3.0')
-    compile('net.consensys.cava:cava-bytes:0.3.0')
     compile('com.squareup.okio:okio:1.14.1')
+    compile('org.apache.tuweni:tuweni-crypto:2.0.0')
 }
 
 sonarqube {

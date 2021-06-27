@@ -24,14 +24,15 @@
 
 repositories {
     mavenCentral()
-    maven { url "https://consensys.bintray.com/consensys" }
 }
 
 dependencies {
     compile('com.google.guava:guava:23.5-jre')
-    compile('org.bouncycastle:bcprov-jdk15on:1.60')
-    compile('org.bouncycastle:bcpkix-jdk15on:1.60')
+    compile('org.bouncycastle:bcprov-jdk15on:1.69')
+    compile('org.bouncycastle:bcpkix-jdk15on:1.69')
     compile('com.squareup.okio:okio:1.14.1')
+    compile('com.google.crypto.tink:tink:1.3.0')
+    implementation('org.apache.tuweni:tuweni-bytes:2.0.0')
 }
 
 sonarqube {
