@@ -17,7 +17,6 @@
         <sonar.projectName>paseto4j</sonar.projectName>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.sources>src/main/java</sonar.sources>
-        <sonar.tests>junit</sonar.tests>
         <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.java.binaries>**/classes</sonar.java.binaries>
         <sonar.java.libraries>**/*.jar</sonar.java.libraries>
