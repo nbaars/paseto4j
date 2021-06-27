@@ -26,7 +26,7 @@ jobs:
         with:
           java-version: '11'
       - name: Build
-        run: ./mvnw clean install
+        run: ./mvnw clean package
       - name: SonarCloud Scan
         run: ./mvnw sonar:sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         env:
