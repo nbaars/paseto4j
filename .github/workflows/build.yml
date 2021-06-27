@@ -6,6 +6,9 @@ on:
       - '*.MD'
       - '*.md'
       - 'LICENSE'
+  push:
+    branches:
+      - main
 
 jobs:
   build:
