@@ -17,7 +17,9 @@
         <sonar.projectName>paseto4j</sonar.projectName>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.sources>src/main/java</sonar.sources>
-        <sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.junit.reportsPath>${project.build.directory}/surefire-reports</sonar.junit.reportsPath>
+        <sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
+        <sonar.jacoco.reportPath>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.java.binaries>**/classes</sonar.java.binaries>
         <sonar.java.libraries>**/*.jar</sonar.java.libraries>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
