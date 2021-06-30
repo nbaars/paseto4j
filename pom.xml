@@ -26,7 +26,7 @@
 
     <modules>
         <module>version1</module>
-<!--        <module>version2</module>-->
+        <module>version2</module>
     </modules>
 
     <dependencies>
@@ -69,7 +69,7 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
                 <configuration>
-                    <destFile>${project.basedir}/../target/jacoco.exec</destFile>
+                    <destFile>${project.build.directory}/jacoco.exec</destFile>
                     <append>true</append>
                 </configuration>
                 <executions>
