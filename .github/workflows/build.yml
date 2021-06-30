@@ -33,7 +33,7 @@ jobs:
         with:
           java-version: '11'
       - name: Build
-        run: ./mvnw clean package
+        run: ./mvnw clean verify
       - name: SonarCloud Scan
         run: ./mvnw sonar:sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         env:
