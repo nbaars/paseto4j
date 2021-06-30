@@ -8,6 +8,11 @@
     <artifactId>paseto4j-version2</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../version2/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+    </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>com.github.jnr</groupId>

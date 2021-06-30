@@ -19,7 +19,6 @@
         <sonar.sources>src/main/java</sonar.sources>
         <sonar.junit.reportsPath>${project.build.directory}/surefire-reports</sonar.junit.reportsPath>
         <sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/../target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
     </properties>
 
