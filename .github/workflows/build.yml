@@ -17,13 +17,6 @@ jobs:
     steps:
       - name: Install libsodium
         run: sudo apt-get install -y libsodium-dev
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
       - name: Checkout
         uses: actions/checkout@v2
         with:
