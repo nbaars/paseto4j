@@ -1,4 +1,4 @@
-name: "Build branch"
+name: "Build"
 on:
   pull_request:
     paths-ignore:
