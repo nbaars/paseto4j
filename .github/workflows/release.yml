@@ -1,6 +1,9 @@
-name: "Release Pipeline"
+name: "Release"
 on:
   create: { tag }
+  push:
+    tags:
+      - '*'
 jobs:
   release:
     name: Release
