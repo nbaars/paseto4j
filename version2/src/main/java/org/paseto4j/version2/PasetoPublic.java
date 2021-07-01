@@ -29,7 +29,6 @@ import com.google.common.base.Strings;
 import com.google.common.base.Verify;
 import com.google.common.io.BaseEncoding;
 import com.google.common.primitives.Bytes;
-import org.apache.tuweni.crypto.SECP256K1;
 import org.apache.tuweni.crypto.sodium.Signature;
 
 import java.security.MessageDigest;

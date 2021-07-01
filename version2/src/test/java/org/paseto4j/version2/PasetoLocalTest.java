@@ -88,14 +88,14 @@ class PasetoLocalTest {
     }
 
     @Test
-    public void invalidTokenShouldGiveException() {
+    void invalidTokenShouldGiveException() {
         assertThrows(
                 VerifyException.class,
                 () -> PasetoLocal.decrypt(Util.hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"), "v2.local.", ""));
     }
 
     @Test
-    public void encryptDecryptWrongFooter() {
+    void encryptDecryptWrongFooter() {
         byte[] key = Bytes.random(32).toArray();
         String encryptedToken = org.paseto4j.version2.Paseto.encrypt(
                 key,
@@ -106,7 +106,7 @@ class PasetoLocalTest {
     }
 
     @Test
-    public void shouldThrowErrorWhenTokenDoesNotStartWithLocal() {
+    void shouldThrowErrorWhenTokenDoesNotStartWithLocal() {
         byte[] key = Bytes.random(32).toArray();
         assertThrows(VerifyException.class, () -> PasetoLocal.decrypt(key, "test.sdfsfs.sdfsdf", ""));
     }

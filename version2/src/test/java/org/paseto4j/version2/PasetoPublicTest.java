@@ -26,12 +26,15 @@ package org.paseto4j.version2;
 
 
 import org.apache.tuweni.crypto.sodium.Signature;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -92,5 +95,16 @@ class PasetoPublicTest {
                 "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}",
                 "Paragon Initiative Enterprises");
         assertEquals("v2.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwaXJlcyI6IjIwMTktMDEtMDFUMDA6MDA6MDArMDA6MDAifcMYjoUaEYXAtzTDwlcOlxdcZWIZp8qZga3jFS8JwdEjEvurZhs6AmTU3bRW5pB9fOQwm43rzmibZXcAkQ4AzQs.UGFyYWdvbiBJbml0aWF0aXZlIEVudGVycHJpc2Vz", token);
+    }
+
+    @Test
+    void keyTooSmall() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> PasetoPublic.sign(new byte[] {'0'}, " test", "test"));
+    }
+
+    @Test
+    void keyTooLarge() {
+        byte[] key = "b4cbfb43df4ce210727d953e4a713333307fa19bb7d9f85041438d9e11b942a3774".getBytes(StandardCharsets.UTF_8);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> PasetoPublic.sign(key, " test", "test"));
     }
 }

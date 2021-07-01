@@ -19,7 +19,6 @@
         <sonar.sources>src/main/java</sonar.sources>
         <sonar.junit.reportsPath>${project.build.directory}/surefire-reports</sonar.junit.reportsPath>
         <sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
-
     </properties>
 
     <modules>
