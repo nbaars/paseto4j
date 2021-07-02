@@ -1,20 +1,21 @@
 package org.paseto4j.version2;
 
-import net.consensys.cava.crypto.sodium.CryptoCavaWrapper;
+import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.crypto.sodium.Signature;
 
-import static net.consensys.cava.crypto.sodium.CryptoCavaWrapper.crypto_sign_ed25519_seed_keypair;
+import java.security.SignatureException;
 
 public class Version2 {
 
-    public static void main(String... args) {
+    public static void main(String... args) throws SignatureException {
         new Version2().signToken();
     }
 
-    private void signToken() {
-        byte[] seed = CryptoCavaWrapper.randomBytes(32);
-        byte[] privateKey = new byte[64];
-        byte[] publicKey = new byte[32];
-        crypto_sign_ed25519_seed_keypair(seed, publicKey, privateKey);
+    private void signToken() throws SignatureException {
+        var seed = Bytes.random(32).toArray();
+        var keyPair = Signature.KeyPair.fromSeed(Signature.Seed.fromBytes(seed));
+        var publicKey = new byte[32];
+        var privateKey = keyPair.secretKey().bytesArray();
 
         String signedToken = Paseto.sign(
                 privateKey,
