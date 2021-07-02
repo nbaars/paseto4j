@@ -41,6 +41,8 @@
         <sonar.sources>src/main/java</sonar.sources>
         <sonar.junit.reportsPath>${project.build.directory}/surefire-reports</sonar.junit.reportsPath>
         <sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
+
+        <paseto4j.deploy.skip>false</paseto4j.deploy.skip>
     </properties>
 
     <distributionManagement>
@@ -114,6 +116,14 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <skip>${paseto4j.deploy.skip}</skip>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
