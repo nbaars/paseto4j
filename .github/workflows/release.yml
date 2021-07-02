@@ -17,22 +17,27 @@ jobs:
         id: tag
         uses: dawidd6/action-get-tag@v1
 
-      - name: Set up JDK 11
+      - name: Setup Maven Central Repository
         uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
           java-version: 11
           architecture: x64
+          server-id: ossrh
+          server-usernam: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
 
       - name: "Set labels for ${{ github.ref }}"
         run: |
           echo "PASETO_TAG_VERSION=${{ steps.tag.outputs.tag }}" >> $GITHUB_ENV
 
-      - name: Build with Maven
+      - name: Publish to Maven Central
         run: |
           mvn versions:set -DnewVersion=${{ env.PASETO_MAVEN_VERSION }}
-          mvn clean install -DskipTests
-
+          mvn --batch-mode clean deploy -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
       - name: "Create release"
         uses: softprops/action-gh-release@v1
         with:

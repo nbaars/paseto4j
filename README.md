@@ -45,8 +45,6 @@ contains an example how to install it on a Linux based system.
 dependencies {
     repositories {
         maven { url 'https://jitpack.io' }
-        jcenter()
-        maven { url 'https://consensys.bintray.com/consensys' }
     }
 
     compile('com.github.nbaars.paseto4j:paseto4j-version2:0.0.13')
