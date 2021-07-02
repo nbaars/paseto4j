@@ -24,7 +24,7 @@ jobs:
           java-version: 11
           architecture: x64
           server-id: ossrh
-          server-usernam: MAVEN_USERNAME
+          server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
 
       - name: "Set labels for ${{ github.ref }}"
