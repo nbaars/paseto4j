@@ -73,12 +73,14 @@ jobs:
 
       - name: Set version to next snapshot
         run: |
+          git checkout master
           mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT versions:commit
 
       - name: Commit pom.xml
         run: |
+          git checkout master
           git config user.name Nanne Baars
           git config user.email nanneb@gmail.com
           find . -name 'pom.xml' | xargs git add
           git commit -m "Updating to the new snapshot version"
-          git push
+          git push origin master
