@@ -9,6 +9,10 @@
     <packaging>jar</packaging>
     <name>paseto4j-version1</name>
 
+    <properties>
+        <paseto4j.deploy.skip>true</paseto4j.deploy.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.github.nbaars</groupId>
