@@ -39,7 +39,7 @@ jobs:
       - name: Publish to Maven Central
         run: |
           mvn versions:set -DnewVersion=${{ env.PASETO_MAVEN_VERSION }}
-          mvn --batch-mode --no-transfer-progress -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} clean deploy -DskipTests
+          mvn --batch-mode --no-transfer-progress -P release -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} clean deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
@@ -47,9 +47,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           draft: false
-          files: |
-            version1/**.jar
-            version2/**.jar
           body: |
             ## Version ${{ steps.tag.outputs.tag }}
 
