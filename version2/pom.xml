@@ -6,6 +6,7 @@
         <version>0.0.14-SNAPSHOT</version>
     </parent>
     <artifactId>paseto4j-version2</artifactId>
+    <name>paseto4j-version2</name>
 
     <properties>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>

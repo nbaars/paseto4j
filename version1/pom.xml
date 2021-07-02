@@ -7,6 +7,7 @@
     </parent>
     <artifactId>paseto4j-version1</artifactId>
     <packaging>jar</packaging>
+    <name>paseto4j-version1</name>
 
     <properties>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>

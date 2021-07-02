@@ -5,6 +5,22 @@
     <version>0.0.14-SNAPSHOT</version>
     <description>Library for Paseto in Java, see https://github.com/paragonie/paseto for more information</description>
     <packaging>pom</packaging>
+    <name>paseto4j-parent</name>
+    <url>https://github.com/nbaars/paseto4j</url>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+    <scm>
+        <connection>scm:svn:https://github.com/nbaars/paseto4j</connection>
+        <developerConnection>scm:svn:https://github.com/nbaars/paseto4j</developerConnection>
+        <url>https://github.com/nbaars/paseto4j</url>
+    </scm>
+    <developers>
+        <developer>Nanne Baars</developer>
+    </developers>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
