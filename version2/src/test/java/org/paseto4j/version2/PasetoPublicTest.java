@@ -89,7 +89,6 @@ class PasetoPublicTest {
         byte[] seed = Util.hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a3774");
         Signature.KeyPair keyPair = Signature.KeyPair.fromSeed(Signature.Seed.fromBytes(seed));
         byte[] privateKey = keyPair.secretKey().bytesArray();
-        byte[] publicKey = keyPair.publicKey().bytesArray();
         String token = PasetoPublic.sign(
                 privateKey,
                 "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}",

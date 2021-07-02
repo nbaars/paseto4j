@@ -33,7 +33,7 @@ public class Version1 {
     private static final String TOKEN = "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}";
     private static final String FOOTER = "Paragon Initiative Enterprises";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SignatureException {
         exampleV1Local();
         exampleV1Public();
 
@@ -44,28 +44,24 @@ public class Version1 {
         }
     }
 
-    private static void exampleV1Public() {
+    private static void exampleV1Public() throws SignatureException {
         KeyPair keyPair = generateKeyPair();
-        PrivateKey priv = keyPair.getPrivate();
-        PublicKey pub = keyPair.getPublic();
 
-        String signedToken = Paseto.sign(priv.getEncoded(), TOKEN, FOOTER);
+        String signedToken = Paseto.sign(keyPair.getPrivate().getEncoded(), TOKEN, FOOTER);
         System.out.println("Signed token is: " + signedToken);
 
-        String token = Paseto.parse(pub.getEncoded(), signedToken, FOOTER);
+        String token = Paseto.parse(keyPair.getPublic().getEncoded(), signedToken, FOOTER);
         System.out.println("Signature is valid, token is: " + token);
     }
 
-    private static void exampleV1PublicSignatureInvalid() {
+    private static void exampleV1PublicSignatureInvalid() throws SignatureException {
         KeyPair keyPair1 = generateKeyPair();
-        PrivateKey priv1 = keyPair1.getPrivate();
         KeyPair keyPair2 = generateKeyPair();
-        PublicKey pub = keyPair2.getPublic();
 
-        String signedToken = Paseto.sign(priv1.getEncoded(), TOKEN, FOOTER);
+        String signedToken = Paseto.sign(keyPair1.getPrivate().getEncoded(), TOKEN, FOOTER);
         System.out.println("Signed token is: " + signedToken);
 
-        String token = Paseto.parse(pub.getEncoded(), signedToken, FOOTER);
+        String token = Paseto.parse(keyPair2.getPublic().getEncoded(), signedToken, FOOTER);
         System.out.println("Signature is valid, token is: " + token);
     }
 

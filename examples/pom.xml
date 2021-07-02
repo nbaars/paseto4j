@@ -1,0 +1,25 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.nbaars</groupId>
+        <artifactId>paseto4j</artifactId>
+        <version>0.0.14-SNAPSHOT</version>
+    </parent>
+    <artifactId>paseto4j-examples</artifactId>
+    <packaging>jar</packaging>
+    <name>paseto4j-version1</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.nbaars</groupId>
+            <artifactId>paseto4j-version1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.nbaars</groupId>
+            <artifactId>paseto4j-version2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -57,6 +57,7 @@
     <modules>
         <module>version1</module>
         <module>version2</module>
+        <module>examples</module>
     </modules>
 
     <dependencies>
