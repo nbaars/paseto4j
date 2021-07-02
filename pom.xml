@@ -19,7 +19,13 @@
         <url>https://github.com/nbaars/paseto4j</url>
     </scm>
     <developers>
-        <developer>Nanne Baars</developer>
+        <developer>
+            <id>nbaars</id>
+            <name>Nanne Baars</name>
+            <email>nanneb@gmail.com</email>
+            <organizationUrl>https://github.com/nbaars</organizationUrl>
+            <timezone>Europe/Amsterdam</timezone>
+        </developer>
     </developers>
 
     <properties>
