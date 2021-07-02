@@ -29,7 +29,7 @@ jobs:
 
       - name: "Set labels for ${{ github.ref }}"
         run: |
-          echo "PASETO_TAG_VERSION=${{ steps.tag.outputs.tag }}" >> $GITHUB_ENV
+          echo "PASETO_MAVEN_VERSION=${{ steps.tag.outputs.tag }}" >> $GITHUB_ENV
 
       - name: Publish to Maven Central
         run: |
