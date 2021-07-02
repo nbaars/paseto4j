@@ -34,7 +34,6 @@ jobs:
       - name: Install gpg secret key
         run: |
           echo -n "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | base64 --decode | gpg --import
-          gpg --list-secret-keys -keyid-format LONG
 
       - name: Publish to Maven Central
         run: |
