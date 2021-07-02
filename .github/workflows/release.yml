@@ -57,4 +57,38 @@ jobs:
             - Update libaries which were marked by dependabot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  new_version:
+    name: Update to next snapshot version
+    needs: [ release ]
+    runs-on: ubuntu-latest
+    environment:
+      name: release
+    steps:
+      - uses: actions/checkout@v2.3.4
+        with:
+          ref: 'master'
 
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'zulu'
+          architecture: x64
+
+      - name: "Get tag name"
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+
+      - name: Set version to next snapshot
+        run: |
+          mvn versions:set -DnewVersion=${{ steps.tag.outputs.tag }}
+          mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT versions:commit
+
+      - name: Commit pom.xml
+        run: |
+          git checkout master
+          git config user.name Nanne Baars
+          git config user.email nanneb@gmail.com
+          find . -name 'pom.xml' | xargs git add
+          git commit -m "Updating to the new snapshot version"
+          git push origin master
