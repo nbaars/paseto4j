@@ -31,10 +31,19 @@ jobs:
         run: |
           echo "PASETO_MAVEN_VERSION=${{ steps.tag.outputs.tag }}" >> $GITHUB_ENV
 
+      - name: Install gpg secret key
+        run: |
+          echo -n "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | base64 --decode | gpg --import
+          gpg --list-secret-keys -keyid-format LONG
+
       - name: Publish to Maven Central
         run: |
           mvn versions:set -DnewVersion=${{ env.PASETO_MAVEN_VERSION }}
-          mvn --batch-mode clean deploy -DskipTests
+          mvn \
+            --batch-mode \
+            --no-transfer-progress \
+            -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} \
+            clean deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
