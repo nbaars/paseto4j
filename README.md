@@ -33,38 +33,36 @@ use Paseto in [an insecure way](https://auth0.com/blog/critical-vulnerabilities-
 
 # Installation
 
+There are two version available in Maven Central.
+
 ## Version 2
 
 Version 2 (the recommended version by the specification) is supported, this version depends on Libsodium
 see [here](https://download.libsodium.org/doc/installation/) on how to install this library. The Dockerfile 
 contains an example how to install it on a Linux based system.
 
-### Gradle
+Add the following dependency to your project:
 
-```groovy
-dependencies {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
-
-    compile('com.github.nbaars.paseto4j:paseto4j-version2:0.0.13')
-}
-
+```
+<!-- https://mvnrepository.com/artifact/io.github.nbaars/paseto4j-version2 -->
+<dependency>
+    <groupId>io.github.nbaars</groupId>
+    <artifactId>paseto4j-version2</artifactId>
+    <version>0.0.29</version>
+</dependency>
 ```
 
 ## Version 1 
 
-### Gradle
+Add the following dependency to your project:
 
-```groovy
-dependencies {
-    repositories {
-        maven { url 'https://jitpack.io' }
-        jcenter()
-    }
-
-    compile('com.github.nbaars.paseto4j:paseto4j-version1:0.0.13')
-}
+```
+<!-- https://mvnrepository.com/artifact/io.github.nbaars/paseto4j-version1 -->
+<dependency>
+    <groupId>io.github.nbaars</groupId>
+    <artifactId>paseto4j-version1</artifactId>
+    <version>0.0.29</version>
+</dependency>
 ```
 
 ## Usage
