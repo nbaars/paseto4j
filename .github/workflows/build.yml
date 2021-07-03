@@ -9,6 +9,11 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '.txt'
+      - '*.MD'
+      - '*.md'
+      - 'LICENSE'
 
 jobs:
   build:
