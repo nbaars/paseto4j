@@ -7,7 +7,7 @@
     </parent>
     <artifactId>paseto4j-examples</artifactId>
     <packaging>jar</packaging>
-    <name>paseto4j-version1</name>
+    <name>paseto4j-examples</name>
 
     <properties>
         <paseto4j.deploy.skip>true</paseto4j.deploy.skip>

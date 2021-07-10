@@ -24,11 +24,11 @@
 
 package org.paseto4j.version1;
 
-import com.google.common.base.VerifyException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.paseto4j.commons.PasetoException;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -37,19 +37,20 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.paseto4j.commons.HexToBytes.hexToBytes;
 
 class PasetoLocalTest {
 
     @ParameterizedTest
     @MethodSource("testVectors")
     void encryptTestVectors(String key, String nonce, String payload, String footer, String expectedToken) {
-        assertEquals(expectedToken, PasetoLocal.encrypt(Util.hexToBytes(key), Util.hexToBytes(nonce), payload, footer));
+        assertEquals(expectedToken, PasetoLocal.encrypt(hexToBytes(key), hexToBytes(nonce), payload, footer));
     }
 
     @ParameterizedTest
     @MethodSource("testVectors")
     void decryptTestVectors(String key, String nonce, String payload, String footer, String encryptedToken) {
-        assertEquals(payload, Paseto.decrypt(Util.hexToBytes(key), encryptedToken, footer));
+        assertEquals(payload, Paseto.decrypt(hexToBytes(key), encryptedToken, footer));
     }
 
     private static Stream<Arguments> testVectors() {
@@ -96,7 +97,7 @@ class PasetoLocalTest {
 
     @Test
     void normalUsage() {
-        byte[] key = Util.hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
+        byte[] key = hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
         String encryptedToken = PasetoLocal.encrypt(
                 key,
                 "{\"data\":\"this is a signed message\",\"exp\":\"2019-01-01T00:00:00+00:00\"}",
@@ -110,7 +111,7 @@ class PasetoLocalTest {
 
     @Test
     void wrongFooter() {
-        byte[] key = Util.hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
+        byte[] key = hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
         String encryptedToken = PasetoLocal.encrypt(
                 key,
                 "{\"data\":\"this is a signed message\",\"exp\":\"2019-01-01T00:00:00+00:00\"}",
@@ -118,7 +119,7 @@ class PasetoLocalTest {
         );
 
         assertThrows(
-                VerifyException.class, () -> Paseto.decrypt(key, encryptedToken, "Wrong footer"), "Wrong footer");
+                PasetoException.class, () -> Paseto.decrypt(key, encryptedToken, "Wrong footer"), "Wrong footer");
     }
 
     @Test
@@ -127,6 +128,7 @@ class PasetoLocalTest {
         keyGen.initialize(1024);
         KeyPair keyPair = keyGen.generateKeyPair();
 
-        assertThrows(VerifyException.class, () -> Paseto.sign(keyPair.getPrivate().getEncoded(), "msg", ""));
+        assertThrows(PasetoException.class, () -> Paseto.sign(keyPair.getPrivate().getEncoded(), "msg", ""));
     }
+
 }

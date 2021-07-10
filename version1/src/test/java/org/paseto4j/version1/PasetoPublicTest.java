@@ -34,6 +34,7 @@ import java.security.SignatureException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.paseto4j.commons.HexToBytes.hexToBytes;
 
 class PasetoPublicTest {
 
@@ -81,8 +82,8 @@ class PasetoPublicTest {
     @ParameterizedTest
     @MethodSource("testVectors")
     void encryptTestVectors(String privateKey, String publicKey, String payload, String footer) throws SignatureException {
-        String signedToken = Paseto.sign(Util.hexToBytes(privateKey), payload, footer);
-        assertEquals(payload, Paseto.parse(Util.hexToBytes(publicKey), signedToken, footer));
+        String signedToken = Paseto.sign(hexToBytes(privateKey), payload, footer);
+        assertEquals(payload, Paseto.parse(hexToBytes(publicKey), signedToken, footer));
     }
 
     private static Stream<Arguments> testVectors() {

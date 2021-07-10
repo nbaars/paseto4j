@@ -24,31 +24,32 @@
 
 package org.paseto4j.version2;
 
-import com.google.common.base.VerifyException;
-import org.apache.tuweni.bytes.Bytes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.paseto4j.commons.PasetoException;
 
+import java.security.SecureRandom;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.paseto4j.commons.HexToBytes.hexToBytes;
 
 class PasetoLocalTest {
 
     @ParameterizedTest
     @MethodSource("encrypt")
     void encrypt(String key, String nonce, String payload, String footer, String expectedToken) {
-        assertEquals(expectedToken, PasetoLocal.encrypt(Util.hexToBytes(key), Util.hexToBytes(nonce), payload, footer));
+        assertEquals(expectedToken, PasetoLocal.encrypt(hexToBytes(key), hexToBytes(nonce), payload, footer));
     }
 
     @ParameterizedTest
     @MethodSource("encrypt")
     void encryptAndDecryptShouldWork(String key, String nonce, String payload, String footer, String expectedToken) {
-        String encryptedToken = PasetoLocal.encrypt(Util.hexToBytes(key), Util.hexToBytes(nonce), payload, footer);
-        assertEquals(payload, Paseto.decrypt(Util.hexToBytes(key), encryptedToken, footer));
+        String encryptedToken = PasetoLocal.encrypt(hexToBytes(key), hexToBytes(nonce), payload, footer);
+        assertEquals(payload, Paseto.decrypt(hexToBytes(key), encryptedToken, footer));
     }
 
     private static Stream<Arguments> encrypt() {
@@ -90,25 +91,27 @@ class PasetoLocalTest {
     @Test
     void invalidTokenShouldGiveException() {
         assertThrows(
-                VerifyException.class,
-                () -> PasetoLocal.decrypt(Util.hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"), "v2.local.", ""));
+                PasetoException.class,
+                () -> PasetoLocal.decrypt(hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"), "v2.local.", ""));
     }
 
     @Test
     void encryptDecryptWrongFooter() {
-        byte[] key = Bytes.random(32).toArray();
+        byte[] key = new byte[32];
+        new SecureRandom().nextBytes(key);
         String encryptedToken = org.paseto4j.version2.Paseto.encrypt(
                 key,
                 "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}",
                 "Paragon Initiative Enterprises");
 
-        assertThrows(VerifyException.class, () -> Paseto.decrypt(key, encryptedToken, "Incorrect footer"));
+        assertThrows(PasetoException.class, () -> Paseto.decrypt(key, encryptedToken, "Incorrect footer"));
     }
 
     @Test
     void shouldThrowErrorWhenTokenDoesNotStartWithLocal() {
-        byte[] key = Bytes.random(32).toArray();
-        assertThrows(VerifyException.class, () -> PasetoLocal.decrypt(key, "test.sdfsfs.sdfsdf", ""));
+        byte[] key = new byte[32];
+        new SecureRandom().nextBytes(key);
+        assertThrows(PasetoException.class, () -> PasetoLocal.decrypt(key, "test.sdfsfs.sdfsdf", ""));
     }
 
 }
