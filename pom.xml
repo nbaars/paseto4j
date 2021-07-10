@@ -33,6 +33,8 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <bouncy.castle.version>1.69</bouncy.castle.version>
+
         <sonar.host.url>https://sonarcloud.io/</sonar.host.url>
         <sonar.organization>nbaars-github</sonar.organization>
         <sonar.projectKey>nbaars_paseto4j</sonar.projectKey>
@@ -43,6 +45,10 @@
         <sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
 
         <paseto4j.deploy.skip>false</paseto4j.deploy.skip>
+        <jnr-ffi.version>2.1.8</jnr-ffi.version>
+        <tuweni.version>2.0.0</tuweni.version>
+        <junit.version>5.2.0</junit.version>
+        <guava.version>30.0-jre</guava.version>
     </properties>
 
     <profiles>
@@ -124,6 +130,7 @@
     </distributionManagement>
 
     <modules>
+        <module>commons</module>
         <module>version1</module>
         <module>version2</module>
         <module>examples</module>
@@ -131,29 +138,28 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.squareup.okio</groupId>
-            <artifactId>okio</artifactId>
-            <version>1.14.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>30.0-jre</version>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.2.0</version>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.2.0</version>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.2.0</version>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

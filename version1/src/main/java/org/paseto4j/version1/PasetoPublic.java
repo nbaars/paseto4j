@@ -24,10 +24,9 @@
 
 package org.paseto4j.version1;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.base.Verify;
-import com.google.common.primitives.Bytes;
+import org.paseto4j.commons.ByteUtils;
+import org.paseto4j.commons.Conditions;
+import org.paseto4j.commons.PreAuthenticationEncoder;
 
 import java.security.MessageDigest;
 import java.security.SignatureException;
@@ -36,30 +35,33 @@ import java.util.Arrays;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Base64.getUrlEncoder;
+import static java.util.Objects.requireNonNull;
+import static org.paseto4j.commons.Conditions.isNullOrEmpty;
 
 class PasetoPublic {
 
     private static final String PUBLIC = "v1.public.";
 
-    private PasetoPublic() {}
+    private PasetoPublic() {
+    }
 
     /**
      * Sign the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
      */
     static String sign(byte[] privateKey, String payload, String footer) {
-        Preconditions.checkNotNull(privateKey);
-        Preconditions.checkNotNull(payload);
+        requireNonNull(privateKey);
+        requireNonNull(payload);
 
         //2
-        byte[] m2 = Util.pae(PUBLIC.getBytes(UTF_8), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
+        byte[] m2 = PreAuthenticationEncoder.encode(PUBLIC.getBytes(UTF_8), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
 
         //3
         byte[] signature = CryptoFunctions.signRsaPssSha384(privateKey, m2);
 
         //4
-        String signedToken = PUBLIC + getUrlEncoder().withoutPadding().encodeToString(Bytes.concat(payload.getBytes(UTF_8), signature));
+        String signedToken = PUBLIC + getUrlEncoder().withoutPadding().encodeToString(ByteUtils.concat(payload.getBytes(UTF_8), signature));
 
-        if (!Strings.isNullOrEmpty(footer)) {
+        if (!isNullOrEmpty(footer)) {
             signedToken = signedToken + "." + getUrlEncoder().withoutPadding().encodeToString(footer.getBytes(UTF_8));
         }
         return signedToken;
@@ -69,18 +71,18 @@ class PasetoPublic {
      * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
      */
     static String parse(byte[] publicKey, String signedMessage, String footer) throws SignatureException {
-        Preconditions.checkNotNull(publicKey);
-        Preconditions.checkNotNull(signedMessage);
+        requireNonNull(publicKey);
+        requireNonNull(signedMessage);
 
         String[] tokenParts = signedMessage.split("\\.");
 
         //1
-        if (!Strings.isNullOrEmpty(footer)) {
-            Verify.verify(MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)), "footer does not match");
+        if (!isNullOrEmpty(footer)) {
+            Conditions.verify(MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)), "footer does not match");
         }
 
         //2
-        Verify.verify(signedMessage.startsWith(PUBLIC), "Token should start with " + PUBLIC);
+        Conditions.verify(signedMessage.startsWith(PUBLIC), "Token should start with " + PUBLIC);
 
         //3
         byte[] sm = getUrlDecoder().decode(tokenParts[2]);
@@ -88,7 +90,7 @@ class PasetoPublic {
         byte[] message = Arrays.copyOfRange(sm, 0, sm.length - 256);
 
         //4
-        byte[] m2 = Util.pae(PUBLIC.getBytes(UTF_8), message, footer.getBytes(UTF_8));
+        byte[] m2 = PreAuthenticationEncoder.encode(PUBLIC.getBytes(UTF_8), message, footer.getBytes(UTF_8));
 
         //5
         verify(publicKey, m2, signature);

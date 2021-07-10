@@ -16,19 +16,27 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.github.nbaars</groupId>
+            <artifactId>paseto4j-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.69</version>
+            <version>${bouncy.castle.version}</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.69</version>
+            <version>${bouncy.castle.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-bytes</artifactId>
-            <version>2.0.0</version>
+            <groupId>io.github.nbaars</groupId>
+            <artifactId>paseto4j-commons</artifactId>
+            <version>${project.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

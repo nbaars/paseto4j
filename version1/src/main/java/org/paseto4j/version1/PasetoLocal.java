@@ -24,20 +24,21 @@
 
 package org.paseto4j.version1;
 
-import com.google.common.primitives.Bytes;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.paseto4j.commons.ByteUtils;
+import org.paseto4j.commons.PreAuthenticationEncoder;
 
+import java.security.MessageDigest;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Base64;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Verify.verify;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Base64.getUrlEncoder;
+import static java.util.Objects.requireNonNull;
+import static org.paseto4j.commons.Conditions.isNullOrEmpty;
+import static org.paseto4j.commons.Conditions.verify;
 import static org.paseto4j.version1.CryptoFunctions.*;
 
 class PasetoLocal {
@@ -48,7 +49,8 @@ class PasetoLocal {
 
     private static final String LOCAL = "v1.local.";
 
-    private PasetoLocal() {}
+    private PasetoLocal() {
+    }
 
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#encrypt
@@ -61,9 +63,9 @@ class PasetoLocal {
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#encrypt
      */
     static String encrypt(byte[] key, byte[] randomKey, String payload, String footer) {
-        checkNotNull(key);
-        checkNotNull(payload);
-        checkArgument(key.length == 32, "key should be 32 bytes");
+        requireNonNull(key);
+        requireNonNull(payload);
+        verify(key.length == 32, "key should be 32 bytes");
 
         //3
         byte[] nonce = getNonce(payload.getBytes(UTF_8), randomKey);
@@ -76,13 +78,13 @@ class PasetoLocal {
         byte[] cipherText = encryptAesCtr(ek, Arrays.copyOfRange(nonce, 16, 32), payload.getBytes(UTF_8));
 
         //6
-        byte[] preAuth = Util.pae(LOCAL.getBytes(UTF_8), nonce, cipherText, footer.getBytes(UTF_8));
+        byte[] preAuth = PreAuthenticationEncoder.encode(LOCAL.getBytes(UTF_8), nonce, cipherText, footer.getBytes(UTF_8));
 
         //7
         byte[] t = hmac384(ak, preAuth);
 
         //8
-        String signedToken = LOCAL + getUrlEncoder().withoutPadding().encodeToString(Bytes.concat(nonce, cipherText, t));
+        String signedToken = LOCAL + getUrlEncoder().withoutPadding().encodeToString(ByteUtils.concat(nonce, cipherText, t));
 
         if (!isNullOrEmpty(footer)) {
             signedToken = signedToken + "." + Base64.getUrlEncoder().withoutPadding().encodeToString(footer.getBytes(UTF_8));
@@ -106,9 +108,9 @@ class PasetoLocal {
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#decrypt
      */
     static String decrypt(byte[] key, String token, String footer) {
-        checkNotNull(key);
-        checkNotNull(token);
-        checkArgument(key.length == 32, "Secret key should be 32 bytes");
+        requireNonNull(key);
+        requireNonNull(token);
+        verify(key.length == 32, "Secret key should be 32 bytes");
 
         String[] tokenParts = token.split("\\.");
         verify(tokenParts.length == 3 || tokenParts.length == 4, "Token should contain at least 3 parts");
@@ -132,13 +134,15 @@ class PasetoLocal {
         byte[] ak = authenticationKey(key, nonce);
 
         //5
-        byte[] preAuth = Util.pae(LOCAL.getBytes(UTF_8), nonce, c, footer.getBytes(UTF_8));
+        byte[] preAuth = PreAuthenticationEncoder.encode(LOCAL.getBytes(UTF_8), nonce, c, footer.getBytes(UTF_8));
 
         //6
         byte[] t2 = hmac384(ak, preAuth);
 
         //7
-        verify(Arrays.equals(t, t2));
+        if (!MessageDigest.isEqual(t, t2)) {
+            throw new IllegalStateException("HMAC verification failed");
+        }
 
         //8
         byte[] message = decryptAesCtr(ek, Arrays.copyOfRange(nonce, 16, 32), c);
