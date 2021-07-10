@@ -68,3 +68,13 @@ Add the following dependency to your project:
 ## Usage
 
 For usage see the `examples` project which shows how to use Paseto4j in action.
+
+
+# Development
+
+`paseto-version2` needs Libsodium to be present, to avoid installing it on your local machine, you can use the following command to build it locally:
+
+```shell
+docker run -v "${HOME}"/.m2:/root/.m2 -v "${PWD}":/workspace paseto4j ./mvnw install     
+ ```
+
