@@ -22,14 +22,24 @@
  * SOFTWARE.
  */
 
-package org.paseto4j.version2;
+package org.paseto4j.commons;
 
-import okio.Buffer;
-import org.apache.tuweni.bytes.Bytes;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
-public class Util {
+public class PreAuthenticationEncoder {
 
-    private Util() {
+    private PreAuthenticationEncoder() {
+    }
+
+    private static byte[] toLE64(int n) {
+        long unsigned = Integer.toUnsignedLong(n);
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        buffer.putLong(unsigned);
+        return buffer.array();
     }
 
     /**
@@ -39,31 +49,17 @@ public class Util {
      *
      * @param pieces string[] of the pieces
      */
-    public static String pae(String... pieces) {
-        try (Buffer accumulator = new Buffer()) {
-            accumulator.writeLongLe(pieces.length);
-
-            for (String piece : pieces) {
-                accumulator.writeLongLe(piece.length());
-                accumulator.writeUtf8(piece);
-            }
-            return accumulator.snapshot().hex();
-        }
-    }
-
-    public static byte[] pae(byte[]... pieces) {
-        try (Buffer accumulator = new Buffer()) {
-            accumulator.writeLongLe(pieces.length);
+    public static byte[] encode(byte[]... pieces) {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
+            bos.write(toLE64(pieces.length));
 
             for (byte[] piece : pieces) {
-                accumulator.writeLongLe(piece.length);
-                accumulator.write(piece);
+                bos.write(toLE64(piece.length));
+                bos.write(piece);
             }
-            return accumulator.snapshot().toByteArray();
+            return bos.toByteArray();
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to perform pre-authentication encoding");
         }
-    }
-
-    public static byte[] hexToBytes(String hex) {
-        return Bytes.fromHexString(hex).toArray();
     }
 }
