@@ -32,6 +32,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.paseto4j.commons.PasetoException;
+import org.paseto4j.commons.PrivateKey;
+import org.paseto4j.commons.PublicKey;
 
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
@@ -40,6 +42,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.paseto4j.commons.HexToBytes.hexToBytes;
+import static org.paseto4j.commons.Version.V2;
 
 class PasetoPublicTest {
 
@@ -47,7 +50,7 @@ class PasetoPublicTest {
     @MethodSource
     void sign(String payload, String footer, String expectedToken) {
         byte[] privateKey = hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a37741eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
-        assertEquals(expectedToken, org.paseto4j.version2.Paseto.sign(privateKey, payload, footer));
+        assertEquals(expectedToken, org.paseto4j.version2.Paseto.sign(new PrivateKey(privateKey, V2), payload, footer));
     }
 
     private static Stream<Arguments> sign() {
@@ -74,12 +77,12 @@ class PasetoPublicTest {
     void verify(String payload, String footer, String signedMessage) throws SignatureException {
         byte[] publicKey = hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
-        assertEquals(payload, org.paseto4j.version2.Paseto.parse(publicKey, signedMessage, footer));
+        assertEquals(payload, org.paseto4j.version2.Paseto.parse(new PublicKey(publicKey, V2), signedMessage, footer));
     }
 
     @Test
     void invalidSignature() {
-        byte[] publicKey = hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
+        PublicKey publicKey = new PublicKey(hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2"), V2);
 
         assertThrows(SignatureException.class, () ->
                 Paseto.parse(publicKey, "v2.public.RnJhbmsgRGVuaXMgcm9ja3O7MPuu90WKNyvBUUhAGFmi4PiPOr2bN2ytUSU-QWlj8eNefki2MubssfN1b8figynnY0WusRPwIQ-o0HSZOS0A.Q3VvbiBBbHBpbnVz", "Cuon Alpinus"));
@@ -89,7 +92,7 @@ class PasetoPublicTest {
     void signTokenWithSeed() {
         byte[] seed = hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a3774");
         Signature.KeyPair keyPair = Signature.KeyPair.fromSeed(Signature.Seed.fromBytes(seed));
-        byte[] privateKey = keyPair.secretKey().bytesArray();
+        PrivateKey privateKey = new PrivateKey(keyPair.secretKey().bytesArray(), V2);
         String token = PasetoPublic.sign(
                 privateKey,
                 "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}",
@@ -99,12 +102,12 @@ class PasetoPublicTest {
 
     @Test
     void keyTooSmall() {
-        Assertions.assertThrows(PasetoException.class, () -> PasetoPublic.sign(new byte[]{'0'}, " test", "test"));
+        Assertions.assertThrows(PasetoException.class, () -> PasetoPublic.sign(new PrivateKey(new byte[]{'0'}, V2), " test", "test"));
     }
 
     @Test
     void keyTooLarge() {
-        byte[] key = "b4cbfb43df4ce210727d953e4a713333307fa19bb7d9f85041438d9e11b942a3774".getBytes(StandardCharsets.UTF_8);
+        PrivateKey key = new PrivateKey("b4cbfb43df4ce210727d953e4a713333307fa19bb7d9f85041438d9e11b942a3774".getBytes(StandardCharsets.UTF_8), V2);
         Assertions.assertThrows(PasetoException.class, () -> PasetoPublic.sign(key, " test", "test"));
     }
 }

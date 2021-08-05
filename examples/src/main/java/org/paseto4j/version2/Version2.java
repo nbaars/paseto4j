@@ -2,6 +2,9 @@ package org.paseto4j.version2;
 
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.crypto.sodium.Signature;
+import org.paseto4j.commons.PrivateKey;
+import org.paseto4j.commons.PublicKey;
+import org.paseto4j.commons.Version;
 
 import java.security.SignatureException;
 
@@ -14,8 +17,8 @@ public class Version2 {
     private void signToken() throws SignatureException {
         var seed = Bytes.random(32).toArray();
         var keyPair = Signature.KeyPair.fromSeed(Signature.Seed.fromBytes(seed));
-        var publicKey = new byte[32];
-        var privateKey = keyPair.secretKey().bytesArray();
+        var publicKey = new PublicKey(keyPair.publicKey().bytesArray(), Version.V2);
+        var privateKey = new PrivateKey(keyPair.secretKey().bytesArray(), Version.V2);
 
         String signedToken = Paseto.sign(
                 privateKey,

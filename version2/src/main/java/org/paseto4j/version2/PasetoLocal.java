@@ -27,7 +27,7 @@ package org.paseto4j.version2;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.crypto.sodium.GenericHash;
 import org.apache.tuweni.crypto.sodium.XChaCha20Poly1305;
-import org.paseto4j.commons.PreAuthenticationEncoder;
+import org.paseto4j.commons.*;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -50,17 +50,18 @@ class PasetoLocal {
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt
      */
-    static String encrypt(byte[] key, String payload, String footer) {
+    static String encrypt(SecretKey key, String payload, String footer) {
         return encrypt(key, Bytes.random(XChaCha20Poly1305.Nonce.length()).toArray(), payload, footer);
     }
 
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt
      */
-    static String encrypt(byte[] key, byte[] randomKey, String payload, String footer) {
+    static String encrypt(SecretKey key, byte[] randomKey, String payload, String footer) {
         requireNonNull(key);
         requireNonNull(payload);
-        verify(key.length == 32, "key should be 32 bytes");
+        verify(key.isValidFor(Version.V2, Purpose.PURPOSE_LOCAL), "Key is not valid for purpose and version");
+        verify(key.hasLength(32), "key should be 32 bytes");
 
         //3
         byte[] nonce = GenericHash.hash(
@@ -76,7 +77,7 @@ class PasetoLocal {
         byte[] cipherText = XChaCha20Poly1305.encrypt(
                 payload.getBytes(UTF_8),
                 preAuth,
-                XChaCha20Poly1305.Key.fromBytes(key),
+                XChaCha20Poly1305.Key.fromBytes(key.material),
                 XChaCha20Poly1305.Nonce.fromBytes(nonce));
 
         //6
@@ -91,10 +92,11 @@ class PasetoLocal {
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#decrypt
      */
-    static String decrypt(byte[] key, String token, String footer) {
+    static String decrypt(SecretKey key, String token, String footer) {
         requireNonNull(key);
         requireNonNull(token);
-        verify(key.length == 32, "Public key should be 32 bytes");
+
+        verify(key.isValidFor(Version.V2, Purpose.PURPOSE_LOCAL), "Key is not valid for purpose and version");
 
         String[] tokenParts = token.split("\\.");
         verify(tokenParts.length == 3 || tokenParts.length == 4, "Token should contain at least 3 parts");
@@ -119,7 +121,7 @@ class PasetoLocal {
         byte[] message = XChaCha20Poly1305.decrypt(
                 encryptedMessage,
                 preAuth,
-                XChaCha20Poly1305.Key.fromBytes(key),
+                XChaCha20Poly1305.Key.fromBytes(key.material),
                 XChaCha20Poly1305.Nonce.fromBytes(nonce));
 
         return new String(message, UTF_8);
