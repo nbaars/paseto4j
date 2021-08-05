@@ -25,8 +25,7 @@
 package org.paseto4j.version1;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.paseto4j.commons.ByteUtils;
-import org.paseto4j.commons.PreAuthenticationEncoder;
+import org.paseto4j.commons.*;
 
 import java.security.MessageDigest;
 import java.security.Security;
@@ -55,17 +54,17 @@ class PasetoLocal {
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#encrypt
      */
-    public static String encrypt(byte[] key, String payload, String footer) {
+    public static String encrypt(SecretKey key, String payload, String footer) {
         return encrypt(key, randomBytes(), payload, footer);
     }
 
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#encrypt
      */
-    static String encrypt(byte[] key, byte[] randomKey, String payload, String footer) {
+    static String encrypt(SecretKey key, byte[] randomKey, String payload, String footer) {
         requireNonNull(key);
         requireNonNull(payload);
-        verify(key.length == 32, "key should be 32 bytes");
+        verify(key.isValidFor(Version.V1, Purpose.PURPOSE_LOCAL), "Key is not valid for purpose and version");
 
         //3
         byte[] nonce = getNonce(payload.getBytes(UTF_8), randomKey);
@@ -96,21 +95,21 @@ class PasetoLocal {
         return Arrays.copyOfRange(CryptoFunctions.hmac384(randomKey, payload), 0, 32);
     }
 
-    private static byte[] encryptionKey(byte[] key, byte[] nonce) {
-        return hkdfSha384(key, Arrays.copyOfRange(nonce, 0, 16), "paseto-encryption-key".getBytes(UTF_8));
+    private static byte[] encryptionKey(SecretKey key, byte[] nonce) {
+        return hkdfSha384(key.material, Arrays.copyOfRange(nonce, 0, 16), "paseto-encryption-key".getBytes(UTF_8));
     }
 
-    private static byte[] authenticationKey(byte[] key, byte[] nonce) {
-        return hkdfSha384(key, Arrays.copyOfRange(nonce, 0, 16), "paseto-auth-key-for-aead".getBytes(UTF_8));
+    private static byte[] authenticationKey(SecretKey key, byte[] nonce) {
+        return hkdfSha384(key.material, Arrays.copyOfRange(nonce, 0, 16), "paseto-auth-key-for-aead".getBytes(UTF_8));
     }
 
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#decrypt
      */
-    static String decrypt(byte[] key, String token, String footer) {
+    static String decrypt(SecretKey key, String token, String footer) {
         requireNonNull(key);
         requireNonNull(token);
-        verify(key.length == 32, "Secret key should be 32 bytes");
+        verify(key.isValidFor(Version.V1, Purpose.PURPOSE_LOCAL), "Key is not valid for purpose and version");
 
         String[] tokenParts = token.split("\\.");
         verify(tokenParts.length == 3 || tokenParts.length == 4, "Token should contain at least 3 parts");

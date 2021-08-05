@@ -25,16 +25,21 @@
 package org.paseto4j.version1;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.paseto4j.commons.PasetoException;
+import org.paseto4j.commons.PrivateKey;
+import org.paseto4j.commons.PublicKey;
 
-import java.security.Security;
-import java.security.SignatureException;
+import java.security.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.paseto4j.commons.HexToBytes.hexToBytes;
+import static org.paseto4j.commons.Version.V1;
 
 class PasetoPublicTest {
 
@@ -82,8 +87,8 @@ class PasetoPublicTest {
     @ParameterizedTest
     @MethodSource("testVectors")
     void encryptTestVectors(String privateKey, String publicKey, String payload, String footer) throws SignatureException {
-        String signedToken = Paseto.sign(hexToBytes(privateKey), payload, footer);
-        assertEquals(payload, Paseto.parse(hexToBytes(publicKey), signedToken, footer));
+        String signedToken = Paseto.sign(new PrivateKey(hexToBytes(privateKey), V1), payload, footer);
+        assertEquals(payload, Paseto.parse(new PublicKey(hexToBytes(publicKey), V1), signedToken, footer));
     }
 
     private static Stream<Arguments> testVectors() {
@@ -97,5 +102,14 @@ class PasetoPublicTest {
                         "{\"data\":\"this is a signed message\",\"exp\":\"2019-01-01T00:00:00+00:00\"}",
                         "{\"kid\":\"dYkISylxQeecEcHELfzF88UZrwbLolNiCdpzUHGw9Uqn\"}"
                 ));
+    }
+
+    @Test
+    void keySizeShouldBe2048() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(1024);
+        KeyPair keyPair = keyGen.generateKeyPair();
+
+        assertThrows(PasetoException.class, () -> Paseto.sign(new PrivateKey(keyPair.getPrivate().getEncoded(), V1), "msg", ""));
     }
 }

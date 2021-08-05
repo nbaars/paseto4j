@@ -24,6 +24,10 @@
 
 package org.paseto4j.version2;
 
+import org.paseto4j.commons.PrivateKey;
+import org.paseto4j.commons.PublicKey;
+import org.paseto4j.commons.SecretKey;
+
 import java.security.SignatureException;
 
 public class Paseto {
@@ -33,28 +37,28 @@ public class Paseto {
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt
      */
-    public static String encrypt(byte[] key, String payload, String footer) {
+    public static String encrypt(SecretKey key, String payload, String footer) {
         return PasetoLocal.encrypt(key, payload, footer);
     }
 
     /**
      * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#decrypt
      */
-    public static String decrypt(byte[] key, String signedMessage, String footer) {
+    public static String decrypt(SecretKey key, String signedMessage, String footer) {
         return PasetoLocal.decrypt(key, signedMessage, footer);
     }
 
     /**
      * Sign the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#sign
      */
-    public static String sign(byte[] privateKey, String payload, String footer) {
+    public static String sign(PrivateKey privateKey, String payload, String footer) {
         return PasetoPublic.sign(privateKey, payload, footer);
     }
 
     /**
      * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#verify
      */
-    public static String parse(byte[] publicKey, String signedMessage, String footer) throws SignatureException {
+    public static String parse(PublicKey publicKey, String signedMessage, String footer) throws SignatureException {
         return PasetoPublic.parse(publicKey, signedMessage, footer);
     }
 }
