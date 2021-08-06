@@ -116,7 +116,7 @@ class PasetoLocal {
 
         //1
         if (!isNullOrEmpty(footer)) {
-            verify(Arrays.equals(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)), "footer does not match");
+            verify(MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)), "footer does not match");
         }
 
         //2
