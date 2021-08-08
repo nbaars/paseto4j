@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.nbaars</groupId>
     <artifactId>paseto4j</artifactId>
-    <version>0.0.31-SNAPSHOT</version>
+    <version>0.0.33-SNAPSHOT</version>
     <description>Library for Paseto in Java, see https://github.com/paragonie/paseto for more information</description>
     <packaging>pom</packaging>
     <name>paseto4j-parent</name>
