@@ -50,7 +50,7 @@ class PasetoPublic {
     static String sign(PrivateKey privateKey, String payload, String footer) {
         requireNonNull(privateKey);
         requireNonNull(payload);
-        Conditions.verify(privateKey.isValidFor(Version.V1, Purpose.PURPOSE_PUBLIC), "Key is not valid for purpose and version");
+        verify(privateKey.isValidFor(Version.V1, Purpose.PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
         //2
         byte[] m2 = PreAuthenticationEncoder.encode(PUBLIC.getBytes(UTF_8), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
@@ -73,17 +73,17 @@ class PasetoPublic {
     static String parse(PublicKey publicKey, String signedMessage, String footer) throws SignatureException {
         requireNonNull(publicKey);
         requireNonNull(signedMessage);
-        Conditions.verify(publicKey.isValidFor(Version.V1, Purpose.PURPOSE_PUBLIC), "Key is not valid for purpose and version");
+        verify(publicKey.isValidFor(Version.V1, Purpose.PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
         String[] tokenParts = signedMessage.split("\\.");
 
         //1
         if (!isNullOrEmpty(footer)) {
-            Conditions.verify(MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)), "footer does not match");
+            verify(MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)), "footer does not match");
         }
 
         //2
-        Conditions.verify(signedMessage.startsWith(PUBLIC), "Token should start with " + PUBLIC);
+        verify(signedMessage.startsWith(PUBLIC), "Token should start with " + PUBLIC);
 
         //3
         byte[] sm = getUrlDecoder().decode(tokenParts[2]);
@@ -94,12 +94,12 @@ class PasetoPublic {
         byte[] m2 = PreAuthenticationEncoder.encode(PUBLIC.getBytes(UTF_8), message, footer.getBytes(UTF_8));
 
         //5
-        verify(publicKey, m2, signature);
+        verifySignature(publicKey, m2, signature);
 
         return new String(message, UTF_8);
     }
 
-    private static void verify(PublicKey key, byte[] m2, byte[] signature) throws SignatureException {
+    private static void verifySignature(PublicKey key, byte[] m2, byte[] signature) throws SignatureException {
         if (!CryptoFunctions.verifyRsaPssSha384(key.material, m2, signature)) {
             throw new SignatureException("Invalid signature");
         }
