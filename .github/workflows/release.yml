@@ -65,7 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
         with:
-          ref: 'master'
+          ref: 'main'
 
       - name: Set up JDK 11
         uses: actions/setup-java@v2
@@ -85,9 +85,9 @@ jobs:
 
       - name: Commit pom.xml
         run: |
-          git checkout master
+          git checkout main 
           git config user.name Nanne Baars
           git config user.email nanneb@gmail.com
           find . -name 'pom.xml' | xargs git add
           git commit -m "Updating to the new snapshot version"
-          git push origin master
+          git push origin main 
