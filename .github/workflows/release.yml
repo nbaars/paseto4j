@@ -37,7 +37,7 @@ jobs:
 
       - name: Publish to Maven Central
         run: |
-          mvn versions:set -DnewVersion=${{ env.PASETO_MAVEN_VERSION }}
+          mvn --no-transfer-progress versions:set -DnewVersion=${{ env.PASETO_MAVEN_VERSION }}
           mvn --batch-mode --no-transfer-progress -P release -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} clean deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -80,8 +80,8 @@ jobs:
 
       - name: Set version to next snapshot
         run: |
-          mvn versions:set -DnewVersion=${{ steps.tag.outputs.tag }}
-          mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT versions:commit
+          mvn --no-transfer-progress versions:set -DnewVersion=${{ steps.tag.outputs.tag }}
+          mvn --no-transfer-progress build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT versions:commit
 
       - name: Commit pom.xml
         run: |
