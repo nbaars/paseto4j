@@ -17,7 +17,7 @@ jobs:
         uses: dawidd6/action-get-tag@v1
 
       - name: Setup Maven Central Repository
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: 11
@@ -68,7 +68,7 @@ jobs:
           ref: 'main'
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'zulu'
