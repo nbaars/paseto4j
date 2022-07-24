@@ -69,6 +69,14 @@ Add the following dependency to your project:
 
 For usage see the `examples` project which shows how to use Paseto4j in action.
 
+# Differences with other Java Paseto implementations
+
+Why use this library over the other Java implementations?
+
+- No dependency on any JSON library. It is a lightweight library supporting the basic Paseto operations. The rest is up-to-you.
+- Easy to use API.
+- Full security audited performed by Paragon Initiative Enterprises
+- Available on Maven Central
 
 # Development
 
