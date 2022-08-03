@@ -133,6 +133,7 @@
         <module>commons</module>
         <module>version1</module>
         <module>version2</module>
+        <module>version3</module>
         <module>examples</module>
     </modules>
 
@@ -168,7 +169,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.0.0-M7</version>
             </plugin>
 
             <plugin>

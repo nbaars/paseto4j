@@ -22,4 +22,15 @@ public class ByteUtils {
 
         return result;
     }
+
+    public static Pair<byte[]> split(byte[] array, int length) {
+        var splitLength = Math.min(array.length, length);
+        var r1 = new byte[splitLength];
+        var r2 = new byte[array.length - splitLength];
+        System.arraycopy(array, 0, r1, 0, splitLength);
+        System.arraycopy(array, splitLength , r2, 0, array.length - splitLength);
+
+        return new Pair<>(r1, r2);
+    }
+
 }
