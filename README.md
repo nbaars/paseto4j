@@ -82,6 +82,9 @@ Why use this library over the other Java implementations?
 `paseto-version2` needs Libsodium to be present, to avoid installing it on your local machine, you can use the following command to build it locally:
 
 ```shell
+docker build -t paseto4j .
 docker run -v "${HOME}"/.m2:/root/.m2 -v "${PWD}":/workspace paseto4j ./mvnw install     
  ```
+
+The first command is only necessary ones, for building the Maven image.
 
