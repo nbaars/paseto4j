@@ -56,4 +56,24 @@ class ByteUtilsTest {
 
         Assertions.assertArrayEquals(new byte[]{}, result);
     }
+
+    @Test
+    void splitEqual() {
+        var b = new byte[]{'a', 'b'};
+
+        var result = ByteUtils.split(b, 1);
+
+        Assertions.assertArrayEquals(new byte[]{'a'}, result.first);
+        Assertions.assertArrayEquals(new byte[]{'b'}, result.second);
+    }
+
+    @Test
+    void splitEmpty() {
+        var b = new byte[]{};
+
+        var result = ByteUtils.split(b, 1);
+
+        Assertions.assertEquals(0, result.first.length);
+        Assertions.assertEquals(0, result.first.length);
+    }
 }
