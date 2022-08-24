@@ -60,14 +60,42 @@ public class Paseto {
     /**
      * Sign the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
      */
+    public static String sign(PrivateKey privateKey, String payload) {
+        return sign(privateKey, payload, "");
+    }
+
+    /**
+     * Sign the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
+     */
     public static String sign(PrivateKey privateKey, String payload, String footer) {
-        return PasetoPublic.sign(privateKey, payload, footer);
+        return sign(privateKey, payload, footer, "");
+    }
+
+    /**
+     * Sign the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
+     */
+    public static String sign(PrivateKey privateKey, String payload, String footer, String implicitAssertion) {
+        return PasetoPublic.sign(privateKey, payload, footer, implicitAssertion);
+    }
+
+    /**
+     * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
+     */
+    public static String parse(PublicKey publicKey, String signedMessage) throws SignatureException {
+        return parse(publicKey, signedMessage, "");
     }
 
     /**
      * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
      */
     public static String parse(PublicKey publicKey, String signedMessage, String footer) throws SignatureException {
-        return PasetoPublic.parse(publicKey, signedMessage, footer);
+        return parse(publicKey, signedMessage, footer, "");
+    }
+
+    /**
+     * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
+     */
+    public static String parse(PublicKey publicKey, String signedMessage, String footer, String implicitAssertion) throws SignatureException {
+        return PasetoPublic.parse(publicKey, signedMessage, footer, implicitAssertion);
     }
 }

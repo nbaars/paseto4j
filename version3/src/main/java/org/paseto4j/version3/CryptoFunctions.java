@@ -24,18 +24,16 @@
 
 package org.paseto4j.version3;
 
-import org.bouncycastle.crypto.CryptoException;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SHA384Digest;
-import org.bouncycastle.crypto.engines.RSAEngine;
 import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
 import org.bouncycastle.crypto.params.HKDFParameters;
-import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
-import org.bouncycastle.crypto.signers.PSSSigner;
-import org.bouncycastle.crypto.util.PrivateKeyFactory;
-import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.paseto4j.commons.Conditions;
+import org.paseto4j.commons.ByteUtils;
+import org.paseto4j.commons.Pair;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
@@ -43,11 +41,21 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
-import java.security.*;
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.Signature;
+import java.util.Arrays;
 
 public class CryptoFunctions {
 
-    private CryptoFunctions() {}
+    private CryptoFunctions() {
+    }
 
     /**
      * @return 32 bytes of random data
@@ -135,32 +143,48 @@ public class CryptoFunctions {
         return out;
     }
 
-    public static byte[] signRsaPssSha384(byte[] privateKey, byte[] msg) {
-        PSSSigner signer = new PSSSigner(new RSAEngine(), new SHA384Digest(), new SHA384Digest(), new SHA384Digest().getDigestSize());
+    public static byte[] toUnsignedByteArray(BigInteger value) {
+        byte[] signedValue = value.toByteArray();
+        if (signedValue[0] != 0x00) {
+            return signedValue;
+        }
+        return Arrays.copyOfRange(signedValue, 1, signedValue.length);
+    }
 
+    public static byte[] sign(PrivateKey privateKey, byte[] msg) {
         try {
-            RSAPrivateCrtKeyParameters key = (RSAPrivateCrtKeyParameters) PrivateKeyFactory.createKey(privateKey);
-            Conditions.verify(key.getModulus().bitLength() == 2048, "RSA 2048 should be used");
+            Signature signature = Signature.getInstance("SHA384withECDDSA", "BC");
+            signature.initSign(privateKey);
+            signature.update(msg);
+            var sig = signature.sign(); //https://crypto.stackexchange.com/questions/33095/shouldnt-a-signature-using-ecdsa-be-exactly-96-bytes-not-102-or-103
 
-            signer.init(true, key);
-            signer.update(msg, 0, msg.length);
-            return signer.generateSignature();
-        } catch (IOException | CryptoException e) {
+            ASN1Sequence seq = ASN1Sequence.getInstance(sig);
+            ASN1Integer r = (ASN1Integer) seq.getObjectAt(0);
+            ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
+
+            return ByteUtils.concat(toUnsignedByteArray(r.getValue()), toUnsignedByteArray(s.getValue()));
+
+        } catch (GeneralSecurityException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public static boolean verifyRsaPssSha384(byte[] publicKey, byte[] msg, byte[] signature) {
-        PSSSigner signer = new PSSSigner(new RSAEngine(), new SHA384Digest(), new SHA384Digest(), new SHA384Digest().getDigestSize());
-
+    public static boolean verify(PublicKey publicKey, byte[] msg, byte[] signature) {
         try {
-            signer.init(false, PublicKeyFactory.createKey(publicKey));
-            signer.update(msg, 0, msg.length);
-            return signer.verifySignature(signature);
-        } catch (IOException e) {
+            Signature verifier = Signature.getInstance("SHA384withECDDSA", "BC");
+            verifier.initVerify(publicKey);
+            verifier.update(msg);
+
+            //Convert the signature see `sign`
+            Pair<byte[]> pair = ByteUtils.split(signature, 48);
+            DERSequence seq = new DERSequence(new ASN1Integer[]{
+                    new ASN1Integer(new BigInteger(1, pair.first)),
+                    new ASN1Integer(new BigInteger(1, pair.second))
+            });
+
+            return verifier.verify(seq.getEncoded());
+        } catch (IOException | GeneralSecurityException e) {
             throw new IllegalStateException(e);
         }
     }
-
-
 }
