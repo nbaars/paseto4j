@@ -83,7 +83,7 @@ Why use this library over the other Java implementations?
 
 ```shell
 docker build -t paseto4j .
-docker run -v "${HOME}"/.m2:/root/.m2 -v "${PWD}":/workspace paseto4j ./mvnw install     
+docker run -v "${HOME}"/.m2:/root/.m2 -v "${PWD}":/workspace paseto4j ./mvnw verify     
  ```
 
 The first command is only necessary ones, for building the Maven image.
