@@ -26,9 +26,9 @@ public class TestVectors {
         @JsonProperty("secret-key")
         private String secretKey;
         @JsonProperty("secret-key-pem")
-        private String secretKeyPem;
+        public String secretKeyPem;
         @JsonProperty("public-key-pem")
-        private String publicKeyPem;
+        public String publicKeyPem;
 
     }
 

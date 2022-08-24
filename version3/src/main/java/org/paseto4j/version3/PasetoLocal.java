@@ -24,13 +24,17 @@
 
 package org.paseto4j.version3;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.paseto4j.commons.*;
-
 import java.security.MessageDigest;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Base64;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.paseto4j.commons.ByteUtils;
+import org.paseto4j.commons.Pair;
+import org.paseto4j.commons.PreAuthenticationEncoder;
+import org.paseto4j.commons.Purpose;
+import org.paseto4j.commons.SecretKey;
+import org.paseto4j.commons.Version;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
@@ -38,7 +42,11 @@ import static java.util.Base64.getUrlEncoder;
 import static java.util.Objects.requireNonNull;
 import static org.paseto4j.commons.Conditions.isNullOrEmpty;
 import static org.paseto4j.commons.Conditions.verify;
-import static org.paseto4j.version3.CryptoFunctions.*;
+import static org.paseto4j.version3.CryptoFunctions.decryptAesCtr;
+import static org.paseto4j.version3.CryptoFunctions.encryptAesCtr;
+import static org.paseto4j.version3.CryptoFunctions.hkdfSha384;
+import static org.paseto4j.version3.CryptoFunctions.hmac384;
+import static org.paseto4j.version3.CryptoFunctions.randomBytes;
 
 class PasetoLocal {
 
@@ -49,6 +57,13 @@ class PasetoLocal {
     private static final String HEADER = String.format("%s.%s.", Version.V3, Purpose.PURPOSE_LOCAL);
 
     private PasetoLocal() {
+    }
+
+    /**
+     * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
+     */
+    public static String encrypt(SecretKey key, String payload) {
+        return encrypt(key, randomBytes(), payload, "", "");
     }
 
     /**
@@ -105,6 +120,13 @@ class PasetoLocal {
 
     private static byte[] authenticationKey(SecretKey key, byte[] nonce) {
         return hkdfSha384(key.material, ByteUtils.concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce));
+    }
+
+    /**
+     * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+     */
+    public static String decrypt(SecretKey key, String token) {
+        return decrypt(key, token, "");
     }
 
     /**
