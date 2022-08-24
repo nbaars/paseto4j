@@ -5,75 +5,74 @@ import org.junit.jupiter.api.Test;
 
 class ByteUtilsTest {
 
-    @Test
-    void concatTwo() {
-        var b1 = new byte[]{'a', 'b'};
-        var b2 = new byte[]{'c', 'd'};
+  @Test
+  void concatTwo() {
+    var b1 = new byte[] {'a', 'b'};
+    var b2 = new byte[] {'c', 'd'};
 
-        var result = ByteUtils.concat(b1, b2);
+    var result = ByteUtils.concat(b1, b2);
 
-        Assertions.assertArrayEquals(new byte[]{'a', 'b', 'c', 'd'}, result);
-    }
+    Assertions.assertArrayEquals(new byte[] {'a', 'b', 'c', 'd'}, result);
+  }
 
-    @Test
-    void concatThree() {
-        var b1 = new byte[]{'a', 'b'};
-        var b2 = new byte[]{'c', 'd'};
-        var b3 = new byte[]{'e', 'f'};
+  @Test
+  void concatThree() {
+    var b1 = new byte[] {'a', 'b'};
+    var b2 = new byte[] {'c', 'd'};
+    var b3 = new byte[] {'e', 'f'};
 
+    var result = ByteUtils.concat(b1, b2, b3);
 
-        var result = ByteUtils.concat(b1, b2, b3);
+    Assertions.assertArrayEquals(new byte[] {'a', 'b', 'c', 'd', 'e', 'f'}, result);
+  }
 
-        Assertions.assertArrayEquals(new byte[]{'a', 'b', 'c', 'd', 'e', 'f'}, result);
-    }
+  @Test
+  void concatEmptyRight() {
+    var b1 = new byte[] {'a', 'b'};
+    var b2 = new byte[0];
 
-    @Test
-    void concatEmptyRight() {
-        var b1 = new byte[]{'a', 'b'};
-        var b2 = new byte[0];
+    var result = ByteUtils.concat(b1, b2);
 
-        var result = ByteUtils.concat(b1, b2);
+    Assertions.assertArrayEquals(new byte[] {'a', 'b'}, result);
+  }
 
-        Assertions.assertArrayEquals(new byte[]{'a', 'b'}, result);
-    }
+  @Test
+  void concatEmptyLeft() {
+    var b1 = new byte[] {'a', 'b'};
+    var b2 = new byte[0];
 
-    @Test
-    void concatEmptyLeft() {
-        var b1 = new byte[]{'a', 'b'};
-        var b2 = new byte[0];
+    var result = ByteUtils.concat(b2, b1);
 
-        var result = ByteUtils.concat(b2, b1);
+    Assertions.assertArrayEquals(new byte[] {'a', 'b'}, result);
+  }
 
-        Assertions.assertArrayEquals(new byte[]{'a', 'b'}, result);
-    }
+  @Test
+  void concatBothEmpty() {
+    var b1 = new byte[0];
+    var b2 = new byte[0];
 
-    @Test
-    void concatBothEmpty() {
-        var b1 = new byte[0];
-        var b2 = new byte[0];
+    var result = ByteUtils.concat(b2, b1);
 
-        var result = ByteUtils.concat(b2, b1);
+    Assertions.assertArrayEquals(new byte[] {}, result);
+  }
 
-        Assertions.assertArrayEquals(new byte[]{}, result);
-    }
+  @Test
+  void splitEqual() {
+    var b = new byte[] {'a', 'b'};
 
-    @Test
-    void splitEqual() {
-        var b = new byte[]{'a', 'b'};
+    var result = ByteUtils.split(b, 1);
 
-        var result = ByteUtils.split(b, 1);
+    Assertions.assertArrayEquals(new byte[] {'a'}, result.first);
+    Assertions.assertArrayEquals(new byte[] {'b'}, result.second);
+  }
 
-        Assertions.assertArrayEquals(new byte[]{'a'}, result.first);
-        Assertions.assertArrayEquals(new byte[]{'b'}, result.second);
-    }
+  @Test
+  void splitEmpty() {
+    var b = new byte[] {};
 
-    @Test
-    void splitEmpty() {
-        var b = new byte[]{};
+    var result = ByteUtils.split(b, 1);
 
-        var result = ByteUtils.split(b, 1);
-
-        Assertions.assertEquals(0, result.first.length);
-        Assertions.assertEquals(0, result.first.length);
-    }
+    Assertions.assertEquals(0, result.first.length);
+    Assertions.assertEquals(0, result.first.length);
+  }
 }

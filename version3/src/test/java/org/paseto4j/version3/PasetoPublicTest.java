@@ -24,18 +24,9 @@
 
 package org.paseto4j.version3;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openssl.PEMParser;
-import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
-import org.paseto4j.commons.Purpose;
-import org.paseto4j.commons.TestVectors;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.paseto4j.commons.Version.V3;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -49,63 +40,82 @@ import java.security.Security;
 import java.security.SignatureException;
 import java.security.spec.ECGenParameterSpec;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.paseto4j.commons.Version.V3;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.paseto4j.commons.PrivateKey;
+import org.paseto4j.commons.PublicKey;
+import org.paseto4j.commons.Purpose;
+import org.paseto4j.commons.TestVectors;
 
 class PasetoPublicTest {
 
-    static {
-        Security.addProvider(new BouncyCastleProvider());
+  static {
+    Security.addProvider(new BouncyCastleProvider());
+  }
+
+  public static KeyPair readEC(String pem) throws IOException {
+    Reader rdr = new StringReader(pem);
+    Object parsed = new PEMParser(rdr).readObject();
+    return new JcaPEMKeyConverter().getKeyPair((org.bouncycastle.openssl.PEMKeyPair) parsed);
+  }
+
+  @ParameterizedTest
+  @MethodSource("testVectors")
+  void signTestVectors(
+      String name,
+      boolean expectFail,
+      String privateKeyPem,
+      String payload,
+      String footer,
+      String implicitAssertion,
+      String expectedToken)
+      throws IOException, SignatureException {
+    var keyPair = readEC(privateKeyPem);
+    var privateKey = new PrivateKey(keyPair.getPrivate(), V3);
+    var publicKey = new PublicKey(keyPair.getPublic(), V3);
+    if (expectFail) {
+      assertThrows(
+          Exception.class, () -> Paseto.sign(privateKey, payload, footer, implicitAssertion));
+    } else {
+      assertEquals(expectedToken, Paseto.sign(privateKey, payload, footer, implicitAssertion));
+      assertEquals(payload, Paseto.parse(publicKey, expectedToken, footer, implicitAssertion));
     }
+  }
 
-    public static KeyPair readEC(String pem) throws IOException {
-        Reader rdr = new StringReader(pem);
-        Object parsed = new PEMParser(rdr).readObject();
-        return new JcaPEMKeyConverter().getKeyPair((org.bouncycastle.openssl.PEMKeyPair) parsed);
-    }
+  private static Stream<Arguments> testVectors() throws IOException {
+    return TestVectors.v3(Purpose.PURPOSE_PUBLIC).stream()
+        .map(
+            test ->
+                Arguments.of(
+                    test.name,
+                    test.expectFail,
+                    test.secretKeyPem,
+                    test.payload,
+                    test.footer,
+                    test.implicitAssertion,
+                    test.token));
+  }
 
-    @ParameterizedTest
-    @MethodSource("testVectors")
-    void signTestVectors(String name, boolean expectFail, String privateKeyPem, String payload, String footer, String implicitAssertion, String expectedToken) throws IOException, SignatureException {
-        var keyPair = readEC(privateKeyPem);
-        var privateKey = new PrivateKey(keyPair.getPrivate(), V3);
-        var publicKey = new PublicKey(keyPair.getPublic(), V3);
-        if (expectFail) {
-            assertThrows(Exception.class, () -> Paseto.sign(privateKey, payload, footer, implicitAssertion));
-        } else {
-            assertEquals(expectedToken, Paseto.sign(privateKey, payload, footer, implicitAssertion));
-            assertEquals(payload, Paseto.parse(publicKey, expectedToken, footer, implicitAssertion));
-        }
-    }
+  @Test
+  void normalUsage()
+      throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException,
+          SignatureException {
+    var generator = KeyPairGenerator.getInstance("EC", BouncyCastleProvider.PROVIDER_NAME);
+    var spec = new ECGenParameterSpec("secp384r1");
+    generator.initialize(spec);
+    var expectedPayload = "test message";
+    var keyPair = generator.generateKeyPair();
+    var signedMessage = Paseto.sign(new PrivateKey(keyPair.getPrivate(), V3), expectedPayload);
 
-    private static Stream<Arguments> testVectors() throws IOException {
-        return TestVectors.v3(Purpose.PURPOSE_PUBLIC).stream()
-                .map(test -> Arguments.of(
-                                test.name,
-                                test.expectFail,
-                                test.secretKeyPem,
-                                test.payload,
-                                test.footer,
-                                test.implicitAssertion,
-                                test.token
-                        )
-                );
-    }
+    var payload =
+        Paseto.parse(new org.paseto4j.commons.PublicKey(keyPair.getPublic(), V3), signedMessage);
 
-    @Test
-    void normalUsage() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, SignatureException {
-        var generator = KeyPairGenerator.getInstance("EC", BouncyCastleProvider.PROVIDER_NAME);
-        var spec = new ECGenParameterSpec("secp384r1");
-        generator.initialize(spec);
-        var expectedPayload = "test message";
-        var keyPair = generator.generateKeyPair();
-        var signedMessage = Paseto.sign(new PrivateKey(keyPair.getPrivate(), V3), expectedPayload);
-
-        var payload = Paseto.parse(new org.paseto4j.commons.PublicKey(keyPair.getPublic(), V3), signedMessage);
-
-        Assertions.assertEquals(expectedPayload, payload);
-
-    }
+    Assertions.assertEquals(expectedPayload, payload);
+  }
 }
