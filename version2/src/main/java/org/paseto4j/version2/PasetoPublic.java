@@ -24,13 +24,6 @@
 
 package org.paseto4j.version2;
 
-import org.apache.tuweni.crypto.sodium.Signature;
-import org.paseto4j.commons.*;
-
-import java.security.MessageDigest;
-import java.security.SignatureException;
-import java.util.Arrays;
-
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Base64.getUrlEncoder;
@@ -40,71 +33,95 @@ import static org.paseto4j.commons.Conditions.isNullOrEmpty;
 import static org.paseto4j.commons.Conditions.verify;
 import static org.paseto4j.commons.PreAuthenticationEncoder.encode;
 
+import java.security.MessageDigest;
+import java.security.SignatureException;
+import java.util.Arrays;
+import org.apache.tuweni.crypto.sodium.Signature;
+import org.paseto4j.commons.*;
+
 class PasetoPublic {
 
-    private PasetoPublic() {
+  private PasetoPublic() {}
+
+  private static final String PUBLIC = "v2.public.";
+
+  /**
+   * Sign the token,
+   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#sign
+   */
+  static String sign(PrivateKey privateKey, String payload, String footer) {
+    requireNonNull(privateKey);
+    requireNonNull(payload);
+    verify(privateKey.hasLength(64), "key should be 32 bytes");
+    verify(
+        privateKey.isValidFor(Version.V2, Purpose.PURPOSE_PUBLIC),
+        "Key is not valid for purpose and version");
+
+    byte[] m2 = encode(PUBLIC.getBytes(UTF_8), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
+    byte[] signature =
+        Signature.signDetached(m2, Signature.SecretKey.fromBytes(privateKey.material));
+
+    String signedToken =
+        PUBLIC
+            + getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(concat(payload.getBytes(UTF_8), signature));
+
+    if (!isNullOrEmpty(footer)) {
+      signedToken =
+          signedToken
+              + "."
+              + getUrlEncoder().withoutPadding().encodeToString(footer.getBytes(UTF_8));
+    }
+    return signedToken;
+  }
+
+  /**
+   * Parse the token,
+   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#verify
+   */
+  static String parse(PublicKey publicKey, String signedMessage, String footer)
+      throws SignatureException {
+    requireNonNull(publicKey);
+    requireNonNull(signedMessage);
+    verify(publicKey.hasLength(32), "key should be 32 bytes");
+    verify(
+        publicKey.isValidFor(Version.V2, Purpose.PURPOSE_PUBLIC),
+        "Key is not valid for purpose and version");
+
+    String[] tokenParts = signedMessage.split("\\.");
+
+    // 1
+    if (!isNullOrEmpty(footer)) {
+      verify(
+          MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)),
+          "footer does not match");
     }
 
-    private static final String PUBLIC = "v2.public.";
+    // 2
+    verify(signedMessage.startsWith(PUBLIC), "Token should start with " + PUBLIC);
 
-    /**
-     * Sign the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#sign
-     */
-    static String sign(PrivateKey privateKey, String payload, String footer) {
-        requireNonNull(privateKey);
-        requireNonNull(payload);
-        verify(privateKey.hasLength(64), "key should be 32 bytes");
-        verify(privateKey.isValidFor(Version.V2, Purpose.PURPOSE_PUBLIC), "Key is not valid for purpose and version");
+    // 3
+    byte[] sm = getUrlDecoder().decode(tokenParts[2]);
+    byte[] signature = Arrays.copyOfRange(sm, sm.length - 64, sm.length);
+    byte[] message = Arrays.copyOfRange(sm, 0, sm.length - 64);
 
-        byte[] m2 = encode(PUBLIC.getBytes(UTF_8), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
-        byte[] signature = Signature.signDetached(m2, Signature.SecretKey.fromBytes(privateKey.material));
+    // 4
+    byte[] m2 =
+        PreAuthenticationEncoder.encode(PUBLIC.getBytes(UTF_8), message, footer.getBytes(UTF_8));
 
-        String signedToken = PUBLIC + getUrlEncoder().withoutPadding().encodeToString(concat(payload.getBytes(UTF_8), signature));
+    // 5
+    verifySignature(publicKey, m2, signature);
 
-        if (!isNullOrEmpty(footer)) {
-            signedToken = signedToken + "." + getUrlEncoder().withoutPadding().encodeToString(footer.getBytes(UTF_8));
-        }
-        return signedToken;
+    return new String(message);
+  }
+
+  private static void verifySignature(PublicKey key, byte[] message, byte[] signature)
+      throws SignatureException {
+    boolean valid =
+        Signature.verifyDetached(message, signature, Signature.PublicKey.fromBytes(key.material));
+    if (!valid) {
+      throw new SignatureException("Invalid signature");
     }
-
-    /**
-     * Parse the token, https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#verify
-     */
-    static String parse(PublicKey publicKey, String signedMessage, String footer) throws SignatureException {
-        requireNonNull(publicKey);
-        requireNonNull(signedMessage);
-        verify(publicKey.hasLength(32), "key should be 32 bytes");
-        verify(publicKey.isValidFor(Version.V2, Purpose.PURPOSE_PUBLIC), "Key is not valid for purpose and version");
-
-        String[] tokenParts = signedMessage.split("\\.");
-
-        //1
-        if (!isNullOrEmpty(footer)) {
-            verify(MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)), "footer does not match");
-        }
-
-        //2
-        verify(signedMessage.startsWith(PUBLIC), "Token should start with " + PUBLIC);
-
-        //3
-        byte[] sm = getUrlDecoder().decode(tokenParts[2]);
-        byte[] signature = Arrays.copyOfRange(sm, sm.length - 64, sm.length);
-        byte[] message = Arrays.copyOfRange(sm, 0, sm.length - 64);
-
-        //4
-        byte[] m2 = PreAuthenticationEncoder.encode(PUBLIC.getBytes(UTF_8), message, footer.getBytes(UTF_8));
-
-        //5
-        verifySignature(publicKey, m2, signature);
-
-        return new String(message);
-    }
-
-    private static void verifySignature(PublicKey key, byte[] message, byte[] signature) throws SignatureException {
-        boolean valid = Signature.verifyDetached(message, signature, Signature.PublicKey.fromBytes(key.material));
-        if (!valid) {
-            throw new SignatureException("Invalid signature");
-        }
-    }
-
+  }
 }

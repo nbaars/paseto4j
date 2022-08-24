@@ -24,22 +24,6 @@
 
 package org.paseto4j.version3;
 
-import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.crypto.Digest;
-import org.bouncycastle.crypto.digests.SHA384Digest;
-import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
-import org.bouncycastle.crypto.params.HKDFParameters;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.paseto4j.commons.ByteUtils;
-import org.paseto4j.commons.Pair;
-
-import javax.crypto.Cipher;
-import javax.crypto.Mac;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
@@ -51,140 +35,162 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.util.Arrays;
+import javax.crypto.Cipher;
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.crypto.Digest;
+import org.bouncycastle.crypto.digests.SHA384Digest;
+import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
+import org.bouncycastle.crypto.params.HKDFParameters;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.paseto4j.commons.ByteUtils;
+import org.paseto4j.commons.Pair;
 
 public class CryptoFunctions {
 
-    private CryptoFunctions() {
+  private CryptoFunctions() {}
+
+  /**
+   * @return 32 bytes of random data
+   */
+  public static byte[] randomBytes() {
+    byte[] random = new byte[32];
+    try {
+      SecureRandom.getInstance("SHA1PRNG").nextBytes(random);
+    } catch (NoSuchAlgorithmException e) {
+      throw new IllegalStateException(e);
     }
+    return random;
+  }
 
-    /**
-     * @return 32 bytes of random data
-     */
-    public static byte[] randomBytes() {
-        byte[] random = new byte[32];
-        try {
-            SecureRandom.getInstance("SHA1PRNG").nextBytes(random);
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
-        }
-        return random;
+  /**
+   * Generate a HMAC-384 using Bouncy Castle
+   *
+   * @param key the key for the hmac
+   * @param message the message to calculate the digest over
+   * @return hmac of the message
+   */
+  public static byte[] hmac384(byte[] key, byte[] message) {
+    try {
+      Mac mac = Mac.getInstance("HMac-SHA384", "BC");
+      SecretKey secretKey = new SecretKeySpec(key, "HMac-SHA384");
+
+      mac.init(secretKey);
+      mac.reset();
+      return mac.doFinal(message);
+    } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException e) {
+      throw new IllegalStateException(e);
     }
+  }
 
-    /**
-     * Generate a HMAC-384 using Bouncy Castle
-     *
-     * @param key     the key for the hmac
-     * @param message the message to calculate the digest over
-     * @return hmac of the message
-     */
-    public static byte[] hmac384(byte[] key, byte[] message) {
-        try {
-            Mac mac = Mac.getInstance("HMac-SHA384", "BC");
-            SecretKey secretKey = new SecretKeySpec(key, "HMac-SHA384");
+  /**
+   * Encrypt the message with AES CTR mode.
+   *
+   * @param key the key for the encryption
+   * @param nonce the nonce to be used as IV
+   * @param message the message to be encrypted
+   * @return the encrypted message
+   */
+  public static byte[] encryptAesCtr(byte[] key, byte[] nonce, byte[] message) {
+    return encryptDecrypt(true, key, nonce, message);
+  }
 
-            mac.init(secretKey);
-            mac.reset();
-            return mac.doFinal(message);
-        } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeyException e) {
-            throw new IllegalStateException(e);
-        }
+  /**
+   * Decrypt the message with AES CTR mode.
+   *
+   * @param key the key for the encryption
+   * @param nonce the nonce to be used as IV
+   * @param message the message to be encrypted
+   * @return the encrypted message
+   */
+  public static byte[] decryptAesCtr(byte[] key, byte[] nonce, byte[] message) {
+    return encryptDecrypt(false, key, nonce, message);
+  }
+
+  private static byte[] encryptDecrypt(
+      boolean encryption, byte[] key, byte[] nonce, byte[] message) {
+    try {
+      Cipher aes = Cipher.getInstance("AES/CTR/NoPadding", BouncyCastleProvider.PROVIDER_NAME);
+      SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+
+      aes.init(
+          encryption ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE,
+          secretKeySpec,
+          new IvParameterSpec(nonce)); // NOSONAR
+      return aes.doFinal(message);
+    } catch (GeneralSecurityException e) {
+      throw new IllegalStateException(e);
     }
+  }
 
-    /**
-     * Encrypt the message with AES CTR mode.
-     *
-     * @param key     the key for the encryption
-     * @param nonce   the nonce to be used as IV
-     * @param message the message to be encrypted
-     * @return the encrypted message
-     */
-    public static byte[] encryptAesCtr(byte[] key, byte[] nonce, byte[] message) {
-        return encryptDecrypt(true, key, nonce, message);
+  /**
+   * Apply HKDF with SHA-384
+   *
+   * @param key the key to be used
+   * @param info info
+   * @return
+   */
+  public static byte[] hkdfSha384(byte[] key, byte[] info) {
+    Digest digest = new SHA384Digest();
+    HKDFBytesGenerator hkdf = new HKDFBytesGenerator(digest);
+    hkdf.init(new HKDFParameters(key, null, info));
+
+    byte[] out = new byte[48];
+    hkdf.generateBytes(out, 0, out.length);
+    return out;
+  }
+
+  public static byte[] toUnsignedByteArray(BigInteger value) {
+    byte[] signedValue = value.toByteArray();
+    if (signedValue[0] != 0x00) {
+      return signedValue;
     }
+    return Arrays.copyOfRange(signedValue, 1, signedValue.length);
+  }
 
-    /**
-     * Decrypt the message with AES CTR mode.
-     *
-     * @param key     the key for the encryption
-     * @param nonce   the nonce to be used as IV
-     * @param message the message to be encrypted
-     * @return the encrypted message
-     */
-    public static byte[] decryptAesCtr(byte[] key, byte[] nonce, byte[] message) {
-        return encryptDecrypt(false, key, nonce, message);
+  public static byte[] sign(PrivateKey privateKey, byte[] msg) {
+    try {
+      Signature signature = Signature.getInstance("SHA384withECDDSA", "BC");
+      signature.initSign(privateKey);
+      signature.update(msg);
+      var sig =
+          signature
+              .sign(); // https://crypto.stackexchange.com/questions/33095/shouldnt-a-signature-using-ecdsa-be-exactly-96-bytes-not-102-or-103
+
+      ASN1Sequence seq = ASN1Sequence.getInstance(sig);
+      ASN1Integer r = (ASN1Integer) seq.getObjectAt(0);
+      ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
+
+      return ByteUtils.concat(toUnsignedByteArray(r.getValue()), toUnsignedByteArray(s.getValue()));
+
+    } catch (GeneralSecurityException e) {
+      throw new IllegalStateException(e);
     }
+  }
 
-    private static byte[] encryptDecrypt(boolean encryption, byte[] key, byte[] nonce, byte[] message) {
-        try {
-            Cipher aes = Cipher.getInstance("AES/CTR/NoPadding", BouncyCastleProvider.PROVIDER_NAME);
-            SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+  public static boolean verify(PublicKey publicKey, byte[] msg, byte[] signature) {
+    try {
+      Signature verifier = Signature.getInstance("SHA384withECDDSA", "BC");
+      verifier.initVerify(publicKey);
+      verifier.update(msg);
 
-            aes.init(encryption ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(nonce)); //NOSONAR
-            return aes.doFinal(message);
-        } catch (GeneralSecurityException e) {
-            throw new IllegalStateException(e);
-        }
+      // Convert the signature see `sign`
+      Pair<byte[]> pair = ByteUtils.split(signature, 48);
+      DERSequence seq =
+          new DERSequence(
+              new ASN1Integer[] {
+                new ASN1Integer(new BigInteger(1, pair.first)),
+                new ASN1Integer(new BigInteger(1, pair.second))
+              });
+
+      return verifier.verify(seq.getEncoded());
+    } catch (IOException | GeneralSecurityException e) {
+      throw new IllegalStateException(e);
     }
-
-    /**
-     * Apply HKDF with SHA-384
-     *
-     * @param key  the key to be used
-     * @param info info
-     * @return
-     */
-    public static byte[] hkdfSha384(byte[] key, byte[] info) {
-        Digest digest = new SHA384Digest();
-        HKDFBytesGenerator hkdf = new HKDFBytesGenerator(digest);
-        hkdf.init(new HKDFParameters(key, null, info));
-
-        byte[] out = new byte[48];
-        hkdf.generateBytes(out, 0, out.length);
-        return out;
-    }
-
-    public static byte[] toUnsignedByteArray(BigInteger value) {
-        byte[] signedValue = value.toByteArray();
-        if (signedValue[0] != 0x00) {
-            return signedValue;
-        }
-        return Arrays.copyOfRange(signedValue, 1, signedValue.length);
-    }
-
-    public static byte[] sign(PrivateKey privateKey, byte[] msg) {
-        try {
-            Signature signature = Signature.getInstance("SHA384withECDDSA", "BC");
-            signature.initSign(privateKey);
-            signature.update(msg);
-            var sig = signature.sign(); //https://crypto.stackexchange.com/questions/33095/shouldnt-a-signature-using-ecdsa-be-exactly-96-bytes-not-102-or-103
-
-            ASN1Sequence seq = ASN1Sequence.getInstance(sig);
-            ASN1Integer r = (ASN1Integer) seq.getObjectAt(0);
-            ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
-
-            return ByteUtils.concat(toUnsignedByteArray(r.getValue()), toUnsignedByteArray(s.getValue()));
-
-        } catch (GeneralSecurityException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    public static boolean verify(PublicKey publicKey, byte[] msg, byte[] signature) {
-        try {
-            Signature verifier = Signature.getInstance("SHA384withECDDSA", "BC");
-            verifier.initVerify(publicKey);
-            verifier.update(msg);
-
-            //Convert the signature see `sign`
-            Pair<byte[]> pair = ByteUtils.split(signature, 48);
-            DERSequence seq = new DERSequence(new ASN1Integer[]{
-                    new ASN1Integer(new BigInteger(1, pair.first)),
-                    new ASN1Integer(new BigInteger(1, pair.second))
-            });
-
-            return verifier.verify(seq.getEncoded());
-        } catch (IOException | GeneralSecurityException e) {
-            throw new IllegalStateException(e);
-        }
-    }
+  }
 }

@@ -24,18 +24,6 @@
 
 package org.paseto4j.version3;
 
-import java.security.MessageDigest;
-import java.security.Security;
-import java.util.Arrays;
-import java.util.Base64;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.paseto4j.commons.ByteUtils;
-import org.paseto4j.commons.Pair;
-import org.paseto4j.commons.PreAuthenticationEncoder;
-import org.paseto4j.commons.Purpose;
-import org.paseto4j.commons.SecretKey;
-import org.paseto4j.commons.Version;
-
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Base64.getUrlEncoder;
@@ -48,141 +36,181 @@ import static org.paseto4j.version3.CryptoFunctions.hkdfSha384;
 import static org.paseto4j.version3.CryptoFunctions.hmac384;
 import static org.paseto4j.version3.CryptoFunctions.randomBytes;
 
+import java.security.MessageDigest;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.Base64;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.paseto4j.commons.ByteUtils;
+import org.paseto4j.commons.Pair;
+import org.paseto4j.commons.PreAuthenticationEncoder;
+import org.paseto4j.commons.Purpose;
+import org.paseto4j.commons.SecretKey;
+import org.paseto4j.commons.Version;
+
 class PasetoLocal {
 
-    static {
-        Security.addProvider(new BouncyCastleProvider());
+  static {
+    Security.addProvider(new BouncyCastleProvider());
+  }
+
+  private static final String HEADER = String.format("%s.%s.", Version.V3, Purpose.PURPOSE_LOCAL);
+
+  private PasetoLocal() {}
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
+   */
+  public static String encrypt(SecretKey key, String payload) {
+    return encrypt(key, randomBytes(), payload, "", "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
+   */
+  public static String encrypt(SecretKey key, String payload, String footer) {
+    return encrypt(key, randomBytes(), payload, footer, "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
+   */
+  public static String encrypt(SecretKey key, String payload, String footer, String implicit) {
+    return encrypt(key, randomBytes(), payload, footer, implicit);
+  }
+
+  static String encrypt(
+      SecretKey key, byte[] randomKey, String payload, String footer, String implicit) {
+    requireNonNull(key);
+    requireNonNull(payload);
+    verify(
+        key.isValidFor(Version.V3, Purpose.PURPOSE_LOCAL),
+        "Key is not valid for purpose and version");
+    verify(key.hasLength(32), "Key should be 32 bytes");
+
+    // 3
+    byte[] nonce = randomKey;
+
+    // 4
+    byte[] tmp = encryptionKey(key, nonce);
+    Pair<byte[]> split = ByteUtils.split(tmp, 32);
+    byte[] ek = split.first;
+    byte[] n2 = split.second;
+    byte[] ak = authenticationKey(key, nonce);
+
+    // 5
+    byte[] cipherText = encryptAesCtr(ek, n2, payload.getBytes(UTF_8));
+
+    // 6
+    byte[] preAuth =
+        PreAuthenticationEncoder.encode(
+            HEADER.getBytes(UTF_8),
+            nonce,
+            cipherText,
+            footer.getBytes(UTF_8),
+            implicit.getBytes(UTF_8));
+
+    // 7
+    byte[] t = hmac384(ak, preAuth);
+
+    // 8
+    String signedToken =
+        HEADER
+            + getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(ByteUtils.concat(nonce, cipherText, t));
+
+    if (!isNullOrEmpty(footer)) {
+      signedToken =
+          signedToken
+              + "."
+              + Base64.getUrlEncoder().withoutPadding().encodeToString(footer.getBytes(UTF_8));
+    }
+    return signedToken;
+  }
+
+  private static byte[] encryptionKey(SecretKey key, byte[] nonce) {
+    return hkdfSha384(
+        key.material, ByteUtils.concat("paseto-encryption-key".getBytes(UTF_8), nonce));
+  }
+
+  private static byte[] authenticationKey(SecretKey key, byte[] nonce) {
+    return hkdfSha384(
+        key.material, ByteUtils.concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce));
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+   */
+  public static String decrypt(SecretKey key, String token) {
+    return decrypt(key, token, "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+   */
+  public static String decrypt(SecretKey key, String token, String footer) {
+    return decrypt(key, token, footer, "");
+  }
+
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+   */
+  static String decrypt(SecretKey key, String token, String footer, String implicitAssertion) {
+    requireNonNull(key);
+    requireNonNull(token);
+
+    // 1
+    verify(
+        key.isValidFor(Version.V3, Purpose.PURPOSE_LOCAL),
+        "Key is not valid for purpose and version");
+
+    String[] tokenParts = token.split("\\.");
+    verify(
+        tokenParts.length == 3 || tokenParts.length == 4, "Token should contain at least 3 parts");
+
+    // 2
+    if (!isNullOrEmpty(footer)) {
+      verify(
+          MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)),
+          "footer does not match");
     }
 
-    private static final String HEADER = String.format("%s.%s.", Version.V3, Purpose.PURPOSE_LOCAL);
+    // 3
+    verify(token.startsWith(HEADER), "Token should start with " + HEADER);
 
-    private PasetoLocal() {
+    // 4
+    byte[] ct = getUrlDecoder().decode(tokenParts[2]);
+    byte[] nonce = Arrays.copyOfRange(ct, 0, 32);
+    byte[] t = Arrays.copyOfRange(ct, ct.length - 48, ct.length);
+    byte[] c = Arrays.copyOfRange(ct, 32, ct.length - 48);
+
+    // 5
+    byte[] tmp = encryptionKey(key, nonce);
+    Pair<byte[]> split = ByteUtils.split(tmp, 32);
+    byte[] ek = split.first;
+    byte[] n2 = split.second;
+    byte[] ak = authenticationKey(key, nonce);
+
+    // 6
+    byte[] preAuth =
+        PreAuthenticationEncoder.encode(
+            HEADER.getBytes(UTF_8),
+            nonce,
+            c,
+            footer.getBytes(UTF_8),
+            implicitAssertion.getBytes(UTF_8));
+
+    // 7
+    byte[] t2 = hmac384(ak, preAuth);
+
+    // 8
+    if (!MessageDigest.isEqual(t, t2)) {
+      throw new IllegalStateException("HMAC verification failed");
     }
 
-    /**
-     * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
-     */
-    public static String encrypt(SecretKey key, String payload) {
-        return encrypt(key, randomBytes(), payload, "", "");
-    }
-
-    /**
-     * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
-     */
-    public static String encrypt(SecretKey key, String payload, String footer) {
-        return encrypt(key, randomBytes(), payload, footer, "");
-    }
-
-    /**
-     * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
-     */
-    public static String encrypt(SecretKey key, String payload, String footer, String implicit) {
-        return encrypt(key, randomBytes(), payload, footer, implicit);
-    }
-
-    static String encrypt(SecretKey key, byte[] randomKey, String payload, String footer, String implicit) {
-        requireNonNull(key);
-        requireNonNull(payload);
-        verify(key.isValidFor(Version.V3, Purpose.PURPOSE_LOCAL), "Key is not valid for purpose and version");
-        verify(key.hasLength(32), "Key should be 32 bytes");
-
-        //3
-        byte[] nonce = randomKey;
-
-        //4
-        byte[] tmp = encryptionKey(key, nonce);
-        Pair<byte[]> split = ByteUtils.split(tmp, 32);
-        byte[] ek = split.first;
-        byte[] n2 = split.second;
-        byte[] ak = authenticationKey(key, nonce);
-
-        //5
-        byte[] cipherText = encryptAesCtr(ek, n2, payload.getBytes(UTF_8));
-
-        //6
-        byte[] preAuth = PreAuthenticationEncoder.encode(HEADER.getBytes(UTF_8), nonce, cipherText, footer.getBytes(UTF_8), implicit.getBytes(UTF_8));
-
-        //7
-        byte[] t = hmac384(ak, preAuth);
-
-        //8
-        String signedToken = HEADER + getUrlEncoder().withoutPadding().encodeToString(ByteUtils.concat(nonce, cipherText, t));
-
-        if (!isNullOrEmpty(footer)) {
-            signedToken = signedToken + "." + Base64.getUrlEncoder().withoutPadding().encodeToString(footer.getBytes(UTF_8));
-        }
-        return signedToken;
-    }
-
-    private static byte[] encryptionKey(SecretKey key, byte[] nonce) {
-        return hkdfSha384(key.material, ByteUtils.concat("paseto-encryption-key".getBytes(UTF_8), nonce));
-    }
-
-    private static byte[] authenticationKey(SecretKey key, byte[] nonce) {
-        return hkdfSha384(key.material, ByteUtils.concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce));
-    }
-
-    /**
-     * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
-     */
-    public static String decrypt(SecretKey key, String token) {
-        return decrypt(key, token, "");
-    }
-
-    /**
-     * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
-     */
-    public static String decrypt(SecretKey key, String token, String footer) {
-        return decrypt(key, token, footer, "");
-    }
-
-    /**
-     * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
-     */
-    static String decrypt(SecretKey key, String token, String footer, String implicitAssertion) {
-        requireNonNull(key);
-        requireNonNull(token);
-
-        //1
-        verify(key.isValidFor(Version.V3, Purpose.PURPOSE_LOCAL), "Key is not valid for purpose and version");
-
-        String[] tokenParts = token.split("\\.");
-        verify(tokenParts.length == 3 || tokenParts.length == 4, "Token should contain at least 3 parts");
-
-        //2
-        if (!isNullOrEmpty(footer)) {
-            verify(MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)), "footer does not match");
-        }
-
-        //3
-        verify(token.startsWith(HEADER), "Token should start with " + HEADER);
-
-        //4
-        byte[] ct = getUrlDecoder().decode(tokenParts[2]);
-        byte[] nonce = Arrays.copyOfRange(ct, 0, 32);
-        byte[] t = Arrays.copyOfRange(ct, ct.length - 48, ct.length);
-        byte[] c = Arrays.copyOfRange(ct, 32, ct.length - 48);
-
-        //5
-        byte[] tmp = encryptionKey(key, nonce);
-        Pair<byte[]> split = ByteUtils.split(tmp, 32);
-        byte[] ek = split.first;
-        byte[] n2 = split.second;
-        byte[] ak = authenticationKey(key, nonce);
-
-        //6
-        byte[] preAuth = PreAuthenticationEncoder.encode(HEADER.getBytes(UTF_8), nonce, c, footer.getBytes(UTF_8), implicitAssertion.getBytes(UTF_8));
-
-        //7
-        byte[] t2 = hmac384(ak, preAuth);
-
-        //8
-        if (!MessageDigest.isEqual(t, t2)) {
-            throw new IllegalStateException("HMAC verification failed");
-        }
-
-        //9
-        byte[] message = decryptAesCtr(ek, n2, c);
-        return new String(message, UTF_8);
-    }
+    // 9
+    byte[] message = decryptAesCtr(ek, n2, c);
+    return new String(message, UTF_8);
+  }
 }
