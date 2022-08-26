@@ -19,11 +19,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.jnr</groupId>
-            <artifactId>jnr-ffi</artifactId>
-            <version>${jnr-ffi.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.tuweni</groupId>
             <artifactId>tuweni-bytes</artifactId>
             <version>${tuweni.version}</version>
