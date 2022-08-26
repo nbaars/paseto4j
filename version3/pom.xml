@@ -29,6 +29,7 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
             <version>${bouncy.castle.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
