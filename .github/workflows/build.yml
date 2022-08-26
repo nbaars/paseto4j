@@ -36,6 +36,7 @@ jobs:
       - name: Build
         run: ./mvnw --no-transfer-progress clean verify
       - name: SonarCloud Scan
+        if: ${{ github.repository_owner == 'nbaars' }}
         run: ./mvnw --no-transfer-progress sonar:sonar -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.cpd.exclusions=version1/src/main/java/org/paseto4j/version1/CryptoFunctions.java
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
