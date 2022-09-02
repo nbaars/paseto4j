@@ -51,3 +51,23 @@ private static final String FOOTER = "Paragon Initiative Enterprises";
 var signedToken = Paseto.sign(new PrivateKey(privateKey, V1), TOKEN, FOOTER);
 Paseto.parse(new PublicKey(publicKey, V1), signedToken, FOOTER);x
 ```
+
+# Differences with other libraries 
+
+Why use this library over the other Java implementations?
+
+- No dependency on any JSON library. 
+- It is a lightweight library supporting the basic Paseto operations. The rest is up-to-you.
+- Easy to use API.
+- Available on Maven Central
+
+# Development
+
+Version 2 needs Libsodium to be present, to avoid installing it on your local machine, you can use the following command to build it locally:
+
+```
+docker build -t paseto4j .
+docker run -v "${HOME}"/.m2:/root/.m2 -v "${PWD}":/workspace paseto4j ./mvnw verify     
+``` 
+
+The first command is only necessary ones, for building the Maven image.
