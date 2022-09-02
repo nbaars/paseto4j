@@ -45,7 +45,7 @@
         <sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
 
         <paseto4j.deploy.skip>false</paseto4j.deploy.skip>
-        <tuweni.version>2.0.0</tuweni.version>
+        <tuweni.version>2.2.0</tuweni.version>
         <junit.version>5.2.0</junit.version>
     </properties>
 
