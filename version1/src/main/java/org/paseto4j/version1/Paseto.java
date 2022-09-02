@@ -24,11 +24,10 @@
 
 package org.paseto4j.version1;
 
+import java.security.SignatureException;
 import org.paseto4j.commons.PrivateKey;
 import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.SecretKey;
-
-import java.security.SignatureException;
 
 public class Paseto {
 
