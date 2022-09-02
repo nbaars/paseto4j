@@ -2,122 +2,56 @@
 layout: default
 ---
 
-Text can be **bold**, _italic_, or ~~strikethrough~~.
+# Introduction to Paseto4j
 
-[Link to another page](./another-page.html).
+Paseto4j is a Java implementation of the [PASETO](https://paseto.io) specification. Paseto stands for **P**latform-**A**gnostic **SE**curity **TO**kens
 
-There should be whitespace between paragraphs.
+# What is Paseto?
 
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
+Paseto (*P*latform-*A*gnostic *SE*curity *TO*kens) is a specification and reference implementation for secure stateless tokens.
 
-# Header 1
+# Usage
 
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
+Using the library is easy; choose which version you want to use and add it to the project. The latest version can be found [here](https://mvnrepository.com/artifact/io.github.nbaars)
 
-## Header 2
+## Add to project
 
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
+Paseto consists of multiple versions, in Paseto4j all the versions are packaged in different jar files.
 
-### Header 3
+Add this version to your project. For example, for Maven, you can add:
 
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
+```xml
+<dependency>
+  <groupId>io.github.nbaars</groupId>
+  <artifactId>paseto4j-version{1,2,3}</artifactId>
+  <version>${paseto4j.version}</version>
+</dependency>
 ```
 
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
+## Using V{1,2,3}.local
+
+Each version works in the same way:
+
+```java
+private static final String TOKEN = "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}";
+private static final String FOOTER = "Paragon Initiative Enterprises";
+
+byte[] secretKey = ... 
+        
+var encryptedToken = Paseto.encrypt(new SecretKey(secretKey, V1), TOKEN, FOOTER);
+Paseto.decrypt(new SecretKey(secretKey, V1), encryptedToken, FOOTER);
 ```
 
-#### Header 4
+The `footer` is optional and will default to `""`. Version 3 supports an implicit assertion as well, which is optional and will default to `""`.
 
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
+## Using V{1,2,3}.public
 
-##### Header 5
+Each version works in the same way:
 
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
+```java
+private static final String TOKEN = "{\"data\":\"this is a signed message\",\"expires\":\"2019-01-01T00:00:00+00:00\"}";
+private static final String FOOTER = "Paragon Initiative Enterprises";
 
-###### Header 6
-
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
-
-### There's a horizontal rule below this.
-
-* * *
-
-### Here is an unordered list:
-
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
-
-### And an ordered list:
-
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-    - level 2 item
-    - level 2 item
-        - level 3 item
-        - level 3 item
-- level 1 item
-    - level 2 item
-    - level 2 item
-    - level 2 item
-- level 1 item
-    - level 2 item
-    - level 2 item
-- level 1 item
-
-### Small image
-
-![Octocat](https://github.githubassets.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![Branching](https://guides.github.com/activities/hello-world/branching.png)
-
-
-### Definition lists can be used with HTML syntax.
-
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
-
-```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
-```
-
-```
-The final element.
+var signedToken = Paseto.sign(new PrivateKey(privateKey, V1), TOKEN, FOOTER);
+Paseto.parse(new PublicKey(publicKey, V1), signedToken, FOOTER);x
 ```
