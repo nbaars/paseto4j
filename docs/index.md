@@ -2,13 +2,9 @@
 layout: default
 ---
 
-# Introduction to Paseto4j
-
-Paseto4j is a Java implementation of the [PASETO](https://paseto.io) specification. Paseto stands for **P**latform-**A**gnostic **SE**curity **TO**kens
-
 # What is Paseto?
 
-Paseto (*P*latform-*A*gnostic *SE*curity *TO*kens) is a specification and reference implementation for secure stateless tokens.
+Paseto (**P**latform-**A**gnostic **SE**curity **TO**kens) is a specification and reference implementation for secure stateless tokens.
 
 # Usage
 
