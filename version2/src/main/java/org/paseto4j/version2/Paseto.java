@@ -34,30 +34,28 @@ public class Paseto {
   private Paseto() {}
 
   /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt
    */
   public static String encrypt(SecretKey key, String payload, String footer) {
     return PasetoLocal.encrypt(key, payload, footer);
   }
 
   /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#decrypt
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version2.md#decrypt
    */
   public static String decrypt(SecretKey key, String signedMessage, String footer) {
     return PasetoLocal.decrypt(key, signedMessage, footer);
   }
 
   /**
-   * Sign the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#sign
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version2.md#sign
    */
   public static String sign(PrivateKey privateKey, String payload, String footer) {
     return PasetoPublic.sign(privateKey, payload, footer);
   }
 
   /**
-   * Parse the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#verify
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version2.md#verify
    */
   public static String parse(PublicKey publicKey, String signedMessage, String footer)
       throws SignatureException {

@@ -24,40 +24,39 @@
 
 package org.paseto4j.version1;
 
-import java.security.SignatureException;
 import org.paseto4j.commons.PrivateKey;
 import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.SecretKey;
+
+import java.security.SignatureException;
 
 public class Paseto {
 
   private Paseto() {}
 
   /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#encrypt
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version1.md#encrypt
    */
   public static String encrypt(SecretKey key, String payload, String footer) {
     return org.paseto4j.version1.PasetoLocal.encrypt(key, payload, footer);
   }
 
   /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#decrypt
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version1.md#decrypt
    */
   public static String decrypt(SecretKey key, String signedMessage, String footer) {
     return PasetoLocal.decrypt(key, signedMessage, footer);
   }
 
   /**
-   * Sign the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version1.md#sign
    */
   public static String sign(PrivateKey privateKey, String payload, String footer) {
     return PasetoPublic.sign(privateKey, payload, footer);
   }
 
   /**
-   * Parse the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version1.md#verify
    */
   public static String parse(PublicKey publicKey, String signedMessage, String footer)
       throws SignatureException {

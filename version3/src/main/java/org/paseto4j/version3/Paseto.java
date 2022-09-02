@@ -34,48 +34,51 @@ public class Paseto {
   private Paseto() {}
 
   /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#encrypt
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
    */
   public static String encrypt(SecretKey key, String payload, String footer) {
     return PasetoLocal.encrypt(key, payload, footer, "");
   }
 
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#encrypt
+   */
   public static String encrypt(
       SecretKey key, String payload, String footer, String implicitAssertion) {
     return PasetoLocal.encrypt(key, payload, footer, implicitAssertion);
   }
 
   /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#decrypt
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
    */
   public static String decrypt(SecretKey key, String signedMessage, String footer) {
     return PasetoLocal.decrypt(key, signedMessage, footer);
   }
 
+  /**
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
+   */
   public static String decrypt(
       SecretKey key, String signedMessage, String footer, String implicitAssertion) {
     return PasetoLocal.decrypt(key, signedMessage, footer, implicitAssertion);
   }
 
   /**
-   * Sign the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
    */
   public static String sign(PrivateKey privateKey, String payload) {
     return sign(privateKey, payload, "");
   }
 
   /**
-   * Sign the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
    */
   public static String sign(PrivateKey privateKey, String payload, String footer) {
     return sign(privateKey, payload, footer, "");
   }
 
   /**
-   * Sign the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
    */
   public static String sign(
       PrivateKey privateKey, String payload, String footer, String implicitAssertion) {
@@ -83,16 +86,14 @@ public class Paseto {
   }
 
   /**
-   * Parse the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify
    */
   public static String parse(PublicKey publicKey, String signedMessage) throws SignatureException {
     return parse(publicKey, signedMessage, "");
   }
 
   /**
-   * Parse the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify
    */
   public static String parse(PublicKey publicKey, String signedMessage, String footer)
       throws SignatureException {
@@ -100,8 +101,7 @@ public class Paseto {
   }
 
   /**
-   * Parse the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
+   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify
    */
   public static String parse(
       PublicKey publicKey, String signedMessage, String footer, String implicitAssertion)
