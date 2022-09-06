@@ -26,15 +26,19 @@ package org.paseto4j.version1;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
-import static java.util.Base64.getUrlEncoder;
 import static java.util.Objects.requireNonNull;
-import static org.paseto4j.commons.Conditions.isNullOrEmpty;
 import static org.paseto4j.commons.Conditions.verify;
+import static org.paseto4j.commons.Purpose.PURPOSE_PUBLIC;
+import static org.paseto4j.commons.Version.V1;
 
-import java.security.MessageDigest;
 import java.security.SignatureException;
 import java.util.Arrays;
-import org.paseto4j.commons.*;
+import org.paseto4j.commons.ByteUtils;
+import org.paseto4j.commons.PreAuthenticationEncoder;
+import org.paseto4j.commons.PrivateKey;
+import org.paseto4j.commons.PublicKey;
+import org.paseto4j.commons.TokenIn;
+import org.paseto4j.commons.TokenOut;
 
 class PasetoPublic {
 
@@ -49,9 +53,7 @@ class PasetoPublic {
   static String sign(PrivateKey privateKey, String payload, String footer) {
     requireNonNull(privateKey);
     requireNonNull(payload);
-    verify(
-        privateKey.isValidFor(Version.V1, Purpose.PURPOSE_PUBLIC),
-        "Key is not valid for purpose and version");
+    verify(privateKey.isValidFor(V1, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
     // 2
     byte[] m2 =
@@ -62,19 +64,9 @@ class PasetoPublic {
     byte[] signature = CryptoFunctions.signRsaPssSha384(privateKey.material, m2);
 
     // 4
-    String signedToken =
-        PUBLIC
-            + getUrlEncoder()
-                .withoutPadding()
-                .encodeToString(ByteUtils.concat(payload.getBytes(UTF_8), signature));
-
-    if (!isNullOrEmpty(footer)) {
-      signedToken =
-          signedToken
-              + "."
-              + getUrlEncoder().withoutPadding().encodeToString(footer.getBytes(UTF_8));
-    }
-    return signedToken;
+    return new TokenOut(
+            V1, PURPOSE_PUBLIC, ByteUtils.concat(payload.getBytes(UTF_8), signature), footer)
+        .toString();
   }
 
   /**
@@ -85,24 +77,13 @@ class PasetoPublic {
       throws SignatureException {
     requireNonNull(publicKey);
     requireNonNull(signedMessage);
-    verify(
-        publicKey.isValidFor(Version.V1, Purpose.PURPOSE_PUBLIC),
-        "Key is not valid for purpose and version");
+    verify(publicKey.isValidFor(V1, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
-    String[] tokenParts = signedMessage.split("\\.");
-
-    // 1
-    if (!isNullOrEmpty(footer)) {
-      verify(
-          MessageDigest.isEqual(getUrlDecoder().decode(tokenParts[3]), footer.getBytes(UTF_8)),
-          "footer does not match");
-    }
-
-    // 2
-    verify(signedMessage.startsWith(PUBLIC), "Token should start with " + PUBLIC);
+    // 1 & 2
+    TokenIn token = new TokenIn(signedMessage, V1, PURPOSE_PUBLIC, footer);
 
     // 3
-    byte[] sm = getUrlDecoder().decode(tokenParts[2]);
+    byte[] sm = getUrlDecoder().decode(token.getPayload());
     byte[] signature = Arrays.copyOfRange(sm, sm.length - 256, sm.length);
     byte[] message = Arrays.copyOfRange(sm, 0, sm.length - 256);
 

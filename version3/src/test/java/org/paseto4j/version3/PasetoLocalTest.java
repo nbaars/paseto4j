@@ -129,7 +129,7 @@ class PasetoLocalTest {
             hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"),
             Version.V3);
     String encryptedToken =
-        PasetoLocal.encrypt(
+        Paseto.encrypt(
             key,
             "{\"data\":\"this is a signed message\",\"exp\":\"2019-01-01T00:00:00+00:00\"}",
             "{\"kid\":\"UbkK8Y6iv4GZhFp6Tx3IWLWLfNXSEvJcdT3zdR65YZxo\"}");
@@ -149,7 +149,7 @@ class PasetoLocalTest {
             hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"),
             Version.V3);
     String encryptedToken =
-        PasetoLocal.encrypt(
+        Paseto.encrypt(
             key,
             "{\"data\":\"this is a signed message\",\"exp\":\"2019-01-01T00:00:00+00:00\"}",
             "Test case footer");
