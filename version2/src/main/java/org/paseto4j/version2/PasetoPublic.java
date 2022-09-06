@@ -89,7 +89,7 @@ class PasetoPublic {
         publicKey.isValidFor(Version.V2, Purpose.PURPOSE_PUBLIC),
         "Key is not valid for purpose and version");
 
-    String[] tokenParts = signedMessage.split("\\.");
+    String[] tokenParts = signedMessage.split("\\.", -1);
 
     // 1
     if (!isNullOrEmpty(footer)) {
@@ -113,7 +113,7 @@ class PasetoPublic {
     // 5
     verifySignature(publicKey, m2, signature);
 
-    return new String(message);
+    return new String(message, UTF_8);
   }
 
   private static void verifySignature(PublicKey key, byte[] message, byte[] signature)
