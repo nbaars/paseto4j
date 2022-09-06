@@ -24,8 +24,14 @@
 
 package org.paseto4j.version1;
 
+import static org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME;
+
 import java.io.IOException;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SecureRandom;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -41,7 +47,6 @@ import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
 import org.bouncycastle.crypto.signers.PSSSigner;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.paseto4j.commons.Conditions;
 
 public class CryptoFunctions {
@@ -53,11 +58,7 @@ public class CryptoFunctions {
    */
   public static byte[] randomBytes() {
     byte[] random = new byte[32];
-    try {
-      SecureRandom.getInstance("SHA1PRNG").nextBytes(random);
-    } catch (NoSuchAlgorithmException e) {
-      throw new IllegalStateException(e);
-    }
+    new SecureRandom().nextBytes(random);
     return random;
   }
 
@@ -70,7 +71,7 @@ public class CryptoFunctions {
    */
   public static byte[] hmac384(byte[] key, byte[] message) {
     try {
-      Mac mac = Mac.getInstance("HMac-SHA384", "BC");
+      Mac mac = Mac.getInstance("HMac-SHA384", PROVIDER_NAME);
       SecretKey secretKey = new SecretKeySpec(key, "HMac-SHA384");
 
       mac.init(secretKey);
@@ -108,7 +109,7 @@ public class CryptoFunctions {
   private static byte[] encryptDecrypt(
       boolean encryption, byte[] key, byte[] nonce, byte[] message) {
     try {
-      Cipher aes = Cipher.getInstance("AES/CTR/NoPadding", BouncyCastleProvider.PROVIDER_NAME);
+      Cipher aes = Cipher.getInstance("AES/CTR/NoPadding", PROVIDER_NAME);
       SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
 
       aes.init(
@@ -121,14 +122,6 @@ public class CryptoFunctions {
     }
   }
 
-  /**
-   * Apply HKDF with SHA-384
-   *
-   * @param key the key to be used
-   * @param salt the salt
-   * @param info info
-   * @return
-   */
   public static byte[] hkdfSha384(byte[] key, byte[] salt, byte[] info) {
     Digest digest = new SHA384Digest();
     HKDFBytesGenerator hkdf = new HKDFBytesGenerator(digest);
