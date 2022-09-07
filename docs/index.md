@@ -4,7 +4,7 @@ layout: default
 
 # What is Paseto?
 
-Paseto (**P**latform-**A**gnostic **SE**curity **TO**kens) is a specification and reference implementation for secure stateless tokens.
+[Paseto](https://paseto.io) (**P**latform-**A**gnostic **SE**curity **TO**kens) is a specification and reference implementation for secure stateless tokens.
 
 # Usage
 
