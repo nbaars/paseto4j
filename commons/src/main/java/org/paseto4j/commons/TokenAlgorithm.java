@@ -1,8 +1,6 @@
 package org.paseto4j.commons;
 
-/**
- * Wrapper class for the chosen Paseto version
- */
+/** Wrapper class for the chosen Paseto version */
 public class TokenAlgorithm {
 
   private final Version version;
