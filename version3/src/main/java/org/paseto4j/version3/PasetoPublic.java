@@ -45,7 +45,7 @@ import org.paseto4j.commons.ByteUtils;
 import org.paseto4j.commons.PreAuthenticationEncoder;
 import org.paseto4j.commons.PrivateKey;
 import org.paseto4j.commons.PublicKey;
-import org.paseto4j.commons.TokenIn;
+import org.paseto4j.commons.Token;
 
 class PasetoPublic {
 
@@ -108,7 +108,7 @@ class PasetoPublic {
     verify(publicKey.isValidFor(V3, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
     // 1 and 2
-    TokenIn token = new TokenIn(signedMessage, V3, PURPOSE_PUBLIC, footer);
+    Token token = new Token(signedMessage, V3, PURPOSE_PUBLIC, footer);
 
     // 3
     byte[] sm = getUrlDecoder().decode(token.getPayload());
