@@ -16,60 +16,59 @@ class TokenTest {
 
   @Test
   void tokenShouldConsistOfMinimalThreeParts() {
-    assertThrows(PasetoException.class, () -> new TokenIn("v1.local.", V1, PURPOSE_LOCAL, null));
+    assertThrows(PasetoException.class, () -> new Token("v1.local.", V1, PURPOSE_LOCAL, null));
   }
 
   @Test
   void emptyPartsShouldNotBeAllowed() {
-    assertThrows(PasetoException.class, () -> new TokenIn("..", V1, PURPOSE_LOCAL, null));
-    assertThrows(PasetoException.class, () -> new TokenIn("v1.\"\".", V1, PURPOSE_LOCAL, null));
+    assertThrows(PasetoException.class, () -> new Token("..", V1, PURPOSE_LOCAL, null));
+    assertThrows(PasetoException.class, () -> new Token("v1.\"\".", V1, PURPOSE_LOCAL, null));
   }
 
   @Test
   void tokenHeaderShouldMatch() {
-    assertDoesNotThrow(() -> new TokenIn("v1.local.dfksjlf", V1, PURPOSE_LOCAL, null));
+    assertDoesNotThrow(() -> new Token("v1.local.dfksjlf", V1, PURPOSE_LOCAL, null));
   }
 
   @Test
   void tokenDoesNotStartWithCorrectHeader() {
     assertThrows(
-        PasetoException.class, () -> new TokenIn("v1.local.dfksjlf", V1, PURPOSE_PUBLIC, null));
+        PasetoException.class, () -> new Token("v1.local.dfksjlf", V1, PURPOSE_PUBLIC, null));
   }
 
   @Test
   void noExpectedFooterPassed() {
     assertThrows(
-        PasetoException.class, () -> new TokenIn("v1.local.dfksjlf.", V1, PURPOSE_LOCAL, null));
+        PasetoException.class, () -> new Token("v1.local.dfksjlf.", V1, PURPOSE_LOCAL, null));
     assertThrows(
         PasetoException.class,
-        () -> new TokenIn("v1.local.dfksjlf", V1, PURPOSE_LOCAL, "expectedFooter"));
+        () -> new Token("v1.local.dfksjlf", V1, PURPOSE_LOCAL, "expectedFooter"));
   }
 
   @Test
   void expectedFooterPassedButNotInTheToken() {
     assertThrows(
-        PasetoException.class, () -> new TokenIn("v1.local.dfksjlf.", V1, PURPOSE_LOCAL, "footer"));
+        PasetoException.class, () -> new Token("v1.local.dfksjlf.", V1, PURPOSE_LOCAL, "footer"));
   }
 
   @Test
   void expectedFooterEmptyOrNull() {
     assertThrows(
-        PasetoException.class, () -> new TokenIn("v1.local.dfksjlf.", V1, PURPOSE_LOCAL, ""));
+        PasetoException.class, () -> new Token("v1.local.dfksjlf.", V1, PURPOSE_LOCAL, ""));
     assertThrows(
-        PasetoException.class, () -> new TokenIn("v1.local.dfksjlf.", V1, PURPOSE_LOCAL, null));
+        PasetoException.class, () -> new Token("v1.local.dfksjlf.", V1, PURPOSE_LOCAL, null));
   }
 
   @Test
   void footerDoesNotMatch() {
-    assertThrows(
-        PasetoException.class, () -> new TokenIn(token, V1, PURPOSE_LOCAL, "wrong_footer"));
+    assertThrows(PasetoException.class, () -> new Token(token, V1, PURPOSE_LOCAL, "wrong_footer"));
   }
 
   @Test
   void footerDoesMatch() {
     assertDoesNotThrow(
         () ->
-            new TokenIn(
+            new Token(
                 token,
                 V1,
                 PURPOSE_LOCAL,
@@ -78,8 +77,8 @@ class TokenTest {
 
   @Test
   void shouldReturnPayload() {
-    TokenIn pasetoToken =
-        new TokenIn(
+    Token pasetoToken =
+        new Token(
             token, V1, PURPOSE_LOCAL, "{\"kid\":\"UbkK8Y6iv4GZhFp6Tx3IWLWLfNXSEvJcdT3zdR65YZxo\"}");
 
     Assertions.assertEquals(

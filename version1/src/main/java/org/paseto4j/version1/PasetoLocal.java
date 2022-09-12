@@ -43,7 +43,7 @@ import java.security.Security;
 import java.util.Arrays;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.paseto4j.commons.SecretKey;
-import org.paseto4j.commons.TokenIn;
+import org.paseto4j.commons.Token;
 import org.paseto4j.commons.TokenOut;
 
 class PasetoLocal {
@@ -52,24 +52,18 @@ class PasetoLocal {
     Security.addProvider(new BouncyCastleProvider());
   }
 
-  private static final String LOCAL = "v1.local.";
-
   private PasetoLocal() {}
 
-  /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#encrypt
-   */
   public static String encrypt(SecretKey key, String payload, String footer) {
     return encrypt(key, randomBytes(), payload, footer);
   }
 
-  /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#encrypt
-   */
   static String encrypt(SecretKey key, byte[] randomKey, String payload, String footer) {
     requireNonNull(key);
     requireNonNull(payload);
     verify(key.isValidFor(V1, PURPOSE_LOCAL), "Key is not valid for purpose and version");
+
+    TokenOut token = new TokenOut(V1, PURPOSE_LOCAL);
 
     // 3
     byte[] nonce = getNonce(payload.getBytes(UTF_8), randomKey);
@@ -83,13 +77,13 @@ class PasetoLocal {
         encryptAesCtr(ek, Arrays.copyOfRange(nonce, 16, 32), payload.getBytes(UTF_8));
 
     // 6
-    byte[] preAuth = encode(LOCAL.getBytes(UTF_8), nonce, cipherText, footer.getBytes(UTF_8));
+    byte[] preAuth = encode(token.header(), nonce, cipherText, footer.getBytes(UTF_8));
 
     // 7
     byte[] t = hmac384(ak, preAuth);
 
     // 8
-    return new TokenOut(V1, PURPOSE_LOCAL, concat(nonce, cipherText, t), footer).toString();
+    return token.payload(concat(nonce, cipherText, t)).footer(footer).doFinal();
   }
 
   private static byte[] getNonce(byte[] payload, byte[] randomKey) {
@@ -115,7 +109,7 @@ class PasetoLocal {
     verify(key.isValidFor(V1, PURPOSE_LOCAL), "Key is not valid for purpose and version");
 
     // 1 & 2
-    TokenIn pasetoToken = new TokenIn(token, V1, PURPOSE_LOCAL, footer);
+    Token pasetoToken = new Token(token, V1, PURPOSE_LOCAL, footer);
 
     // 3
     byte[] ct = getUrlDecoder().decode(pasetoToken.getPayload());
@@ -128,7 +122,7 @@ class PasetoLocal {
     byte[] ak = authenticationKey(key, nonce);
 
     // 5
-    byte[] preAuth = encode(LOCAL.getBytes(UTF_8), nonce, c, footer.getBytes(UTF_8));
+    byte[] preAuth = encode(pasetoToken.header(), nonce, c, footer.getBytes(UTF_8));
 
     // 6
     byte[] t2 = hmac384(ak, preAuth);

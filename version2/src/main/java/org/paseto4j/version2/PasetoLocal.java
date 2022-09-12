@@ -24,18 +24,6 @@
 
 package org.paseto4j.version2;
 
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.crypto.sodium.GenericHash;
-import org.apache.tuweni.crypto.sodium.XChaCha20Poly1305;
-import org.paseto4j.commons.PasetoException;
-import org.paseto4j.commons.PreAuthenticationEncoder;
-import org.paseto4j.commons.SecretKey;
-import org.paseto4j.commons.TokenIn;
-import org.paseto4j.commons.TokenOut;
-
-import java.util.Arrays;
-import java.util.Base64;
-
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
 import static org.apache.tuweni.bytes.Bytes.concatenate;
@@ -44,27 +32,32 @@ import static org.paseto4j.commons.Conditions.verify;
 import static org.paseto4j.commons.Purpose.PURPOSE_LOCAL;
 import static org.paseto4j.commons.Version.V2;
 
+import java.util.Arrays;
+import java.util.Base64;
+import org.apache.tuweni.bytes.Bytes;
+import org.apache.tuweni.crypto.sodium.GenericHash;
+import org.apache.tuweni.crypto.sodium.XChaCha20Poly1305;
+import org.paseto4j.commons.PasetoException;
+import org.paseto4j.commons.PreAuthenticationEncoder;
+import org.paseto4j.commons.SecretKey;
+import org.paseto4j.commons.Token;
+import org.paseto4j.commons.TokenOut;
+
 class PasetoLocal {
 
   private PasetoLocal() {}
 
-  private static final String LOCAL = "v2.local.";
-
-  /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt
-   */
   static String encrypt(SecretKey key, String payload, String footer) {
     return encrypt(key, Bytes.random(XChaCha20Poly1305.Nonce.length()).toArray(), payload, footer);
   }
 
-  /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#encrypt
-   */
   static String encrypt(SecretKey key, byte[] randomKey, String payload, String footer) {
     requireNonNull(key);
     requireNonNull(payload);
     verify(key.isValidFor(V2, PURPOSE_LOCAL), "Key is not valid for purpose and version");
     verify(key.hasLength(32), "key should be 32 bytes");
+
+    TokenOut token = new TokenOut(V2, PURPOSE_LOCAL);
 
     // 3
     byte[] nonce =
@@ -75,8 +68,7 @@ class PasetoLocal {
             .bytesArray();
 
     // 4
-    byte[] preAuth =
-        PreAuthenticationEncoder.encode(LOCAL.getBytes(UTF_8), nonce, footer.getBytes(UTF_8));
+    byte[] preAuth = PreAuthenticationEncoder.encode(token.header(), nonce, footer.getBytes(UTF_8));
 
     // 5
     byte[] cipherText =
@@ -87,21 +79,19 @@ class PasetoLocal {
             XChaCha20Poly1305.Nonce.fromBytes(nonce));
 
     // 6
-    return new TokenOut(
-            V2, PURPOSE_LOCAL, concatenate(wrap(nonce), wrap(cipherText)).toArray(), footer)
-        .toString();
+    return token
+        .payload(concatenate(wrap(nonce), wrap(cipherText)).toArray())
+        .footer(footer)
+        .doFinal();
   }
 
-  /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version2.md#decrypt
-   */
   static String decrypt(SecretKey key, String token, String footer) {
     requireNonNull(key);
     requireNonNull(token);
     verify(key.isValidFor(V2, PURPOSE_LOCAL), "Key is not valid for purpose and version");
 
     // 1 and 2
-    TokenIn pasetoToken = new TokenIn(token, V2, PURPOSE_LOCAL, footer);
+    Token pasetoToken = new Token(token, V2, PURPOSE_LOCAL, footer);
 
     // 3
     byte[] ct = Base64.getUrlDecoder().decode(pasetoToken.getPayload());
@@ -110,7 +100,7 @@ class PasetoLocal {
 
     // 4
     byte[] preAuth =
-        PreAuthenticationEncoder.encode(LOCAL.getBytes(UTF_8), nonce, footer.getBytes(UTF_8));
+        PreAuthenticationEncoder.encode(pasetoToken.header(), nonce, footer.getBytes(UTF_8));
 
     // 5
     byte[] message =

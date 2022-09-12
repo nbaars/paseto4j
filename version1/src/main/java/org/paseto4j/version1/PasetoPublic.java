@@ -37,12 +37,10 @@ import org.paseto4j.commons.ByteUtils;
 import org.paseto4j.commons.PreAuthenticationEncoder;
 import org.paseto4j.commons.PrivateKey;
 import org.paseto4j.commons.PublicKey;
-import org.paseto4j.commons.TokenIn;
+import org.paseto4j.commons.Token;
 import org.paseto4j.commons.TokenOut;
 
 class PasetoPublic {
-
-  private static final String PUBLIC = "v1.public.";
 
   private PasetoPublic() {}
 
@@ -55,18 +53,21 @@ class PasetoPublic {
     requireNonNull(payload);
     verify(privateKey.isValidFor(V1, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
+    TokenOut token = new TokenOut(V1, PURPOSE_PUBLIC);
+
     // 2
     byte[] m2 =
         PreAuthenticationEncoder.encode(
-            PUBLIC.getBytes(UTF_8), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
+            token.header(), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
 
     // 3
     byte[] signature = CryptoFunctions.signRsaPssSha384(privateKey.material, m2);
 
     // 4
-    return new TokenOut(
-            V1, PURPOSE_PUBLIC, ByteUtils.concat(payload.getBytes(UTF_8), signature), footer)
-        .toString();
+    return token
+        .payload(ByteUtils.concat(payload.getBytes(UTF_8), signature))
+        .footer(footer)
+        .doFinal();
   }
 
   /**
@@ -80,7 +81,7 @@ class PasetoPublic {
     verify(publicKey.isValidFor(V1, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
     // 1 & 2
-    TokenIn token = new TokenIn(signedMessage, V1, PURPOSE_PUBLIC, footer);
+    Token token = new Token(signedMessage, V1, PURPOSE_PUBLIC, footer);
 
     // 3
     byte[] sm = getUrlDecoder().decode(token.getPayload());
@@ -88,8 +89,7 @@ class PasetoPublic {
     byte[] message = Arrays.copyOfRange(sm, 0, sm.length - 256);
 
     // 4
-    byte[] m2 =
-        PreAuthenticationEncoder.encode(PUBLIC.getBytes(UTF_8), message, footer.getBytes(UTF_8));
+    byte[] m2 = PreAuthenticationEncoder.encode(token.header(), message, footer.getBytes(UTF_8));
 
     // 5
     verifySignature(publicKey, m2, signature);
