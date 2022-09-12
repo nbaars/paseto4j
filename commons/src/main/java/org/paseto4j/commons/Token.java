@@ -1,12 +1,12 @@
 package org.paseto4j.commons;
 
-import java.security.MessageDigest;
-
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static org.paseto4j.commons.Conditions.isNullOrEmpty;
 import static org.paseto4j.commons.Conditions.verify;
+
+import java.security.MessageDigest;
 
 /** Representation of a Paseto token */
 public class Token {
