@@ -28,7 +28,6 @@
             <artifactId>bcprov-jdk15on</artifactId>
             <version>${bouncy.castle.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.github.nbaars</groupId>
             <artifactId>paseto4j-commons</artifactId>

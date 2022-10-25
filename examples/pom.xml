@@ -21,15 +21,14 @@
     <dependencies>
         <dependency>
             <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-version1</artifactId>
+            <artifactId>paseto4j-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-commons</artifactId>
+            <artifactId>paseto4j-version1</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <!-- Start: only for Paseto Version 2 -->
         <dependency>
             <groupId>io.github.nbaars</groupId>
@@ -38,15 +37,14 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-crypto</artifactId>
+            <artifactId>tuweni-bytes</artifactId>
             <version>${tuweni.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-bytes</artifactId>
+            <artifactId>tuweni-crypto</artifactId>
             <version>${tuweni.version}</version>
         </dependency>
         <!-- End: only for Paseto Version 2 -->
-
     </dependencies>
 </project>
