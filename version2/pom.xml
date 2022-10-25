@@ -32,7 +32,6 @@
             <artifactId>tuweni-crypto</artifactId>
             <version>${tuweni.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.github.nbaars</groupId>
             <artifactId>paseto4j-commons</artifactId>
@@ -40,6 +39,5 @@
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 </project>
