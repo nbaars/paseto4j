@@ -1,12 +1,16 @@
-<project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>io.github.nbaars</groupId>
         <artifactId>paseto4j</artifactId>
         <version>0.0.33-SNAPSHOT</version>
     </parent>
+
     <artifactId>paseto4j-examples</artifactId>
     <packaging>jar</packaging>
+
     <name>paseto4j-examples</name>
 
     <properties>
@@ -45,5 +49,4 @@
         <!-- End: only for Paseto Version 2 -->
 
     </dependencies>
-
 </project>

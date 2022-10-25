@@ -31,8 +31,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '11'
-      - name: Check code formattting
-        run: ./mvnw --no-transfer-progress com.spotify.fmt:fmt-maven-plugin:check
+      - name: Check code formatting
+        run: |
+          ./mvnw --no-transfer-progress com.spotify.fmt:fmt-maven-plugin:check
+          ./mvnw --no-transfer-progress tidy:check
       - name: Build
         run: ./mvnw --no-transfer-progress clean verify
       - name: SonarCloud Scan
