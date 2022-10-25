@@ -33,7 +33,23 @@ use Paseto in [an insecure way](https://auth0.com/blog/critical-vulnerabilities-
 
 # Installation
 
-There are two version available in Maven Central.
+There are three version available in Maven Central.
+
+## Version 3
+
+Version 3 is composed of NIST-approved algorithms, and will operate on tokens with the *v3* version header.
+
+Add the following dependency to your project:
+
+```
+<!-- https://mvnrepository.com/artifact/io.github.nbaars/paseto4j-version3 -->
+<dependency>
+    <groupId>io.github.nbaars</groupId>
+    <artifactId>paseto4j-version3</artifactId>
+    <version>${paseto4j.version}</version>
+</dependency>
+```
+
 
 ## Version 2
 
@@ -48,7 +64,7 @@ Add the following dependency to your project:
 <dependency>
     <groupId>io.github.nbaars</groupId>
     <artifactId>paseto4j-version2</artifactId>
-    <version>0.0.29</version>
+    <version>${paseto4j.version}</version>
 </dependency>
 ```
 
@@ -61,7 +77,7 @@ Add the following dependency to your project:
 <dependency>
     <groupId>io.github.nbaars</groupId>
     <artifactId>paseto4j-version1</artifactId>
-    <version>0.0.29</version>
+    <version>${paseto4j.version}</version>
 </dependency>
 ```
 
