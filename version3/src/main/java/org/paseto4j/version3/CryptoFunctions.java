@@ -60,11 +60,7 @@ public class CryptoFunctions {
    */
   public static byte[] randomBytes() {
     byte[] random = new byte[32];
-    try {
-      SecureRandom.getInstance("SHA1PRNG").nextBytes(random);
-    } catch (NoSuchAlgorithmException e) {
-      throw new IllegalStateException(e);
-    }
+    new SecureRandom().nextBytes(random);
     return random;
   }
 
