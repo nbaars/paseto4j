@@ -26,7 +26,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
-            <version>${bouncy.castle.version}</version>
+            <version>1.70</version>
         </dependency>
         <dependency>
             <groupId>io.github.nbaars</groupId>
