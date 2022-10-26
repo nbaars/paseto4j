@@ -35,16 +35,7 @@
             <artifactId>paseto4j-version2</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-bytes</artifactId>
-            <version>${tuweni.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-crypto</artifactId>
-            <version>${tuweni.version}</version>
-        </dependency>
+
         <!-- End: only for Paseto Version 2 -->
     </dependencies>
 </project>
