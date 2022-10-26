@@ -80,7 +80,13 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.13.4.2</version>
+                <version>2.14.0-rc2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jnr</groupId>
+                <artifactId>jffi</artifactId>
+                <version>1.2.17</version>
+                <classifier>native</classifier>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
@@ -98,13 +104,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.3.0-M1</version>
+            <version>5.3.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <version>5.3.0-M1</version>
+            <version>5.3.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -199,6 +205,9 @@
                         </goals>
                         <configuration>
                             <rules>
+                                <reactorModuleConvergence></reactorModuleConvergence>
+                                <banDuplicatePomDependencyVersions></banDuplicatePomDependencyVersions>
+                                <dependencyConvergence></dependencyConvergence>
                                 <requireReleaseDeps>
                                     <message>No Snapshots Allowed!</message>
                                     <onlyWhenRelease>true</onlyWhenRelease>
@@ -254,6 +263,23 @@
                             <goal>pom</goal>
                         </goals>
                         <phase>validate</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.gaul</groupId>
+                <artifactId>modernizer-maven-plugin</artifactId>
+                <version>2.4.0</version>
+                <configuration>
+                    <javaVersion>${maven.compiler.target}</javaVersion>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>modernizer</id>
+                        <goals>
+                            <goal>modernizer</goal>
+                        </goals>
+                        <phase>verify</phase>
                     </execution>
                 </executions>
             </plugin>
