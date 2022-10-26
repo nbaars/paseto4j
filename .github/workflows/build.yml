@@ -5,7 +5,7 @@ on:
       - '.txt'
       - '*.MD'
       - '*.md'
-      - 'LICENSE'
+      - 'LICENSE.txt'
   push:
     branches:
       - main
