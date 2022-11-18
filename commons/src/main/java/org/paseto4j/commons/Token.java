@@ -7,6 +7,7 @@ import static org.paseto4j.commons.Conditions.isNullOrEmpty;
 import static org.paseto4j.commons.Conditions.verify;
 
 import java.security.MessageDigest;
+import java.util.Locale;
 
 /** Representation of a Paseto token */
 public class Token {
@@ -42,7 +43,9 @@ public class Token {
 
   private void validateTokenParts() {
     for (int i = 0; i < 3; i++) {
-      verify(!isNullOrEmpty(tokenParts[i]), format("Token part %d cannot be null or empty", i));
+      verify(
+          !isNullOrEmpty(tokenParts[i]),
+          format(Locale.ROOT, "Token part %d cannot be null or empty", i));
     }
   }
 

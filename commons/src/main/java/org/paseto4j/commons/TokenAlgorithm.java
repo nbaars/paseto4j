@@ -1,5 +1,7 @@
 package org.paseto4j.commons;
 
+import java.util.Locale;
+
 /** Wrapper class for the chosen Paseto version */
 public class TokenAlgorithm {
 
@@ -17,6 +19,6 @@ public class TokenAlgorithm {
    * @return the header in the format: {version}.{purpose}.
    */
   public String header() {
-    return String.format("%s.%s.", version.toString(), purpose.toString());
+    return String.format(Locale.ROOT, "%s.%s.", version.toString(), purpose.toString());
   }
 }

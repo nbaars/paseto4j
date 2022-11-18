@@ -26,9 +26,7 @@ package org.paseto4j.version3;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
-import static java.util.Base64.getUrlEncoder;
 import static java.util.Objects.requireNonNull;
-import static org.paseto4j.commons.Conditions.isNullOrEmpty;
 import static org.paseto4j.commons.Conditions.verify;
 import static org.paseto4j.commons.Purpose.PURPOSE_PUBLIC;
 import static org.paseto4j.commons.Version.V3;
@@ -46,10 +44,9 @@ import org.paseto4j.commons.PreAuthenticationEncoder;
 import org.paseto4j.commons.PrivateKey;
 import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.Token;
+import org.paseto4j.commons.TokenOut;
 
 class PasetoPublic {
-
-  private static final String HEADER = String.format("%s.%s.", V3, PURPOSE_PUBLIC);
 
   private PasetoPublic() {}
 
@@ -60,8 +57,9 @@ class PasetoPublic {
       PrivateKey privateKey, String payload, String footer, String implicitAssertion) {
     requireNonNull(privateKey);
     requireNonNull(payload);
-    // 1
     verify(privateKey.isValidFor(V3, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
+
+    TokenOut token = new TokenOut(V3, PURPOSE_PUBLIC);
 
     // 3
     byte[] pk = publicKey(privateKey);
@@ -72,7 +70,7 @@ class PasetoPublic {
     byte[] m2 =
         PreAuthenticationEncoder.encode(
             pk,
-            HEADER.getBytes(UTF_8),
+            token.header(),
             payload.getBytes(UTF_8),
             footer.getBytes(UTF_8),
             implicitAssertion.getBytes(UTF_8));
@@ -82,18 +80,10 @@ class PasetoPublic {
     verify(signature.length == 96, "The length of the signature **MUST** be 96 bytes long");
 
     // 5
-    String signedToken =
-        HEADER
-            + getUrlEncoder()
-                .withoutPadding()
-                .encodeToString(ByteUtils.concat(payload.getBytes(UTF_8), signature));
-    if (!isNullOrEmpty(footer)) {
-      signedToken =
-          signedToken
-              + "."
-              + getUrlEncoder().withoutPadding().encodeToString(footer.getBytes(UTF_8));
-    }
-    return signedToken;
+    return token
+        .payload(ByteUtils.concat(payload.getBytes(UTF_8), signature))
+        .footer(footer)
+        .doFinal();
   }
 
   /**
@@ -119,11 +109,7 @@ class PasetoPublic {
     byte[] pk = toCompressed(publicKey);
     byte[] m2 =
         PreAuthenticationEncoder.encode(
-            pk,
-            HEADER.getBytes(UTF_8),
-            message,
-            footer.getBytes(UTF_8),
-            implicitAssertion.getBytes(UTF_8));
+            pk, token.header(), message, footer.getBytes(UTF_8), implicitAssertion.getBytes(UTF_8));
 
     // 5
     verifySignature(publicKey, m2, signature);
