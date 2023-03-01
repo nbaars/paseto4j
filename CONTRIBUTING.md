@@ -1,4 +1,5 @@
 # Contributing
+
 [![GitHub contributors](https://img.shields.io/github/contributors/nbaars/paseto4j.svg)](https://github.com/nbaars/paseto4j/graphs/contributors)
 ![GitHub issues by-label "help wanted"](https://img.shields.io/github/issues/nbaars/paseto4j/help%20wanted.svg)
 ![GitHub issues by-label "good first issue"](https://img.shields.io/github/issues/nbaars/paseto4j/good%20first%20issue.svg)
@@ -37,7 +38,6 @@ Pull requests should be as small/atomic as possible. Large, wide-sweeping change
 * If you are making spelling corrections in the docs, don't modify other files.
 * If you are adding new functions don't '*cleanup*' unrelated functions. That cleanup belongs in another pull request.
 
-
 ### Write a good commit message
 
 * Explain why you make the changes. [More infos about a good commit message.](https://betterprogramming.pub/stop-writing-bad-commit-messages-8df79517177d)
@@ -53,27 +53,34 @@ Pull requests should be as small/atomic as possible. Large, wide-sweeping change
 3. Clone your own repository to your host computer so that you can make modifications. If you followed the GitHub tutorial from step 2, you have already done this.
 4. Go to the newly cloned directory "paseto4j" and add the remote upstream repository:
 
-    ```bash
-    $ git remote -v
-    origin git@github.com:<your Github handle>/paseto4j.git (fetch)
-    origin git@github.com:<your Github handle>/paseto4j.git (push)
+   ```bash
+   $ git remote -v
+   origin git@github.com:<your Github handle>/paseto4j.git (fetch)
+   origin git@github.com:<your Github handle>/paseto4j.git (push)
 
-    $ git remote add upstream git@github.com:nbaars/paseto4j.git
+   $ git remote add upstream git@github.com:nbaars/paseto4j.git
 
-    $ git remote -v
-    origin git@github.com:<your Github handle>/paseto4j.git (fetch)
-    origin git@github.com:<your Github handle>/paseto4j.git (push)
-    upstream git@github.com:nbaars/paseto4j.git (fetch)
-    upstream git@github.com:nbaars/paseto4j.git (push)
-    ```
+   $ git remote -v
+   origin git@github.com:<your Github handle>/paseto4j.git (fetch)
+   origin git@github.com:<your Github handle>/paseto4j.git (push)
+   upstream git@github.com:nbaars/paseto4j.git (fetch)
+   upstream git@github.com:nbaars/paseto4j.git (push)
+   ```
 
-    See also the GitHub documentation on "[Configuring a remote for a fork](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/configuring-a-remote-for-a-fork "Configuring a remote for a fork")".
+   See also the GitHub documentation on "[Configuring a remote for a fork](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/configuring-a-remote-for-a-fork "Configuring a remote for a fork")".
+
 5. Choose what to work on, based on any of the outstanding [issues](https://github.com/nbaars/paseto4j/issues "Paseto4j Issues").
+
 6. Create a branch so that you can cleanly work on the chosen issue: `git checkout -b FixingIssue66`
+
 7. Open your favorite editor and start making modifications. We recommend using the [IntelliJ Idea](https://www.jetbrains.com/idea/).
+
 8. After your modifications are done, push them to your forked repository. This can be done by executing the command `git add MYFILE` for every file you have modified, followed by `git commit -m 'your commit message here'` to commit the modifications and `git push` to push your modifications to GitHub.
+
 9. Create a Pull Request (PR) by going to your fork, <https://github.com/Your_Github_Handle/paseto4j> and click on the "New Pull Request" button. The target branch should typically be the Master branch. When submitting a PR, be sure to follow the checklist that is provided in the PR template. The checklist itself will be filled out by the reviewer.
+
 10. Your PR will be reviewed and comments may be given. In order to process a comment, simply make modifications to the same branch as before and push them to your repository. GitHub will automatically detect these changes and add them to your existing PR.
+
 11. When starting on a new PR in the future, make sure to always keep your local repo up to date:
 
     ```bash

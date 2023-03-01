@@ -1,7 +1,5 @@
 package org.paseto4j.commons;
 
-import static org.paseto4j.commons.Conditions.verify;
-
 public abstract class Key<T> {
 
   public T key;
@@ -16,8 +14,6 @@ public abstract class Key<T> {
 
   @Deprecated
   protected Key(byte[] keyMaterial, Version version, int size) {
-    verify(keyMaterial.length == 32, "key should be " + size + " bytes");
-
     this.material = keyMaterial;
     this.version = version;
   }

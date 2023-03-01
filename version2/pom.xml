@@ -1,42 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>io.github.nbaars</groupId>
-        <artifactId>paseto4j</artifactId>
-        <version>0.0.33-SNAPSHOT</version>
-    </parent>
-    <artifactId>paseto4j-version2</artifactId>
-    <name>paseto4j-version2</name>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.nbaars</groupId>
+    <artifactId>paseto4j</artifactId>
+    <version>0.0.33-SNAPSHOT</version>
+  </parent>
+  <artifactId>paseto4j-version2</artifactId>
+  <name>paseto4j-version2</name>
 
-    <properties>
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    </properties>
+  <properties>
+    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-bytes</artifactId>
-            <version>${tuweni.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-crypto</artifactId>
-            <version>${tuweni.version}</version>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.nbaars</groupId>
+      <artifactId>paseto4j-commons</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tuweni</groupId>
+      <artifactId>tuweni-bytes</artifactId>
+      <version>${tuweni.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tuweni</groupId>
+      <artifactId>tuweni-crypto</artifactId>
+      <version>${tuweni.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-commons</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-            <classifier>tests</classifier>
-        </dependency>
+    <dependency>
+      <groupId>io.github.nbaars</groupId>
+      <artifactId>paseto4j-commons</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
 </project>

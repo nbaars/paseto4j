@@ -1,49 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>io.github.nbaars</groupId>
-        <artifactId>paseto4j</artifactId>
-        <version>0.0.33-SNAPSHOT</version>
-    </parent>
-    <artifactId>paseto4j-examples</artifactId>
-    <packaging>jar</packaging>
-    <name>paseto4j-examples</name>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.github.nbaars</groupId>
+    <artifactId>paseto4j</artifactId>
+    <version>0.0.33-SNAPSHOT</version>
+  </parent>
+  <artifactId>paseto4j-examples</artifactId>
+  <packaging>jar</packaging>
+  <name>paseto4j-examples</name>
 
-    <properties>
-        <paseto4j.deploy.skip>true</paseto4j.deploy.skip>
-        <sonar.skip>true</sonar.skip>
-    </properties>
+  <properties>
+    <paseto4j.deploy.skip>true</paseto4j.deploy.skip>
+    <sonar.skip>true</sonar.skip>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-version1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.nbaars</groupId>
+      <artifactId>paseto4j-version1</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.nbaars</groupId>
+      <artifactId>paseto4j-commons</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
-        <!-- Start: only for Paseto Version 2 -->
-        <dependency>
-            <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-version2</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-crypto</artifactId>
-            <version>${tuweni.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-bytes</artifactId>
-            <version>${tuweni.version}</version>
-        </dependency>
-        <!-- End: only for Paseto Version 2 -->
+    <!-- Start: only for Paseto Version 2 -->
+    <dependency>
+      <groupId>io.github.nbaars</groupId>
+      <artifactId>paseto4j-version2</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tuweni</groupId>
+      <artifactId>tuweni-crypto</artifactId>
+      <version>${tuweni.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tuweni</groupId>
+      <artifactId>tuweni-bytes</artifactId>
+      <version>${tuweni.version}</version>
+    </dependency>
+    <!-- End: only for Paseto Version 2 -->
 
-    </dependencies>
+  </dependencies>
 
 </project>

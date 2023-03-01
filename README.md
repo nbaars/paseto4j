@@ -1,4 +1,5 @@
 # Java implementation of PASETO: Platform-Agnostic Security Tokens
+
 [![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE)
 [![Quality](https://sonarcloud.io/api/project_badges/quality_gate?project=nbaars_paseto4j)](https://sonarcloud.io/dashboard?id=nbaars_paseto4j)
 
@@ -8,6 +9,7 @@ construct the tokens with which JSON library is up to you. According to the spec
 be a JSON object.
 
 # Contents
+
 * [What is Paseto?](#what-is-paseto)
   * [Key Differences between Paseto and JWT](#key-differences-between-paseto-and-jwt)
 * [Installation](#installation)
@@ -38,7 +40,7 @@ There are two version available in Maven Central.
 ## Version 2
 
 Version 2 (the recommended version by the specification) is supported, this version depends on Libsodium
-see [here](https://download.libsodium.org/doc/installation/) on how to install this library. The Dockerfile 
+see [here](https://download.libsodium.org/doc/installation/) on how to install this library. The Dockerfile
 contains an example how to install it on a Linux based system.
 
 Add the following dependency to your project:
@@ -52,7 +54,7 @@ Add the following dependency to your project:
 </dependency>
 ```
 
-## Version 1 
+## Version 1
 
 Add the following dependency to your project:
 
@@ -84,7 +86,7 @@ Why use this library over the other Java implementations?
 ```shell
 docker build -t paseto4j .
 docker run -v "${HOME}"/.m2:/root/.m2 -v "${PWD}":/workspace paseto4j ./mvnw verify     
- ```
+```
 
 The first command is only necessary ones, for building the Maven image.
 
