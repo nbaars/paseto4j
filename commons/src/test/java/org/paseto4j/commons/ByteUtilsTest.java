@@ -62,8 +62,8 @@ class ByteUtilsTest {
 
     var result = ByteUtils.split(b, 1);
 
-    Assertions.assertArrayEquals(new byte[] {'a'}, result.first);
-    Assertions.assertArrayEquals(new byte[] {'b'}, result.second);
+    Assertions.assertArrayEquals(new byte[] {'a'}, result.getFirst());
+    Assertions.assertArrayEquals(new byte[] {'b'}, result.getSecond());
   }
 
   @Test
@@ -72,7 +72,7 @@ class ByteUtilsTest {
 
     var result = ByteUtils.split(b, 1);
 
-    Assertions.assertEquals(0, result.first.length);
-    Assertions.assertEquals(0, result.first.length);
+    Assertions.assertEquals(0, result.getFirst().length);
+    Assertions.assertEquals(0, result.getSecond().length);
   }
 }
