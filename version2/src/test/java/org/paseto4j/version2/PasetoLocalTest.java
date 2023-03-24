@@ -101,15 +101,10 @@ class PasetoLocalTest {
 
   @Test
   void invalidTokenShouldGiveException() {
-    assertThrows(
-        PasetoException.class,
-        () ->
-            PasetoLocal.decrypt(
-                new SecretKey(
-                    hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"),
-                    V2),
-                "v2.local.",
-                ""));
+    var key =
+        new SecretKey(
+            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"), V2);
+    assertThrows(PasetoException.class, () -> PasetoLocal.decrypt(key, "v2.local.", ""));
   }
 
   @Test
