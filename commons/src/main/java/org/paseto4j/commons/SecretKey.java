@@ -1,6 +1,6 @@
 package org.paseto4j.commons;
 
-public class SecretKey extends Key {
+public class SecretKey extends Key<javax.crypto.SecretKey> {
   public SecretKey(byte[] keyMaterial, Version version) {
     super(keyMaterial, version, 32);
   }

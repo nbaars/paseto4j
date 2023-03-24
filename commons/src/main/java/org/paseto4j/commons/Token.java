@@ -14,15 +14,15 @@ public class Token {
 
   private final String[] tokenParts;
   private final TokenAlgorithm tokenAlgorithm;
-  private final String token;
+  private final String tokenString;
 
-  Token(String token, TokenAlgorithm tokenAlgorithm, String footer) {
-    this.token = token;
-    this.tokenParts = token.split("\\.", -1);
+  Token(String tokenString, TokenAlgorithm tokenAlgorithm, String footer) {
+    this.tokenString = tokenString;
+    this.tokenParts = tokenString.split("\\.", -1);
     this.tokenAlgorithm = tokenAlgorithm;
 
     verify(
-        token.startsWith(tokenAlgorithm.header()),
+        tokenString.startsWith(tokenAlgorithm.header()),
         "Token should start with " + tokenAlgorithm.header());
 
     if (isNullOrEmpty(footer)) {
@@ -37,8 +37,8 @@ public class Token {
     verifyFooter(footer);
   }
 
-  public Token(String token, Version version, Purpose purpose, String footer) {
-    this(token, new TokenAlgorithm(version, purpose), footer);
+  public Token(String tokenString, Version version, Purpose purpose, String footer) {
+    this(tokenString, new TokenAlgorithm(version, purpose), footer);
   }
 
   private void validateTokenParts() {
@@ -67,6 +67,6 @@ public class Token {
 
   @Override
   public String toString() {
-    return token;
+    return tokenString;
   }
 }
