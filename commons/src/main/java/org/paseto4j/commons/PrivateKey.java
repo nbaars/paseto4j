@@ -15,6 +15,6 @@ public class PrivateKey extends Key<java.security.PrivateKey> {
   }
 
   public boolean isValidFor(Version v, Purpose p) {
-    return v == this.version && p == Purpose.PURPOSE_PUBLIC;
+    return v == this.getVersion() && p == Purpose.PURPOSE_PUBLIC;
   }
 }

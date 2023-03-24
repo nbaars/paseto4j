@@ -4,12 +4,12 @@ import static org.paseto4j.commons.Conditions.verify;
 
 public abstract class Key<T> {
 
-  public T key;
-  public byte[] material;
-  public Version version;
+  private T key;
+  private byte[] material;
+  private Version version;
 
   @Deprecated
-  public Key(byte[] keyMaterial, Version version) {
+  protected Key(byte[] keyMaterial, Version version) {
     this.material = keyMaterial;
     this.version = version;
   }
@@ -22,7 +22,7 @@ public abstract class Key<T> {
     this.version = version;
   }
 
-  public Key(T key, Version version) {
+  protected Key(T key, Version version) {
     this.key = key;
     this.version = version;
   }
@@ -31,5 +31,17 @@ public abstract class Key<T> {
 
   public boolean hasLength(int length) {
     return length == material.length;
+  }
+
+  public byte[] getMaterial() {
+    return this.material;
+  }
+
+  Version getVersion() {
+    return this.version;
+  }
+
+  public T getKey() {
+    return this.key;
   }
 }

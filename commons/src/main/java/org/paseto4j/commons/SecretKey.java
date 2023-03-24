@@ -6,6 +6,6 @@ public class SecretKey extends Key<javax.crypto.SecretKey> {
   }
 
   public boolean isValidFor(Version v, Purpose p) {
-    return v == this.version && p == Purpose.PURPOSE_LOCAL;
+    return v == this.getVersion() && p == Purpose.PURPOSE_LOCAL;
   }
 }
