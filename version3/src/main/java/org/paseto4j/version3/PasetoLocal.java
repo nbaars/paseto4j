@@ -75,8 +75,8 @@ class PasetoLocal {
     // 4
     byte[] tmp = encryptionKey(key, nonce);
     Pair<byte[]> split = ByteUtils.split(tmp, 32);
-    byte[] ek = split.first;
-    byte[] n2 = split.second;
+    byte[] ek = split.getFirst();
+    byte[] n2 = split.getSecond();
     byte[] ak = authenticationKey(key, nonce);
 
     // 5
@@ -135,8 +135,8 @@ class PasetoLocal {
     // 5
     byte[] tmp = encryptionKey(key, nonce);
     Pair<byte[]> split = ByteUtils.split(tmp, 32);
-    byte[] ek = split.first;
-    byte[] n2 = split.second;
+    byte[] ek = split.getFirst();
+    byte[] n2 = split.getSecond();
     byte[] ak = authenticationKey(key, nonce);
 
     // 6
