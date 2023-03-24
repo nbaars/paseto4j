@@ -159,9 +159,9 @@ class PasetoPublicTest {
 
   @Test
   void keyTooSmall() {
+    PrivateKey privateKey = new PrivateKey(new byte[] {'0'}, V2);
     Assertions.assertThrows(
-        PasetoException.class,
-        () -> PasetoPublic.sign(new PrivateKey(new byte[] {'0'}, V2), " test", "test"));
+        PasetoException.class, () -> PasetoPublic.sign(privateKey, " test", "test"));
   }
 
   @Test
