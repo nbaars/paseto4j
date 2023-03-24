@@ -29,7 +29,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.paseto4j.commons.HexToBytes.hexToBytes;
 import static org.paseto4j.commons.Version.V1;
 
-import java.security.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.security.SignatureException;
 import java.util.stream.Stream;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
@@ -111,9 +115,8 @@ class PasetoPublicTest {
     KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
     keyGen.initialize(1024);
     KeyPair keyPair = keyGen.generateKeyPair();
+    PrivateKey privateKey = new PrivateKey(keyPair.getPrivate().getEncoded(), V1);
 
-    assertThrows(
-        PasetoException.class,
-        () -> Paseto.sign(new PrivateKey(keyPair.getPrivate().getEncoded(), V1), "msg", ""));
+    assertThrows(PasetoException.class, () -> Paseto.sign(privateKey, "msg", ""));
   }
 }
