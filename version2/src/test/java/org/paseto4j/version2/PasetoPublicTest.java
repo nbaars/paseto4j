@@ -171,6 +171,7 @@ class PasetoPublicTest {
             "b4cbfb43df4ce210727d953e4a713333307fa19bb7d9f85041438d9e11b942a3774"
                 .getBytes(StandardCharsets.UTF_8),
             V2);
-    Assertions.assertThrows(PasetoException.class, () -> PasetoPublic.sign(privateKey, " test", "test"));
+    Assertions.assertThrows(
+        PasetoException.class, () -> PasetoPublic.sign(privateKey, " test", "test"));
   }
 }
