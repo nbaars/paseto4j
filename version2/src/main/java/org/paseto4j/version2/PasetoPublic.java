@@ -56,7 +56,7 @@ class PasetoPublic {
 
     byte[] m2 = encode(token.header(), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
     byte[] signature =
-        Signature.signDetached(m2, Signature.SecretKey.fromBytes(privateKey.material));
+        Signature.signDetached(m2, Signature.SecretKey.fromBytes(privateKey.getMaterial()));
 
     return token.payload(concat(payload.getBytes(UTF_8), signature)).footer(footer).doFinal();
   }
@@ -88,7 +88,8 @@ class PasetoPublic {
   private static void verifySignature(PublicKey key, byte[] message, byte[] signature)
       throws SignatureException {
     boolean valid =
-        Signature.verifyDetached(message, signature, Signature.PublicKey.fromBytes(key.material));
+        Signature.verifyDetached(
+            message, signature, Signature.PublicKey.fromBytes(key.getMaterial()));
     if (!valid) {
       throw new SignatureException("Invalid signature");
     }
