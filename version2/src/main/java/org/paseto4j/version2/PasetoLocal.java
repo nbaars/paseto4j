@@ -75,7 +75,7 @@ class PasetoLocal {
         XChaCha20Poly1305.encrypt(
             payload.getBytes(UTF_8),
             preAuth,
-            XChaCha20Poly1305.Key.fromBytes(key.material),
+            XChaCha20Poly1305.Key.fromBytes(key.getMaterial()),
             XChaCha20Poly1305.Nonce.fromBytes(nonce));
 
     // 6
@@ -107,7 +107,7 @@ class PasetoLocal {
         XChaCha20Poly1305.decrypt(
             encryptedMessage,
             preAuth,
-            XChaCha20Poly1305.Key.fromBytes(key.material),
+            XChaCha20Poly1305.Key.fromBytes(key.getMaterial()),
             XChaCha20Poly1305.Nonce.fromBytes(nonce));
 
     if (message == null) {
