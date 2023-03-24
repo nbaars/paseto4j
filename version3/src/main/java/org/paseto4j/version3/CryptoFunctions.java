@@ -180,8 +180,8 @@ public class CryptoFunctions {
       DERSequence seq =
           new DERSequence(
               new ASN1Integer[] {
-                new ASN1Integer(new BigInteger(1, pair.first)),
-                new ASN1Integer(new BigInteger(1, pair.second))
+                new ASN1Integer(new BigInteger(1, pair.getFirst())),
+                new ASN1Integer(new BigInteger(1, pair.getSecond()))
               });
 
       return verifier.verify(seq.getEncoded());
