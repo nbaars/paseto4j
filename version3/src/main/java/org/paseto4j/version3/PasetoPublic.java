@@ -76,7 +76,7 @@ class PasetoPublic {
             implicitAssertion.getBytes(UTF_8));
 
     // 4
-    byte[] signature = CryptoFunctions.sign(privateKey.key, m2);
+    byte[] signature = CryptoFunctions.sign(privateKey.getKey(), m2);
     verify(signature.length == 96, "The length of the signature **MUST** be 96 bytes long");
 
     // 5
@@ -119,14 +119,14 @@ class PasetoPublic {
 
   private static void verifySignature(PublicKey key, byte[] m2, byte[] signature)
       throws SignatureException {
-    if (!CryptoFunctions.verify(key.key, m2, signature)) {
+    if (!CryptoFunctions.verify(key.getKey(), m2, signature)) {
       throw new SignatureException("Invalid signature");
     }
   }
 
   public static byte[] publicKey(PrivateKey key) {
-    if (key.key instanceof ECPrivateKey) {
-      return publicKeyFromPrivate(((ECPrivateKey) key.key).getS());
+    if (key.getKey() instanceof ECPrivateKey) {
+      return publicKeyFromPrivate(((ECPrivateKey) key.getKey()).getS());
     }
     throw new IllegalStateException("Only supported for EC");
   }
@@ -141,8 +141,8 @@ class PasetoPublic {
   }
 
   private static byte[] toCompressed(PublicKey key) {
-    if (key.key instanceof org.bouncycastle.jce.interfaces.ECPublicKey) {
-      return ((org.bouncycastle.jce.interfaces.ECPublicKey) key.key).getQ().getEncoded(true);
+    if (key.getKey() instanceof org.bouncycastle.jce.interfaces.ECPublicKey) {
+      return ((org.bouncycastle.jce.interfaces.ECPublicKey) key.getKey()).getQ().getEncoded(true);
     }
     throw new IllegalStateException("Public key is not an EC public key ");
   }

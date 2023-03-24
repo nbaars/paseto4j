@@ -61,7 +61,7 @@ class PasetoPublic {
             token.header(), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
 
     // 3
-    byte[] signature = CryptoFunctions.signRsaPssSha384(privateKey.material, m2);
+    byte[] signature = CryptoFunctions.signRsaPssSha384(privateKey.getMaterial(), m2);
 
     // 4
     return token
@@ -99,7 +99,7 @@ class PasetoPublic {
 
   private static void verifySignature(PublicKey key, byte[] m2, byte[] signature)
       throws SignatureException {
-    if (!CryptoFunctions.verifyRsaPssSha384(key.material, m2, signature)) {
+    if (!CryptoFunctions.verifyRsaPssSha384(key.getMaterial(), m2, signature)) {
       throw new SignatureException("Invalid signature");
     }
   }
