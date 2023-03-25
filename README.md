@@ -1,6 +1,9 @@
 # Java implementation of PASETO: Platform-Agnostic Security Tokens
 [![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE)
-[![Quality](https://sonarcloud.io/api/project_badges/quality_gate?project=nbaars_paseto4j)](https://sonarcloud.io/dashboard?id=nbaars_paseto4j)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nbaars_paseto4j&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nbaars_paseto4j)
+[![GitHub release](https://img.shields.io/github/release/nbaars/paseto4j.svg)](https://github.com/nbaars/paseto4j/releases/latest)
+[![java-jdk](https://img.shields.io/badge/java%20jdk-11-green.svg)](https://jdk.java.net/)
+[![Build](https://github.com/nbaars/paseto4j/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/nbaars/paseto4j/actions/workflows/build.yml)
 
 Implementation of [PASETO](https://github.com/paragonie/paseto) library written in Java. This library is focused
 on taking part of the encryption/decryption part of the tokens it has a little dependencies as possible. How you
@@ -103,4 +106,8 @@ docker run -v "${HOME}"/.m2:/root/.m2 -v "${PWD}":/workspace paseto4j ./mvnw ver
  ```
 
 The first command is only necessary ones, for building the Maven image.
+
+# Release
+
+We use [Calendar Versioning](https://calver.org/) as version numbers. Creating a new tag and pushing it to Github will start the release process. 
 
