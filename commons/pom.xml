@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.github.nbaars</groupId>
         <artifactId>paseto4j</artifactId>
-        <version>0.0.33-SNAPSHOT</version>
+        <version>2023.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>paseto4j-commons</artifactId>
