@@ -57,37 +57,36 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   new_version:
-    name: Update to next snapshot version
+    if: github.repository == 'nbaars/paseto4j'
+    name: Update to next SNAPSHOT version
     needs: [ release ]
     runs-on: ubuntu-latest
-    environment:
-      name: release
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: 'main'
+          fetch-depth: 0
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          java-version: 11
           distribution: 'zulu'
+          java-version: 11
           architecture: x64
-
-      - name: "Get tag name"
-        id: tag
-        uses: dawidd6/action-get-tag@v1
 
       - name: Set version to next snapshot
         run: |
-          mvn --no-transfer-progress versions:set -DnewVersion=${{ steps.tag.outputs.tag }}
-          mvn --no-transfer-progress build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT versions:commit
+          mvn build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}-SNAPSHOT versions:commit
+      - name: Push the changes to new branch
+        uses: devops-infra/action-commit-push@v0.9.2
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          add_timestamp: true
+          commit_message: "Updating to the new development version"
+          force: false
 
-      - name: Commit pom.xml
-        run: |
-          git checkout main 
-          git config user.name Nanne Baars
-          git config user.email nanneb@gmail.com
-          find . -name 'pom.xml' | xargs git add
-          git commit -m "Updating to the new snapshot version"
-          git push origin main 
+      - name: Create PR
+        uses: devops-infra/action-pull-request@v0.5.5
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          title: ${{ github.event.commits[0].message }}
+          target_branch: main
