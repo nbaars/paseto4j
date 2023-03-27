@@ -8,7 +8,6 @@ jobs:
   new_version:
     if: github.repository == 'nbaars/paseto4j'
     name: Update to next SNAPSHOT version
-    needs: [ release ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
