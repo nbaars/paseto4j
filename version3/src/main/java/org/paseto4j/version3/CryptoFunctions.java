@@ -34,7 +34,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
-import java.util.Arrays;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -48,6 +47,7 @@ import org.bouncycastle.crypto.digests.SHA384Digest;
 import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
 import org.bouncycastle.crypto.params.HKDFParameters;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.BigIntegers;
 import org.paseto4j.commons.ByteUtils;
 import org.paseto4j.commons.Pair;
 
@@ -141,12 +141,14 @@ public class CryptoFunctions {
     return out;
   }
 
-  public static byte[] toUnsignedByteArray(BigInteger value) {
-    byte[] signedValue = value.toByteArray();
-    if (signedValue[0] != 0x00) {
-      return signedValue;
+  private static byte[] toUnsignedByteArray(BigInteger n, int length) {
+    byte[] bs = BigIntegers.asUnsignedByteArray(n);
+    if (bs.length < length) {
+      byte[] tmp = new byte[length];
+      System.arraycopy(bs, 0, tmp, length - bs.length, bs.length);
+      bs = tmp;
     }
-    return Arrays.copyOfRange(signedValue, 1, signedValue.length);
+    return bs;
   }
 
   public static byte[] sign(PrivateKey privateKey, byte[] msg) {
@@ -162,7 +164,8 @@ public class CryptoFunctions {
       ASN1Integer r = (ASN1Integer) seq.getObjectAt(0);
       ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
 
-      return ByteUtils.concat(toUnsignedByteArray(r.getValue()), toUnsignedByteArray(s.getValue()));
+      return ByteUtils.concat(
+          toUnsignedByteArray(r.getValue(), 48), toUnsignedByteArray(s.getValue(), 48));
 
     } catch (GeneralSecurityException e) {
       throw new IllegalStateException(e);
