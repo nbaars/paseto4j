@@ -165,8 +165,7 @@ public class CryptoFunctions {
       ASN1Integer s = (ASN1Integer) seq.getObjectAt(1);
 
       return ByteUtils.concat(
-          toUnsignedByteArray(r.getValue(), 48),
-          toUnsignedByteArray(s.getValue(), 48));
+          toUnsignedByteArray(r.getValue(), 48), toUnsignedByteArray(s.getValue(), 48));
 
     } catch (GeneralSecurityException e) {
       throw new IllegalStateException(e);
