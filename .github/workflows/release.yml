@@ -12,10 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: "Get tag name"
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-
       - name: Setup Maven Central Repository
         uses: actions/setup-java@v3
         with:
@@ -26,10 +22,6 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
 
-      - name: "Set labels for ${{ github.ref }}"
-        run: |
-          echo "PASETO_MAVEN_VERSION=${{ steps.tag.outputs.tag }}" >> $GITHUB_ENV
-
       - name: Install gpg secret key
         run: |
           echo -n "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | base64 --decode | gpg --batch --import
@@ -37,7 +29,7 @@ jobs:
 
       - name: Publish to Maven Central
         run: |
-          mvn --no-transfer-progress versions:set -DnewVersion=${{ env.PASETO_MAVEN_VERSION }}
+          mvn --no-transfer-progress versions:set -DnewVersion=${{ github.ref_name }}
           mvn --batch-mode --no-transfer-progress -P release -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} clean deploy -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
@@ -47,12 +39,18 @@ jobs:
         with:
           draft: false
           body: |
-            ## Version ${{ steps.tag.outputs.tag }}
+            ## Version ${{ github.ref_name }} 
 
-            ### New functionality
-
-            - Moved to using Tuweni library instead of Cava
-            - Moved to Maven
-            - Update libaries which were marked by dependabot
+            ### New functionality ✨ 
+            
+            - 
+             
+            ### Bug fixes 🐞
+            
+            -
+            
+            ### Technical improvements 👩‍💻
+            
+            -
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
