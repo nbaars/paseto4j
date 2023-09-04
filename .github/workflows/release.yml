@@ -10,7 +10,7 @@ jobs:
     environment:
       name: release
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Maven Central Repository
         uses: actions/setup-java@v3
