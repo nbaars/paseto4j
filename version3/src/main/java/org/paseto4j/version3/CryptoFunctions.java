@@ -55,9 +55,7 @@ public class CryptoFunctions {
 
   private CryptoFunctions() {}
 
-  /**
-   * @return 32 bytes of random data
-   */
+  /** Returns `length` bytes of random data. */
   public static byte[] randomBytes(int length) {
     byte[] random = new byte[length];
     new SecureRandom().nextBytes(random);
@@ -129,7 +127,6 @@ public class CryptoFunctions {
    *
    * @param key the key to be used
    * @param info info
-   * @return
    */
   public static byte[] hkdfSha384(byte[] key, byte[] info) {
     Digest digest = new SHA384Digest();
