@@ -51,6 +51,17 @@ jobs:
             
             ### Technical improvements 👩‍💻
             
+            - 
+            
+            
+            ### Dependency upgrades 📈
+            
+            -
+            
+            
+            Full Changelog: https://github.com/nbaars/paseto4j/compare/${{ github.ref_name }}...2024.1
+            
+            
             -
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
