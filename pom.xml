@@ -4,7 +4,7 @@
 
     <groupId>io.github.nbaars</groupId>
     <artifactId>paseto4j</artifactId>
-    <version>2023.2-SNAPSHOT</version>
+    <version>2024.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>paseto4j-parent</name>
