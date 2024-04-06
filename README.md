@@ -96,6 +96,10 @@ Why use this library over the other Java implementations?
 - Easy to use API.
 - Available on Maven Central
 
+## Example usages 
+
+- https://nutbutterfly.medium.com/spring-boot-quick-guide-to-replace-jwt-with-paseto-774f43c8f2c4 - This library provide a simple API, easy to use and fully flexible for developer.
+
 # Development
 
 `paseto-version2` needs Libsodium to be present, to avoid installing it on your local machine, you can use the following command to build it locally:
@@ -109,5 +113,5 @@ The first command is only necessary ones, for building the Maven image.
 
 # Release
 
-We use [Calendar Versioning](https://calver.org/) as version numbers. Creating a new tag and pushing it to Github will start the release process. 
+We use [Calendar Versioning](https://calver.org/) as version numbers. Creating a new tag and pushing it to GitHub will start the release process. 
 
