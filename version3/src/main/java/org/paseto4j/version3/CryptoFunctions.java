@@ -55,11 +55,9 @@ public class CryptoFunctions {
 
   private CryptoFunctions() {}
 
-  /**
-   * @return 32 bytes of random data
-   */
-  public static byte[] randomBytes() {
-    byte[] random = new byte[32];
+  /** Returns `length` bytes of random data. */
+  public static byte[] randomBytes(int length) {
+    byte[] random = new byte[length];
     new SecureRandom().nextBytes(random);
     return random;
   }
@@ -117,7 +115,7 @@ public class CryptoFunctions {
       aes.init(
           encryption ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE,
           secretKeySpec,
-          new IvParameterSpec(nonce)); // NOSONAR
+          new IvParameterSpec(nonce));
       return aes.doFinal(message);
     } catch (GeneralSecurityException e) {
       throw new IllegalStateException(e);
@@ -129,14 +127,13 @@ public class CryptoFunctions {
    *
    * @param key the key to be used
    * @param info info
-   * @return
    */
   public static byte[] hkdfSha384(byte[] key, byte[] info) {
     Digest digest = new SHA384Digest();
     HKDFBytesGenerator hkdf = new HKDFBytesGenerator(digest);
     hkdf.init(new HKDFParameters(key, null, info));
 
-    byte[] out = new byte[48];
+    byte[] out = randomBytes(48);
     hkdf.generateBytes(out, 0, out.length);
     return out;
   }

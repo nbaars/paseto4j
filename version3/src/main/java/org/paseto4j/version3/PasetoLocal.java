@@ -57,7 +57,7 @@ class PasetoLocal {
   private PasetoLocal() {}
 
   public static String encrypt(SecretKey key, String payload, String footer, String implicit) {
-    return encrypt(key, randomBytes(), payload, footer, implicit);
+    return encrypt(key, randomBytes(32), payload, footer, implicit);
   }
 
   static String encrypt(

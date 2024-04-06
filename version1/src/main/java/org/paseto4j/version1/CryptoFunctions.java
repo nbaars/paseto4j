@@ -117,7 +117,7 @@ public class CryptoFunctions {
       aes.init(
           encryption ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE,
           secretKeySpec,
-          new IvParameterSpec(nonce)); // NOSONAR
+          new IvParameterSpec(nonce));
       return aes.doFinal(message);
     } catch (GeneralSecurityException e) {
       throw new IllegalStateException(e);
@@ -129,7 +129,7 @@ public class CryptoFunctions {
     HKDFBytesGenerator hkdf = new HKDFBytesGenerator(digest);
     hkdf.init(new HKDFParameters(key, salt, info));
 
-    byte[] out = new byte[32];
+    byte[] out = randomBytes();
     hkdf.generateBytes(out, 0, out.length);
     return out;
   }
