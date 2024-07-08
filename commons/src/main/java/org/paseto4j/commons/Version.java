@@ -3,7 +3,8 @@ package org.paseto4j.commons;
 public enum Version {
   V1("v1"),
   V2("v2"),
-  V3("v3");
+  V3("v3"),
+  V4("v4");
 
   private final String name;
 

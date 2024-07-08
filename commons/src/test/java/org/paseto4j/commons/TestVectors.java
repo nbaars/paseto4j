@@ -30,6 +30,9 @@ public class TestVectors {
     @JsonProperty("secret-key")
     private String secretKey;
 
+    @JsonProperty("secret-key-seed")
+    public String secretKeySeed;
+
     @JsonProperty("secret-key-pem")
     public String secretKeyPem;
 
@@ -44,6 +47,14 @@ public class TestVectors {
 
   public static List<TestVector> v3(Purpose purpose) throws IOException {
     return read(Version.V3).tests.stream()
+        .filter(
+            vector ->
+                purpose == Purpose.PURPOSE_LOCAL ? vector.key != null : vector.secretKeyPem != null)
+        .collect(Collectors.toList());
+  }
+
+  public static List<TestVector> v4(Purpose purpose) throws IOException {
+    return read(Version.V4).tests.stream()
         .filter(
             vector ->
                 purpose == Purpose.PURPOSE_LOCAL ? vector.key != null : vector.secretKeyPem != null)

@@ -37,6 +37,7 @@
         <module>version1</module>
         <module>version2</module>
         <module>version3</module>
+        <module>version4</module>
     </modules>
 
     <scm>
