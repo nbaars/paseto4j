@@ -36,7 +36,20 @@ use Paseto in [an insecure way](https://auth0.com/blog/critical-vulnerabilities-
 
 # Installation
 
-There are three version available in Maven Central.
+There are four version available in Maven Central.
+
+## Version 4
+
+Add the following dependency to your project:
+
+```
+<!-- https://mvnrepository.com/artifact/io.github.nbaars/paseto4j-version4 -->
+<dependency>
+    <groupId>io.github.nbaars</groupId>
+    <artifactId>paseto4j-version4</artifactId>
+    <version>${paseto4j.version}</version>
+</dependency>
+```
 
 ## Version 3
 

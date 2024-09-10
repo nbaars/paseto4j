@@ -19,12 +19,12 @@ Add this version to your project. For example, for Maven, you can add:
 ```xml
 <dependency>
   <groupId>io.github.nbaars</groupId>
-  <artifactId>paseto4j-version{1,2,3}</artifactId>
+  <artifactId>paseto4j-version{1,2,3,4}</artifactId>
   <version>${paseto4j.version}</version>
 </dependency>
 ```
 
-## Using V{1,2,3}.local
+## Using V{1,2,3,4}.local
 
 Each version works in the same way:
 
@@ -40,7 +40,7 @@ Paseto.decrypt(new SecretKey(secretKey, V1), encryptedToken, FOOTER);
 
 The `footer` is optional and will default to `""`. Version 3 supports an implicit assertion as well, which is optional and will default to `""`.
 
-## Using V{1,2,3}.public
+## Using V{1,2,3,4}.public
 
 Each version works in the same way:
 
