@@ -121,7 +121,9 @@ class PasetoPublicTest {
 
   @Test
   void normalUsage()
-      throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException,
+      throws NoSuchAlgorithmException,
+          NoSuchProviderException,
+          InvalidAlgorithmParameterException,
           SignatureException {
     var generator = KeyPairGenerator.getInstance("EC", BouncyCastleProvider.PROVIDER_NAME);
     var spec = new ECGenParameterSpec("secp384r1");
