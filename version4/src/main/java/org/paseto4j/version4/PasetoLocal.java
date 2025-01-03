@@ -62,6 +62,7 @@ public class PasetoLocal {
   public static String decrypt(SecretKey key, String token, String footer) {
     return decrypt(key, token, footer, "");
   }
+
   /**
    * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt
    */
