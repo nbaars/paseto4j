@@ -4,6 +4,7 @@
 [![GitHub release](https://img.shields.io/github/release/nbaars/paseto4j.svg)](https://github.com/nbaars/paseto4j/releases/latest)
 [![java-jdk](https://img.shields.io/badge/java%20jdk-11-green.svg)](https://jdk.java.net/)
 [![Build](https://github.com/nbaars/paseto4j/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/nbaars/paseto4j/actions/workflows/build.yml)
+[![libs.tech recommends](https://libs.tech/project/125498620/badge.svg)](https://libs.tech/project/125498620/paseto4j)
 
 Implementation of [PASETO](https://github.com/paragonie/paseto) library written in Java. This library is focused
 on taking part of the encryption/decryption part of the tokens it has a little dependencies as possible. How you
