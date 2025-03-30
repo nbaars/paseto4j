@@ -20,19 +20,23 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.nbaars</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>paseto4j-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.nbaars</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>paseto4j-version1</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- Start: only for Paseto Version 2 -->
         <dependency>
-            <groupId>io.github.nbaars</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>paseto4j-version2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>paseto4j-version3</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -51,6 +55,9 @@
             <artifactId>tuweni-crypto</artifactId>
             <version>2.3.1</version>
         </dependency>
-        <!-- End: only for Paseto Version 2 -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+        </dependency>
     </dependencies>
 </project>
