@@ -22,11 +22,15 @@
  * SOFTWARE.
  */
 
-package org.paseto4j.version2;
+package org.paseto4j.examples;
 
 import static org.paseto4j.commons.Version.V1;
 
-import java.security.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.SignatureException;
 import org.paseto4j.commons.PrivateKey;
 import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.SecretKey;
@@ -85,7 +89,8 @@ public class Version1 {
   }
 
   private static void exampleV1Local() {
-    byte[] secretKey = SecureRandom.getSeed(32);
+    byte[] secretKey = new byte[32];
+    secretKey = SecureRandom.getSeed(32);
     String encryptedToken = Paseto.encrypt(new SecretKey(secretKey, V1), TOKEN, FOOTER);
     System.out.println("Encrypted token is: " + encryptedToken);
 

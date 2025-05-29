@@ -1,4 +1,4 @@
-package org.paseto4j.version2;
+package org.paseto4j.examples;
 
 import java.security.SignatureException;
 import org.apache.tuweni.bytes.Bytes;
@@ -6,6 +6,7 @@ import org.apache.tuweni.crypto.sodium.Signature;
 import org.paseto4j.commons.PrivateKey;
 import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.Version;
+import org.paseto4j.version2.Paseto;
 
 public class Version2 {
 
