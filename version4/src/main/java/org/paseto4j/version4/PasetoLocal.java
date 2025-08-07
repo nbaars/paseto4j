@@ -27,7 +27,7 @@ public class PasetoLocal {
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#encrypt
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#encrypt">encrypt</a>
    */
   static String encrypt(
       SecretKey key, byte[] nonce, String payload, String footer, String implicitAssertion) {
@@ -60,14 +60,14 @@ public class PasetoLocal {
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt">decrypt</a>
    */
   public static String decrypt(SecretKey key, String token, String footer) {
     return decrypt(key, token, footer, "");
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt">decrypt</a>
    */
   static String decrypt(SecretKey key, String token, String footer, String implicitAssertion) {
     requireNonNull(key);

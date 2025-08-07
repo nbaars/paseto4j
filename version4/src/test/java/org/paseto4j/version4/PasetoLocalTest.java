@@ -18,7 +18,7 @@ import org.paseto4j.commons.SecretKey;
 import org.paseto4j.commons.TestVectors;
 import org.paseto4j.commons.Version;
 
-public class PasetoLocalTest {
+class PasetoLocalTest {
   private static Stream<Arguments> testVectors() throws IOException {
     return TestVectors.v4(Purpose.PURPOSE_LOCAL).stream()
         .map(
