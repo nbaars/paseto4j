@@ -17,6 +17,8 @@ on:
 
 jobs:
   build:
+    environment:
+      name: sonarqube
     name: Build
     runs-on: ubuntu-latest
     steps:
@@ -36,17 +38,4 @@ jobs:
           ./mvnw --no-transfer-progress spotless:check 
           ./mvnw --no-transfer-progress tidy:check
       - name: Build
-        run: ./mvnw --no-transfer-progress clean install
-  sonarqube:
-    environment:
-      name: sonarqube
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5.3.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
+        run: ./mvnw --no-transfer-progress clean install org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=nbaars-github -Dsonar.projectKey=nbaars_paseto4j -Dsonar.cpd.exclusions=version1/src/main/java/org/paseto4j/version1/CryptoFunctions.java
