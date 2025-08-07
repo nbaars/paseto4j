@@ -36,9 +36,15 @@ jobs:
           ./mvnw --no-transfer-progress spotless:check 
           ./mvnw --no-transfer-progress tidy:check
       - name: Build
-        run: ./mvnw --no-transfer-progress clean install org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=nbaars-github -Dsonar.projectKey=nbaars_paseto4j -Dsonar.cpd.exclusions=version1/src/main/java/org/paseto4j/version1/CryptoFunctions.java
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        run: ./mvnw --no-transfer-progress clean install
+  sonarqube:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          fetch-depth: 0
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
