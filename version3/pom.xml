@@ -1,49 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>io.github.nbaars</groupId>
-        <artifactId>paseto4j</artifactId>
-        <version>2024.3-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <groupId>io.github.nbaars</groupId>
+    <artifactId>paseto4j</artifactId>
+    <version>2024.3-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>paseto4j-version3</artifactId>
-    <packaging>jar</packaging>
+  <artifactId>paseto4j-version3</artifactId>
+  <packaging>jar</packaging>
 
-    <name>paseto4j-version3</name>
+  <name>paseto4j-version3</name>
 
-    <properties>
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-    </properties>
+  <properties>
+    <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk18on</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.18.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-commons</artifactId>
-            <version>${project.version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk18on</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>io.github.nbaars</groupId>
+      <artifactId>paseto4j-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.18.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.nbaars</groupId>
+      <artifactId>paseto4j-commons</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

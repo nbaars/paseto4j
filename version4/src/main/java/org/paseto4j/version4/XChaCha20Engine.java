@@ -1,9 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: Copyright © 2025 Nanne Baars
+ * SPDX-License-Identifier: MIT
+ */
 package org.paseto4j.version4;
 
 import org.bouncycastle.crypto.engines.ChaChaEngine;
 import org.bouncycastle.util.Pack;
 
-/** Taken from dangling PR https://github.com/bcgit/bc-java/pull/957 */
+/** Taken from dangling PR <a href="https://github.com/bcgit/bc-java/pull/957">...</a> */
 public class XChaCha20Engine extends ChaChaEngine {
 
   /** Create a new XChaCha20 engine. */

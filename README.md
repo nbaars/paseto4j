@@ -1,4 +1,5 @@
 # Java implementation of PASETO: Platform-Agnostic Security Tokens
+
 [![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nbaars_paseto4j&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nbaars_paseto4j)
 [![GitHub release](https://img.shields.io/github/release/nbaars/paseto4j.svg)](https://github.com/nbaars/paseto4j/releases/latest)
@@ -11,6 +12,7 @@ construct the tokens with which JSON library is up to you. According to the spec
 be a JSON object.
 
 # Contents
+
 * [What is Paseto?](#what-is-paseto)
   * [Key Differences between Paseto and JWT](#key-differences-between-paseto-and-jwt)
 * [Installation](#installation)
@@ -66,11 +68,10 @@ Add the following dependency to your project:
 </dependency>
 ```
 
-
 ## Version 2
 
 Version 2 (the recommended version by the specification) is supported, this version depends on Libsodium
-see [here](https://download.libsodium.org/doc/installation/) on how to install this library. The Dockerfile 
+see [here](https://download.libsodium.org/doc/installation/) on how to install this library. The Dockerfile
 contains an example how to install it on a Linux based system.
 
 Add the following dependency to your project:
@@ -84,7 +85,7 @@ Add the following dependency to your project:
 </dependency>
 ```
 
-## Version 1 
+## Version 1
 
 Add the following dependency to your project:
 
@@ -109,7 +110,7 @@ Why use this library over the other Java implementations?
 - Easy to use API.
 - Available on Maven Central
 
-## Example usages 
+## Example usages
 
 - https://nutbutterfly.medium.com/spring-boot-quick-guide-to-replace-jwt-with-paseto-774f43c8f2c4 - This library provide a simple API, easy to use and fully flexible for developer.
 
@@ -120,11 +121,19 @@ Why use this library over the other Java implementations?
 ```shell
 docker build -t paseto4j .
 docker run -v "${HOME}"/.m2:/root/.m2 -v "${PWD}":/workspace paseto4j ./mvnw verify     
- ```
+```
 
 The first command is only necessary ones, for building the Maven image.
 
+Another way to run it locally is to first (macOS only):
+
+```
+brew install libsodium
+```
+
+Then run `./mvnw verify` to run the tests and build the project.
+
 # Release
 
-We use [Calendar Versioning](https://calver.org/) as version numbers. Creating a new tag and pushing it to GitHub will start the release process. 
+We use [Calendar Versioning](https://calver.org/) as version numbers. Creating a new tag and pushing it to GitHub will start the release process.
 

@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright © 2025 Nanne Baars
+ * SPDX-License-Identifier: MIT
+ */
 package org.paseto4j.commons;
 
 import static org.paseto4j.commons.Conditions.verify;
@@ -6,7 +10,7 @@ public abstract class Key<T> {
 
   private T key;
   private byte[] material;
-  private Version version;
+  private final Version version;
 
   @Deprecated
   protected Key(byte[] keyMaterial, Version version) {

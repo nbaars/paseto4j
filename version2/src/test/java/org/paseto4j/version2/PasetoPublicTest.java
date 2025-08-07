@@ -1,27 +1,7 @@
 /*
- * MIT License
- *
- * Copyright (c) 2018 Nanne Baars
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright © 2018 Nanne Baars
+ * SPDX-License-Identifier: MIT
  */
-
 package org.paseto4j.version2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,10 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.paseto4j.commons.HexToBytes.hexToBytes;
 import static org.paseto4j.commons.Version.V2;
 
+import com.goterl.lazysodium.LazySodiumJava;
+import com.goterl.lazysodium.SodiumJava;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.stream.Stream;
-import org.apache.tuweni.crypto.sodium.Signature;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -145,8 +126,11 @@ class PasetoPublicTest {
   @Test
   void signTokenWithSeed() {
     byte[] seed = hexToBytes("b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a3774");
-    Signature.KeyPair keyPair = Signature.KeyPair.fromSeed(Signature.Seed.fromBytes(seed));
-    PrivateKey privateKey = new PrivateKey(keyPair.secretKey().bytesArray(), V2);
+    byte[] sk = new byte[64];
+    byte[] pk = new byte[32];
+    LazySodiumJava lazySodium = new LazySodiumJava(new SodiumJava());
+    lazySodium.cryptoSignSeedKeypair(pk, sk, seed);
+    PrivateKey privateKey = new PrivateKey(sk, V2);
     String token =
         PasetoPublic.sign(
             privateKey,

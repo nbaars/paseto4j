@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright © 2025 Nanne Baars
+ * SPDX-License-Identifier: MIT
+ */
 package org.paseto4j.version4;
 
 import java.security.SignatureException;
@@ -8,14 +12,14 @@ import org.paseto4j.commons.SecretKey;
 public class Paseto {
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#encrypt
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#encrypt">encrypt</a>
    */
   public static String encrypt(SecretKey key, String payload, String footer) {
     return PasetoLocal.encrypt(key, payload, footer, "");
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#encrypt
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#encrypt">decrypt</a>
    */
   public static String encrypt(
       SecretKey key, String payload, String footer, String implicitAssertion) {
@@ -23,14 +27,14 @@ public class Paseto {
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt">decrypt</a>
    */
   public static String decrypt(SecretKey key, String signedMessage, String footer) {
     return PasetoLocal.decrypt(key, signedMessage, footer);
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#sign
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#sign">sign</a>
    */
   public static String decrypt(
       SecretKey key, String signedMessage, String footer, String implicitAssertion) {
@@ -38,21 +42,21 @@ public class Paseto {
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#sign
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#sign">sign</a>
    */
   public static String sign(PrivateKey privateKey, String payload) {
     return sign(privateKey, payload, "");
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#sign
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#sign">sign</a>
    */
   public static String sign(PrivateKey privateKey, String payload, String footer) {
     return sign(privateKey, payload, footer, "");
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#sign
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#sign">sign</a>
    */
   public static String sign(
       PrivateKey privateKey, String payload, String footer, String implicitAssertion) {
@@ -60,14 +64,14 @@ public class Paseto {
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#verify
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#verify">verify</a>
    */
   public static String parse(PublicKey publicKey, String signedMessage) throws SignatureException {
     return parse(publicKey, signedMessage, "");
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#verify
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#verify">verify</a>
    */
   public static String parse(PublicKey publicKey, String signedMessage, String footer)
       throws SignatureException {
@@ -75,7 +79,7 @@ public class Paseto {
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#verify
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#verify">verify</a>
    */
   public static String parse(
       PublicKey publicKey, String signedMessage, String footer, String implicitAssertion)

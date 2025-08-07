@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright © 2025 Nanne Baars
+ * SPDX-License-Identifier: MIT
+ */
 package org.paseto4j.commons;
 
 import java.nio.charset.StandardCharsets;
@@ -9,7 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class PrivateKeyTest {
 
-  private static String PRIVATE_KEY =
+  private static final String PRIVATE_KEY =
       "308204bd020100300d06092a864886f70d0101010500048204a7308204a30201000282010100c9a4e04ede77a61de9e461e0c2"
           + "8196c33e6145f597490034f0d08ec1ed0512000b5a8b3d1828cd14277bdb79c21f106d375a9def831287fb8df3c24f21"
           + "bc312a1783a78931a3860c379b6b3da1747bd1ba063d4dd361e76a7c452d6fa098b6e060efd26587d617f33cc8b05cbb"

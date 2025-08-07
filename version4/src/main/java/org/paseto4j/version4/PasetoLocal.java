@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright © 2025 Nanne Baars
+ * SPDX-License-Identifier: MIT
+ */
 package org.paseto4j.version4;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -10,7 +14,6 @@ import static org.paseto4j.commons.Version.V4;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
-import org.apache.tuweni.bytes.Bytes;
 import org.paseto4j.commons.PreAuthenticationEncoder;
 import org.paseto4j.commons.SecretKey;
 import org.paseto4j.commons.Token;
@@ -20,7 +23,7 @@ public class PasetoLocal {
   private PasetoLocal() {}
 
   public static String encrypt(SecretKey key, String payload, String footer, String implicit) {
-    return encrypt(key, Bytes.random(32).toArray(), payload, footer, implicit);
+    return encrypt(key, CryptoFunctions.randomBytes(), payload, footer, implicit);
   }
 
   /**

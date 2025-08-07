@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright © 2025 Nanne Baars
+ * SPDX-License-Identifier: MIT
+ */
 package org.paseto4j.commons;
 
 import java.util.stream.Stream;
@@ -8,7 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class SecretKeyTest {
 
-  private static byte[] SECRET_KEY =
+  private static final byte[] SECRET_KEY =
       HexToBytes.hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
 
   private static Stream<Arguments> combinations() {

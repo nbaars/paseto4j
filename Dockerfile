@@ -1,5 +1,11 @@
-FROM openjdk:11.0.11-slim-buster
+FROM eclipse-temurin:17-jdk-jammy
 
-RUN apt-get update && apt-get -y install libsodium-dev
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ca-certificates \
+    libsodium23 \
+    libsodium-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace
