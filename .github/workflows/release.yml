@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: 11
+          java-version: 17
           architecture: x64
           server-id: ossrh
           server-username: MAVEN_USERNAME

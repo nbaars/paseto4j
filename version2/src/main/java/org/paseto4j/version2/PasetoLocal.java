@@ -1,42 +1,22 @@
 /*
- * MIT License
- *
- * Copyright (c) 2018 Nanne Baars
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright © 2018 Nanne Baars
+ * SPDX-License-Identifier: MIT
  */
-
 package org.paseto4j.version2;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.requireNonNull;
-import static org.apache.tuweni.bytes.Bytes.concatenate;
-import static org.apache.tuweni.bytes.Bytes.wrap;
+import static org.paseto4j.commons.ByteUtils.concat;
 import static org.paseto4j.commons.Conditions.verify;
 import static org.paseto4j.commons.Purpose.PURPOSE_LOCAL;
 import static org.paseto4j.commons.Version.V2;
 
+import com.goterl.lazysodium.LazySodiumJava;
+import com.goterl.lazysodium.SodiumJava;
+import com.goterl.lazysodium.interfaces.AEAD;
 import java.util.Arrays;
 import java.util.Base64;
-import org.apache.tuweni.bytes.Bytes;
-import org.apache.tuweni.crypto.sodium.GenericHash;
-import org.apache.tuweni.crypto.sodium.XChaCha20Poly1305;
+
 import org.paseto4j.commons.PasetoException;
 import org.paseto4j.commons.PreAuthenticationEncoder;
 import org.paseto4j.commons.SecretKey;
@@ -45,10 +25,21 @@ import org.paseto4j.commons.TokenOut;
 
 class PasetoLocal {
 
+  private static final LazySodiumJava SODIUM;
+
+  static {
+    try {
+      SODIUM = new LazySodiumJava(new SodiumJava());
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to initialize libsodium", e);
+    }
+  }
+
   private PasetoLocal() {}
 
   static String encrypt(SecretKey key, String payload, String footer) {
-    return encrypt(key, Bytes.random(XChaCha20Poly1305.Nonce.length()).toArray(), payload, footer);
+    byte[] randomKey = SODIUM.randomBytesBuf(32);
+    return encrypt(key, randomKey, payload, footer);
   }
 
   static String encrypt(SecretKey key, byte[] randomKey, String payload, String footer) {
@@ -59,30 +50,37 @@ class PasetoLocal {
 
     TokenOut token = new TokenOut(V2, PURPOSE_LOCAL);
 
-    // 3
-    byte[] nonce =
-        GenericHash.hash(
-                24,
-                GenericHash.Input.fromBytes(payload.getBytes(UTF_8)),
-                GenericHash.Key.fromBytes(randomKey))
-            .bytesArray();
+    // 3 - Generate nonce using GenericHash
+    byte[] nonce = new byte[AEAD.XCHACHA20POLY1305_IETF_NPUBBYTES];
+    byte[] payloadBytes = payload.getBytes(UTF_8);
+    SODIUM.cryptoGenericHash(
+        nonce, nonce.length, payloadBytes, payloadBytes.length, randomKey, randomKey.length);
 
-    // 4
+    // 4 - Pre-auth encoding (unchanged)
     byte[] preAuth = PreAuthenticationEncoder.encode(token.header(), nonce, footer.getBytes(UTF_8));
 
-    // 5
-    byte[] cipherText =
-        XChaCha20Poly1305.encrypt(
-            payload.getBytes(UTF_8),
+    // 5 - XChaCha20Poly1305 encryption
+    byte[] cipherText = new byte[payloadBytes.length + AEAD.XCHACHA20POLY1305_IETF_ABYTES];
+    long[] cipherLen = new long[1];
+
+    boolean success =
+        SODIUM.cryptoAeadXChaCha20Poly1305IetfEncrypt(
+            cipherText,
+            cipherLen,
+            payloadBytes,
+            payloadBytes.length,
             preAuth,
-            XChaCha20Poly1305.Key.fromBytes(key.getMaterial()),
-            XChaCha20Poly1305.Nonce.fromBytes(nonce));
+            preAuth.length,
+            null, // No additional data
+            nonce,
+            key.getMaterial());
+
+    if (!success) {
+      throw new PasetoException("Encryption failed");
+    }
 
     // 6
-    return token
-        .payload(concatenate(wrap(nonce), wrap(cipherText)).toArray())
-        .footer(footer)
-        .doFinal();
+    return token.payload(concat(nonce, cipherText)).footer(footer).doFinal();
   }
 
   static String decrypt(SecretKey key, String token, String footer) {
@@ -95,24 +93,34 @@ class PasetoLocal {
 
     // 3
     byte[] ct = Base64.getUrlDecoder().decode(pasetoToken.getPayload());
-    byte[] nonce = Arrays.copyOfRange(ct, 0, XChaCha20Poly1305.Nonce.length());
-    byte[] encryptedMessage = Arrays.copyOfRange(ct, XChaCha20Poly1305.Nonce.length(), ct.length);
+    byte[] nonce = Arrays.copyOfRange(ct, 0, AEAD.XCHACHA20POLY1305_IETF_NPUBBYTES);
+    byte[] encryptedMessage =
+        Arrays.copyOfRange(ct, AEAD.XCHACHA20POLY1305_IETF_NPUBBYTES, ct.length);
 
     // 4
     byte[] preAuth =
         PreAuthenticationEncoder.encode(pasetoToken.header(), nonce, footer.getBytes(UTF_8));
 
-    // 5
-    byte[] message =
-        XChaCha20Poly1305.decrypt(
-            encryptedMessage,
-            preAuth,
-            XChaCha20Poly1305.Key.fromBytes(key.getMaterial()),
-            XChaCha20Poly1305.Nonce.fromBytes(nonce));
+    // 5 - XChaCha20Poly1305 decryption using Lazysodium
+    byte[] message = new byte[encryptedMessage.length - AEAD.XCHACHA20POLY1305_IETF_ABYTES];
+    long[] messageLen = new long[1];
 
-    if (message == null) {
-      throw new PasetoException("Unable to decrypt the token, result was null");
+    boolean success =
+        SODIUM.cryptoAeadXChaCha20Poly1305IetfDecrypt(
+            message,
+            messageLen,
+            null, // No additional data
+            encryptedMessage,
+            encryptedMessage.length,
+            preAuth,
+            preAuth.length,
+            nonce,
+            key.getMaterial());
+
+    if (!success) {
+      throw new PasetoException("Unable to decrypt the token");
     }
-    return new String(message, UTF_8);
+
+    return new String(message, 0, (int) messageLen[0], UTF_8);
   }
 }

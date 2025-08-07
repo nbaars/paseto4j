@@ -1,56 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>io.github.nbaars</groupId>
-        <artifactId>paseto4j</artifactId>
-        <version>2024.3-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <groupId>io.github.nbaars</groupId>
+    <artifactId>paseto4j</artifactId>
+    <version>2024.3-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>paseto4j-examples</artifactId>
-    <packaging>jar</packaging>
+  <artifactId>paseto4j-examples</artifactId>
+  <packaging>jar</packaging>
 
-    <name>paseto4j-examples</name>
+  <name>paseto4j-examples</name>
 
-    <properties>
-        <paseto4j.deploy.skip>true</paseto4j.deploy.skip>
-        <sonar.skip>true</sonar.skip>
-    </properties>
+  <properties>
+    <paseto4j.deploy.skip>true</paseto4j.deploy.skip>
+    <sonar.skip>true</sonar.skip>
+  </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-version1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- Start: only for Paseto Version 2 -->
-        <dependency>
-            <groupId>io.github.nbaars</groupId>
-            <artifactId>paseto4j-version2</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-bytes</artifactId>
-            <version>2.3.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.errorprone</groupId>
-                    <artifactId>error_prone_annotations</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuweni</groupId>
-            <artifactId>tuweni-crypto</artifactId>
-            <version>2.3.1</version>
-        </dependency>
-        <!-- End: only for Paseto Version 2 -->
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>com.goterl</groupId>
+      <artifactId>lazysodium-java</artifactId>
+      <version>5.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.nbaars</groupId>
+      <artifactId>paseto4j-commons</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.nbaars</groupId>
+      <artifactId>paseto4j-version1</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- Start: only for Paseto Version 2 -->
+    <dependency>
+      <groupId>io.github.nbaars</groupId>
+      <artifactId>paseto4j-version2</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!-- End: only for Paseto Version 2 -->
+  </dependencies>
 </project>

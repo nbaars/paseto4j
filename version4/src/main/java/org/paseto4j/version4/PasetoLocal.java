@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright © 2025 Nanne Baars
+ * SPDX-License-Identifier: MIT
+ */
 package org.paseto4j.version4;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -10,7 +14,6 @@ import static org.paseto4j.commons.Version.V4;
 
 import java.security.MessageDigest;
 import java.util.Arrays;
-import org.apache.tuweni.bytes.Bytes;
 import org.paseto4j.commons.PreAuthenticationEncoder;
 import org.paseto4j.commons.SecretKey;
 import org.paseto4j.commons.Token;
@@ -20,11 +23,11 @@ public class PasetoLocal {
   private PasetoLocal() {}
 
   public static String encrypt(SecretKey key, String payload, String footer, String implicit) {
-    return encrypt(key, Bytes.random(32).toArray(), payload, footer, implicit);
+    return encrypt(key, CryptoFunctions.randomBytes(), payload, footer, implicit);
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#encrypt
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#encrypt">encrypt</a>
    */
   static String encrypt(
       SecretKey key, byte[] nonce, String payload, String footer, String implicitAssertion) {
@@ -57,14 +60,14 @@ public class PasetoLocal {
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt">decrypt</a>
    */
   public static String decrypt(SecretKey key, String token, String footer) {
     return decrypt(key, token, footer, "");
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt">decrypt</a>
    */
   static String decrypt(SecretKey key, String token, String footer, String implicitAssertion) {
     requireNonNull(key);

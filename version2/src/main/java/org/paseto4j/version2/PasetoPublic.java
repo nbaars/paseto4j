@@ -1,27 +1,7 @@
 /*
- * MIT License
- *
- * Copyright (c) 2018 Nanne Baars
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * SPDX-FileCopyrightText: Copyright © 2018 Nanne Baars
+ * SPDX-License-Identifier: MIT
  */
-
 package org.paseto4j.version2;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -33,9 +13,10 @@ import static org.paseto4j.commons.PreAuthenticationEncoder.encode;
 import static org.paseto4j.commons.Purpose.PURPOSE_PUBLIC;
 import static org.paseto4j.commons.Version.V2;
 
+import com.goterl.lazysodium.LazySodiumJava;
+import com.goterl.lazysodium.SodiumJava;
 import java.security.SignatureException;
 import java.util.Arrays;
-import org.apache.tuweni.crypto.sodium.Signature;
 import org.paseto4j.commons.PreAuthenticationEncoder;
 import org.paseto4j.commons.PrivateKey;
 import org.paseto4j.commons.PublicKey;
@@ -43,6 +24,16 @@ import org.paseto4j.commons.Token;
 import org.paseto4j.commons.TokenOut;
 
 class PasetoPublic {
+
+  private static final LazySodiumJava SODIUM;
+
+  static {
+    try {
+      SODIUM = new LazySodiumJava(new SodiumJava());
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to initialize libsodium", e);
+    }
+  }
 
   private PasetoPublic() {}
 
@@ -55,8 +46,9 @@ class PasetoPublic {
     TokenOut token = new TokenOut(V2, PURPOSE_PUBLIC);
 
     byte[] m2 = encode(token.header(), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
-    byte[] signature =
-        Signature.signDetached(m2, Signature.SecretKey.fromBytes(privateKey.getMaterial()));
+    byte[] signature = new byte[64];
+    byte[] sk = Arrays.copyOf(privateKey.getMaterial(), 64);
+    SODIUM.cryptoSignDetached(signature, m2, m2.length, sk);
 
     return token.payload(concat(payload.getBytes(UTF_8), signature)).footer(footer).doFinal();
   }
@@ -87,9 +79,8 @@ class PasetoPublic {
 
   private static void verifySignature(PublicKey key, byte[] message, byte[] signature)
       throws SignatureException {
-    boolean valid =
-        Signature.verifyDetached(
-            message, signature, Signature.PublicKey.fromBytes(key.getMaterial()));
+    byte[] pk = Arrays.copyOf(key.getMaterial(), 32);
+    boolean valid = SODIUM.cryptoSignVerifyDetached(signature, message, message.length, pk);
     if (!valid) {
       throw new SignatureException("Invalid signature");
     }

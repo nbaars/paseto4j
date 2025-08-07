@@ -1,3 +1,7 @@
+/*
+ * SPDX-FileCopyrightText: Copyright © 2025 Nanne Baars
+ * SPDX-License-Identifier: MIT
+ */
 package org.paseto4j.version4;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,7 +18,7 @@ import org.paseto4j.commons.SecretKey;
 import org.paseto4j.commons.TestVectors;
 import org.paseto4j.commons.Version;
 
-public class PasetoLocalTest {
+class PasetoLocalTest {
   private static Stream<Arguments> testVectors() throws IOException {
     return TestVectors.v4(Purpose.PURPOSE_LOCAL).stream()
         .map(

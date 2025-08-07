@@ -1,8 +1,12 @@
+/*
+ * SPDX-FileCopyrightText: Copyright © 2025 Nanne Baars
+ * SPDX-License-Identifier: MIT
+ */
 package org.paseto4j.commons;
 
 /**
  * Copied from
- * http://www.docjar.com/html/api/com/sun/xml/internal/bind/DatatypeConverterImpl.java.html
+ * <a href="http://www.docjar.com/html/api/com/sun/xml/internal/bind/DatatypeConverterImpl.java.html">...</a>
  */
 public class HexToBytes {
 
