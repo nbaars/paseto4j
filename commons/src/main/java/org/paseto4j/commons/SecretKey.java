@@ -7,7 +7,7 @@ package org.paseto4j.commons;
 public record SecretKey(byte[] key) {
   public SecretKey {
     if (key == null || key.length != 32) {
-      throw new IllegalArgumentException("Key must be a byte array of length 32");
+      throw new PasetoException("Key must be a byte array of length 32");
     }
   }
 }
