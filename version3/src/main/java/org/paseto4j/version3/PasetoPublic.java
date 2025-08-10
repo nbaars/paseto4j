@@ -116,7 +116,7 @@ class PasetoPublic {
   }
 
   private static byte[] toCompressed(ECPublicKey key) {
-    X9ECParameters params = SECNamedCurves.getByName("secp384r1");
+    X9ECParameters params = SECNamedCurves.getByName(CURVE_NAME);
 
     org.bouncycastle.math.ec.ECPoint bcPoint =
         params.getCurve().createPoint(key.getW().getAffineX(), key.getW().getAffineY());
