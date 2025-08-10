@@ -9,6 +9,9 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
+import java.security.interfaces.EdECKey;
+import java.security.interfaces.EdECPrivateKey;
+
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.Blake2bDigest;
 import org.bouncycastle.crypto.params.KeyParameter;
@@ -47,7 +50,7 @@ public class CryptoFunctions {
     return out;
   }
 
-  public static byte[] sign(PrivateKey privateKey, byte[] msg) {
+  public static byte[] sign(EdECPrivateKey privateKey, byte[] msg) {
     try {
       Signature signature = Signature.getInstance("Ed25519", "BC");
       signature.initSign(privateKey);

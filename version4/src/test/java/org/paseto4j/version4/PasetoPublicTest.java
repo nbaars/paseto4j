@@ -13,6 +13,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.security.Security;
 import java.security.SignatureException;
+import java.security.interfaces.EdECPrivateKey;
+import java.security.interfaces.EdECPublicKey;
 import java.util.stream.Stream;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -61,8 +63,8 @@ public class PasetoPublicTest {
       throws IOException, SignatureException {
     Reader rdr = new StringReader(secretKeyPem);
     Object parsed = new PEMParser(rdr).readObject();
-    var edPrivateKey = new JcaPEMKeyConverter().getPrivateKey((PrivateKeyInfo) parsed);
-    var privateKey = new PrivateKey(edPrivateKey, V4);
+    var privateKey =
+        (EdECPrivateKey) new JcaPEMKeyConverter().getPrivateKey((PrivateKeyInfo) parsed);
 
     if (expectFail) {
       assertThrows(
@@ -87,9 +89,8 @@ public class PasetoPublicTest {
       throws IOException, SignatureException {
     Reader rdr = new StringReader(publicKeyPem);
     Object parsed = new PEMParser(rdr).readObject();
-    System.out.println(parsed);
-    var edPublicKey = new JcaPEMKeyConverter().getPublicKey((SubjectPublicKeyInfo) parsed);
-    var publicKey = new PublicKey(edPublicKey, V4);
+    var publicKey =
+        (EdECPublicKey) new JcaPEMKeyConverter().getPublicKey((SubjectPublicKeyInfo) parsed);
 
     if (expectFail) {
       assertThrows(
