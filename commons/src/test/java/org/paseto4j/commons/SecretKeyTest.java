@@ -14,12 +14,12 @@ class SecretKeyTest {
 
   @Test
   void nullKeyShouldThrowException() {
-    Assertions.assertThrows(IllegalArgumentException.class, () -> new SecretKey(null));
+    Assertions.assertThrows(PasetoException.class, () -> new SecretKey(null));
   }
 
   @Test
   void shortKeyShouldThrowException() {
-    Assertions.assertThrows(IllegalArgumentException.class, () -> new SecretKey(new byte[31]));
+    Assertions.assertThrows(PasetoException.class, () -> new SecretKey(new byte[31]));
   }
 
   @Test

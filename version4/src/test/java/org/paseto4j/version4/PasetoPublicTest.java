@@ -6,7 +6,6 @@ package org.paseto4j.version4;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.paseto4j.commons.Version.V4;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -24,8 +23,6 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.Purpose;
 import org.paseto4j.commons.TestVectors;
 

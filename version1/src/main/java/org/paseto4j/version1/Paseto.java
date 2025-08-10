@@ -8,8 +8,6 @@ import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.SecretKey;
 
 public class Paseto {

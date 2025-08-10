@@ -4,14 +4,14 @@
  */
 package org.paseto4j.version2;
 
-import static org.paseto4j.commons.Version.V1;
-
-import java.security.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
 
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.SecretKey;
 import org.paseto4j.version1.Paseto;
 

@@ -22,7 +22,6 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.math.ec.ECPoint;
 import org.paseto4j.commons.ByteUtils;
 import org.paseto4j.commons.PreAuthenticationEncoder;
-import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.Token;
 import org.paseto4j.commons.TokenOut;
 

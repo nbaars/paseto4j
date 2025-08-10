@@ -7,19 +7,15 @@ package org.paseto4j.version1;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Objects.requireNonNull;
-import static org.paseto4j.commons.Conditions.verify;
 import static org.paseto4j.commons.Purpose.PURPOSE_PUBLIC;
 import static org.paseto4j.commons.Version.V1;
 
 import java.security.SignatureException;
-import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import org.paseto4j.commons.ByteUtils;
 import org.paseto4j.commons.PreAuthenticationEncoder;
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.Token;
 import org.paseto4j.commons.TokenOut;
 

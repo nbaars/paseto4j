@@ -8,7 +8,6 @@ import java.security.SignatureException;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 
-import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.SecretKey;
 
 public class Paseto {

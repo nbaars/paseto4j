@@ -5,12 +5,9 @@
 package org.paseto4j.version4;
 
 import java.security.SignatureException;
-import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.EdECPrivateKey;
 import java.security.interfaces.EdECPublicKey;
 
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.SecretKey;
 
 public class Paseto {
