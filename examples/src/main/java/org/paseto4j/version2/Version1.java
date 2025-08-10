@@ -32,12 +32,10 @@ public class Version1 {
   private static void exampleV1Public() throws SignatureException {
     KeyPair keyPair = generateKeyPair();
 
-    String signedToken =
-        Paseto.sign(new PrivateKey(keyPair.getPrivate().getEncoded(), V1), TOKEN, FOOTER);
+    String signedToken = Paseto.sign(new PrivateKey(keyPair.getPrivate(), V1), TOKEN, FOOTER);
     System.out.println("Signed token is: " + signedToken);
 
-    String token =
-        Paseto.parse(new PublicKey(keyPair.getPublic().getEncoded(), V1), signedToken, FOOTER);
+    String token = Paseto.parse(new PublicKey(keyPair.getPublic(), V1), signedToken, FOOTER);
     System.out.println("Signature is valid, token is: " + token);
   }
 
@@ -45,12 +43,10 @@ public class Version1 {
     KeyPair keyPair1 = generateKeyPair();
     KeyPair keyPair2 = generateKeyPair();
 
-    String signedToken =
-        Paseto.sign(new PrivateKey(keyPair1.getPrivate().getEncoded(), V1), TOKEN, FOOTER);
+    String signedToken = Paseto.sign(new PrivateKey(keyPair1.getPrivate(), V1), TOKEN, FOOTER);
     System.out.println("Signed token is: " + signedToken);
 
-    String token =
-        Paseto.parse(new PublicKey(keyPair2.getPublic().getEncoded(), V1), signedToken, FOOTER);
+    String token = Paseto.parse(new PublicKey(keyPair2.getPublic(), V1), signedToken, FOOTER);
     System.out.println("Signature is valid, token is: " + token);
   }
 

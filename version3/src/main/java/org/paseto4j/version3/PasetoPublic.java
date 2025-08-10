@@ -31,7 +31,8 @@ class PasetoPublic {
   private PasetoPublic() {}
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign
+   * <a
+   * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign">...</a>
    */
   static String sign(
       PrivateKey privateKey, String payload, String footer, String implicitAssertion) {
@@ -68,7 +69,7 @@ class PasetoPublic {
 
   /**
    * Parse the token,
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify
+   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify">...</a>
    */
   static String parse(
       PublicKey publicKey, String signedMessage, String footer, String implicitAssertion)

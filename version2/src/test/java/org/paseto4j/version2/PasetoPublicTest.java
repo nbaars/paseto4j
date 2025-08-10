@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.paseto4j.commons.HexToBytes.hexToBytes;
 import static org.paseto4j.commons.Version.V2;
+import static org.paseto4j.version2.Paseto.*;
 
 import com.goterl.lazysodium.LazySodiumJava;
 import com.goterl.lazysodium.SodiumJava;
@@ -31,9 +32,7 @@ class PasetoPublicTest {
     byte[] privateKey =
         hexToBytes(
             "b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a37741eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
-    assertEquals(
-        expectedToken,
-        org.paseto4j.version2.Paseto.sign(new PrivateKey(privateKey, V2), payload, footer));
+    assertEquals(expectedToken, Paseto.sign(new PrivateKey(privateKey, V2), payload, footer));
   }
 
   private static Stream<Arguments> sign() {
@@ -103,9 +102,7 @@ class PasetoPublicTest {
     byte[] publicKey =
         hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
-    assertEquals(
-        payload,
-        org.paseto4j.version2.Paseto.parse(new PublicKey(publicKey, V2), signedMessage, footer));
+    assertEquals(payload, parse(new PublicKey(publicKey, V2), signedMessage, footer));
   }
 
   @Test
@@ -117,7 +114,7 @@ class PasetoPublicTest {
     assertThrows(
         SignatureException.class,
         () ->
-            Paseto.parse(
+            parse(
                 publicKey,
                 "v2.public.RnJhbmsgRGVuaXMgcm9ja3O7MPuu90WKNyvBUUhAGFmi4PiPOr2bN2ytUSU-QWlj8eNefki2MubssfN1b8figynnY0WusRPwIQ-o0HSZOS0A.Q3VvbiBBbHBpbnVz",
                 "Cuon Alpinus"));
