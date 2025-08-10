@@ -18,7 +18,6 @@ import org.paseto4j.commons.PasetoException;
 import org.paseto4j.commons.Purpose;
 import org.paseto4j.commons.SecretKey;
 import org.paseto4j.commons.TestVectors;
-import org.paseto4j.commons.Version;
 
 class PasetoLocalTest {
 
@@ -53,7 +52,7 @@ class PasetoLocalTest {
           Exception.class,
           () ->
               PasetoLocal.encrypt(
-                  new SecretKey(hexToBytes(key), Version.V3),
+                  new SecretKey(hexToBytes(key)),
                   hexToBytes(nonce),
                   payload,
                   footer,
@@ -62,7 +61,7 @@ class PasetoLocalTest {
       assertEquals(
           expectedToken,
           PasetoLocal.encrypt(
-              new SecretKey(hexToBytes(key), Version.V3),
+              new SecretKey(hexToBytes(key)),
               hexToBytes(nonce),
               payload,
               footer,
@@ -86,7 +85,7 @@ class PasetoLocalTest {
           Exception.class,
           () ->
               PasetoLocal.encrypt(
-                  new SecretKey(hexToBytes(key), Version.V3),
+                  new SecretKey(hexToBytes(key)),
                   hexToBytes(nonce),
                   payload,
                   footer,
@@ -95,7 +94,7 @@ class PasetoLocalTest {
       assertEquals(
           payload,
           Paseto.decrypt(
-              new SecretKey(hexToBytes(key), Version.V3),
+              new SecretKey(hexToBytes(key)),
               encryptedToken,
               footer,
               implicitAssertion));
@@ -106,8 +105,8 @@ class PasetoLocalTest {
   void normalUsage() {
     SecretKey key =
         new SecretKey(
-            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"),
-            Version.V3);
+            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f")
+        );
     String encryptedToken =
         Paseto.encrypt(
             key,
@@ -126,8 +125,8 @@ class PasetoLocalTest {
   void wrongFooter() {
     SecretKey key =
         new SecretKey(
-            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"),
-            Version.V3);
+            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f")
+        );
     String encryptedToken =
         Paseto.encrypt(
             key,

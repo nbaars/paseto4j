@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.paseto4j.commons.PasetoException;
 import org.paseto4j.commons.SecretKey;
-import org.paseto4j.commons.Version;
 
 class PasetoLocalTest {
 
@@ -26,7 +25,7 @@ class PasetoLocalTest {
     assertEquals(
         expectedToken,
         PasetoLocal.encrypt(
-            new SecretKey(hexToBytes(key), Version.V1), hexToBytes(nonce), payload, footer));
+            new SecretKey(hexToBytes(key)), hexToBytes(nonce), payload, footer));
   }
 
   @ParameterizedTest
@@ -35,7 +34,7 @@ class PasetoLocalTest {
       String key, String nonce, String payload, String footer, String encryptedToken) {
     assertEquals(
         payload,
-        Paseto.decrypt(new SecretKey(hexToBytes(key), Version.V1), encryptedToken, footer));
+        Paseto.decrypt(new SecretKey(hexToBytes(key)), encryptedToken, footer));
   }
 
   private static Stream<Arguments> testVectors() {
@@ -82,8 +81,8 @@ class PasetoLocalTest {
   void normalUsage() {
     SecretKey key =
         new SecretKey(
-            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"),
-            Version.V1);
+            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f")
+        );
     String encryptedToken =
         PasetoLocal.encrypt(
             key,
@@ -102,8 +101,8 @@ class PasetoLocalTest {
   void wrongFooter() {
     SecretKey key =
         new SecretKey(
-            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"),
-            Version.V1);
+            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f")
+        );
     String encryptedToken =
         PasetoLocal.encrypt(
             key,

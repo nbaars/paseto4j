@@ -27,14 +27,13 @@ public class PasetoLocal {
   }
 
   /**
-   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#encrypt">encrypt</a>
+   * <a
+   * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#encrypt">encrypt</a>
    */
   static String encrypt(
       SecretKey key, byte[] nonce, String payload, String footer, String implicitAssertion) {
     requireNonNull(key);
     requireNonNull(payload);
-    verify(key.isValidFor(V4, PURPOSE_LOCAL), "Key is not valid for purpose and version");
-    verify(key.hasLength(32), "key should be 32 bytes");
     verify(nonce.length == 32, "nonce should be 32 bytes");
 
     TokenOut token = new TokenOut(V4, PURPOSE_LOCAL);
@@ -60,21 +59,20 @@ public class PasetoLocal {
   }
 
   /**
-   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt">decrypt</a>
+   * <a
+   * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt">decrypt</a>
    */
   public static String decrypt(SecretKey key, String token, String footer) {
     return decrypt(key, token, footer, "");
   }
 
   /**
-   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt">decrypt</a>
+   * <a
+   * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version4.md#decrypt">decrypt</a>
    */
   static String decrypt(SecretKey key, String token, String footer, String implicitAssertion) {
     requireNonNull(key);
     requireNonNull(token);
-
-    verify(key.isValidFor(V4, PURPOSE_LOCAL), "Key is not valid for purpose and version");
-    verify(key.hasLength(32), "key should be 32 bytes");
 
     Token pasetoToken = new Token(token, V4, PURPOSE_LOCAL, footer);
 
@@ -114,11 +112,11 @@ public class PasetoLocal {
 
   private static byte[] encryptionKey(SecretKey key, byte[] nonce) {
     return CryptoFunctions.blake2b(
-        56, concat("paseto-encryption-key".getBytes(UTF_8), nonce), key.getMaterial());
+        56, concat("paseto-encryption-key".getBytes(UTF_8), nonce), key.key());
   }
 
   private static byte[] authenticationKey(SecretKey key, byte[] nonce) {
     return CryptoFunctions.blake2b(
-        32, concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce), key.getMaterial());
+        32, concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce), key.key());
   }
 }

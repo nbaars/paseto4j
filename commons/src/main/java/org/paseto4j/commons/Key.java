@@ -12,13 +12,11 @@ public abstract class Key<T> {
   private byte[] material;
   private final Version version;
 
-  @Deprecated
   protected Key(byte[] keyMaterial, Version version) {
     this.material = keyMaterial;
     this.version = version;
   }
 
-  @Deprecated
   protected Key(byte[] keyMaterial, Version version, int size) {
     verify(keyMaterial.length == 32, "key should be " + size + " bytes");
 

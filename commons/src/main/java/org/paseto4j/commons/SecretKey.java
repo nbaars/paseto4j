@@ -4,13 +4,10 @@
  */
 package org.paseto4j.commons;
 
-public class SecretKey extends Key<byte[]> {
-  public SecretKey(byte[] keyMaterial, Version version) {
-    super(keyMaterial, version, 32);
-  }
-
-  @Override
-  public boolean isValidFor(Version v, Purpose p) {
-    return v == this.getVersion() && p == Purpose.PURPOSE_LOCAL;
+public record SecretKey(byte[] key) {
+  public SecretKey {
+    if (key == null || key.length != 32) {
+      throw new IllegalArgumentException("Key must be a byte array of length 32");
+    }
   }
 }

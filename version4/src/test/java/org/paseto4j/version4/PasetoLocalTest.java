@@ -16,7 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.paseto4j.commons.Purpose;
 import org.paseto4j.commons.SecretKey;
 import org.paseto4j.commons.TestVectors;
-import org.paseto4j.commons.Version;
 
 class PasetoLocalTest {
   private static Stream<Arguments> testVectors() throws IOException {
@@ -50,7 +49,7 @@ class PasetoLocalTest {
           Exception.class,
           () ->
               PasetoLocal.encrypt(
-                  new SecretKey(hexToBytes(key), Version.V4),
+                  new SecretKey(hexToBytes(key)),
                   hexToBytes(nonce),
                   payload,
                   footer,
@@ -59,7 +58,7 @@ class PasetoLocalTest {
       assertEquals(
           expectedToken,
           PasetoLocal.encrypt(
-              new SecretKey(hexToBytes(key), Version.V4),
+              new SecretKey(hexToBytes(key)),
               hexToBytes(nonce),
               payload,
               footer,
@@ -83,7 +82,7 @@ class PasetoLocalTest {
           Exception.class,
           () ->
               PasetoLocal.encrypt(
-                  new SecretKey(hexToBytes(key), Version.V4),
+                  new SecretKey(hexToBytes(key)),
                   hexToBytes(nonce),
                   payload,
                   footer,
@@ -92,7 +91,7 @@ class PasetoLocalTest {
       assertEquals(
           payload,
           PasetoLocal.decrypt(
-              new SecretKey(hexToBytes(key), Version.V4),
+              new SecretKey(hexToBytes(key)),
               encryptedToken,
               footer,
               implicitAssertion));

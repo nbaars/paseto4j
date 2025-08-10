@@ -8,7 +8,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Objects.requireNonNull;
 import static org.paseto4j.commons.ByteUtils.concat;
-import static org.paseto4j.commons.Conditions.verify;
 import static org.paseto4j.commons.Purpose.PURPOSE_LOCAL;
 import static org.paseto4j.commons.Version.V3;
 import static org.paseto4j.version3.CryptoFunctions.decryptAesCtr;
@@ -41,16 +40,11 @@ class PasetoLocal {
   }
 
   static String encrypt(
-      SecretKey key, byte[] randomKey, String payload, String footer, String implicit) {
+      SecretKey key, byte[] nonce, String payload, String footer, String implicit) {
     requireNonNull(key);
     requireNonNull(payload);
-    verify(key.isValidFor(V3, PURPOSE_LOCAL), "Key is not valid for purpose and version");
-    verify(key.hasLength(32), "Key should be 32 bytes");
 
     var token = new TokenOut(V3, PURPOSE_LOCAL);
-
-    // 3
-    byte[] nonce = randomKey;
 
     // 4
     byte[] tmp = encryptionKey(key, nonce);
@@ -75,22 +69,24 @@ class PasetoLocal {
   }
 
   private static byte[] encryptionKey(SecretKey key, byte[] nonce) {
-    return hkdfSha384(key.getMaterial(), concat("paseto-encryption-key".getBytes(UTF_8), nonce));
+    return hkdfSha384(key.key(), concat("paseto-encryption-key".getBytes(UTF_8), nonce));
   }
 
   private static byte[] authenticationKey(SecretKey key, byte[] nonce) {
-    return hkdfSha384(key.getMaterial(), concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce));
+    return hkdfSha384(key.key(), concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce));
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+   * <a
+   * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt">...</a>
    */
   public static String decrypt(SecretKey key, String token) {
     return decrypt(key, token, "");
   }
 
   /**
-   * https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt
+   * <a
+   * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#decrypt">...</a>
    */
   public static String decrypt(SecretKey key, String token, String footer) {
     return decrypt(key, token, footer, "");
@@ -99,9 +95,6 @@ class PasetoLocal {
   static String decrypt(SecretKey key, String token, String footer, String implicitAssertion) {
     requireNonNull(key);
     requireNonNull(token);
-
-    // 1
-    verify(key.isValidFor(V3, PURPOSE_LOCAL), "Key is not valid for purpose and version");
 
     // 2 and 3
     var pasetoToken = new Token(token, V3, PURPOSE_LOCAL, footer);

@@ -6,7 +6,6 @@ package org.paseto4j.commons;
 
 public class PrivateKey extends Key<java.security.PrivateKey> {
 
-  @Deprecated
   public PrivateKey(byte[] keyMaterial, Version version) {
     super(keyMaterial, version);
     if (version.ordinal() >= Version.V3.ordinal())

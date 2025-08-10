@@ -8,7 +8,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Objects.requireNonNull;
 import static org.paseto4j.commons.ByteUtils.concat;
-import static org.paseto4j.commons.Conditions.verify;
 import static org.paseto4j.commons.PreAuthenticationEncoder.encode;
 import static org.paseto4j.commons.Purpose.PURPOSE_LOCAL;
 import static org.paseto4j.commons.Version.V1;
@@ -41,7 +40,6 @@ class PasetoLocal {
   static String encrypt(SecretKey key, byte[] randomKey, String payload, String footer) {
     requireNonNull(key);
     requireNonNull(payload);
-    verify(key.isValidFor(V1, PURPOSE_LOCAL), "Key is not valid for purpose and version");
 
     TokenOut token = new TokenOut(V1, PURPOSE_LOCAL);
 
@@ -72,25 +70,21 @@ class PasetoLocal {
 
   private static byte[] encryptionKey(SecretKey key, byte[] nonce) {
     return hkdfSha384(
-        key.getMaterial(),
-        Arrays.copyOfRange(nonce, 0, 16),
-        "paseto-encryption-key".getBytes(UTF_8));
+        key.key(), Arrays.copyOfRange(nonce, 0, 16), "paseto-encryption-key".getBytes(UTF_8));
   }
 
   private static byte[] authenticationKey(SecretKey key, byte[] nonce) {
     return hkdfSha384(
-        key.getMaterial(),
-        Arrays.copyOfRange(nonce, 0, 16),
-        "paseto-auth-key-for-aead".getBytes(UTF_8));
+        key.key(), Arrays.copyOfRange(nonce, 0, 16), "paseto-auth-key-for-aead".getBytes(UTF_8));
   }
 
   /**
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#decrypt
+   * <a
+   * href="https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#decrypt">...</a>
    */
   static String decrypt(SecretKey key, String token, String footer) {
     requireNonNull(key);
     requireNonNull(token);
-    verify(key.isValidFor(V1, PURPOSE_LOCAL), "Key is not valid for purpose and version");
 
     // 1 & 2
     Token pasetoToken = new Token(token, V1, PURPOSE_LOCAL, footer);
