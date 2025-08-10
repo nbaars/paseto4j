@@ -65,10 +65,10 @@ public class Version1 {
 
   private static void exampleV1Local() {
     byte[] secretKey = SecureRandom.getSeed(32);
-    String encryptedToken = Paseto.encrypt(new SecretKey(secretKey), TOKEN, FOOTER);
+    String encryptedToken = Paseto.encrypt(SecretKey.fromBytes(secretKey), TOKEN, FOOTER);
     System.out.println("Encrypted token is: " + encryptedToken);
 
-    String decryptedToken = Paseto.decrypt(new SecretKey(secretKey), encryptedToken, FOOTER);
+    String decryptedToken = Paseto.decrypt(SecretKey.fromBytes(secretKey), encryptedToken, FOOTER);
     System.out.println("Decrypted token is: " + decryptedToken);
   }
 }

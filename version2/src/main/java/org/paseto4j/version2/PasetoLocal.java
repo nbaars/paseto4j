@@ -70,7 +70,7 @@ class PasetoLocal {
             preAuth.length,
             null, // No additional data
             nonce,
-            key.key());
+            key.toBytes());
 
     if (!success) {
       throw new PasetoException("Encryption failed");
@@ -111,7 +111,7 @@ class PasetoLocal {
             preAuth,
             preAuth.length,
             nonce,
-            key.key());
+            key.toBytes());
 
     if (!success) {
       throw new PasetoException("Unable to decrypt the token");

@@ -24,8 +24,7 @@ class PasetoLocalTest {
   void encrypt(String key, String nonce, String payload, String footer, String expectedToken) {
     assertEquals(
         expectedToken,
-        PasetoLocal.encrypt(
-            new SecretKey(hexToBytes(key)), hexToBytes(nonce), payload, footer));
+        PasetoLocal.encrypt(SecretKey.fromHexString(key), hexToBytes(nonce), payload, footer));
   }
 
   @ParameterizedTest
@@ -33,9 +32,8 @@ class PasetoLocalTest {
   void encryptAndDecryptShouldWork(
       String key, String nonce, String payload, String footer, String expectedToken) {
     String encryptedToken =
-        PasetoLocal.encrypt(new SecretKey(hexToBytes(key)), hexToBytes(nonce), payload, footer);
-    assertEquals(
-        payload, Paseto.decrypt(new SecretKey(hexToBytes(key)), encryptedToken, footer));
+        PasetoLocal.encrypt(SecretKey.fromHexString(key), hexToBytes(nonce), payload, footer);
+    assertEquals(payload, Paseto.decrypt(SecretKey.fromHexString(key), encryptedToken, footer));
   }
 
   private static Stream<Arguments> encrypt() {
@@ -81,8 +79,7 @@ class PasetoLocalTest {
   @Test
   void invalidTokenShouldGiveException() {
     var key =
-        new SecretKey(
-            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f"));
+        SecretKey.fromHexString("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
     assertThrows(PasetoException.class, () -> PasetoLocal.decrypt(key, "v2.local.", ""));
   }
 
@@ -90,7 +87,7 @@ class PasetoLocalTest {
   void encryptDecryptWrongFooter() {
     byte[] keyMaterial = new byte[32];
     new SecureRandom().nextBytes(keyMaterial);
-    SecretKey key = new SecretKey(keyMaterial);
+    SecretKey key = SecretKey.fromBytes(keyMaterial);
     String encryptedToken =
         org.paseto4j.version2.Paseto.encrypt(
             key,
@@ -105,7 +102,7 @@ class PasetoLocalTest {
   void shouldThrowErrorWhenTokenDoesNotStartWithLocal() {
     byte[] keyMaterial = new byte[32];
     new SecureRandom().nextBytes(keyMaterial);
-    SecretKey key = new SecretKey(keyMaterial);
+    SecretKey key = SecretKey.fromBytes(keyMaterial);
 
     assertThrows(PasetoException.class, () -> PasetoLocal.decrypt(key, "test.sdfsfs.sdfsdf", ""));
   }

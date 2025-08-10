@@ -6,7 +6,7 @@ package org.paseto4j.version2;
 
 import java.util.Arrays;
 
-import org.paseto4j.PasetoException;
+import org.paseto4j.commons.PasetoException;
 
 public record PublicKey(byte[] key) {
   public PublicKey {

@@ -19,12 +19,12 @@ class SecretKeyTest {
 
   @Test
   void shortKeyShouldThrowException() {
-    Assertions.assertThrows(PasetoException.class, () -> new SecretKey(new byte[31]));
+    Assertions.assertThrows(PasetoException.class, () -> SecretKey.fromBytes(new byte[31]));
   }
 
   @Test
   void shouldAcceptValidKey() {
-    var key = new SecretKey(SECRET_KEY);
-    Assertions.assertArrayEquals(SECRET_KEY, key.key());
+    var key = SecretKey.fromBytes(SECRET_KEY);
+    Assertions.assertArrayEquals(SECRET_KEY, key.toBytes());
   }
 }

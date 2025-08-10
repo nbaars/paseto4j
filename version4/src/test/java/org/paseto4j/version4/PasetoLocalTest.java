@@ -49,7 +49,7 @@ class PasetoLocalTest {
           Exception.class,
           () ->
               PasetoLocal.encrypt(
-                  new SecretKey(hexToBytes(key)),
+                  SecretKey.fromHexString(key),
                   hexToBytes(nonce),
                   payload,
                   footer,
@@ -58,11 +58,7 @@ class PasetoLocalTest {
       assertEquals(
           expectedToken,
           PasetoLocal.encrypt(
-              new SecretKey(hexToBytes(key)),
-              hexToBytes(nonce),
-              payload,
-              footer,
-              implicitAssertion));
+              SecretKey.fromHexString(key), hexToBytes(nonce), payload, footer, implicitAssertion));
     }
   }
 
@@ -82,7 +78,7 @@ class PasetoLocalTest {
           Exception.class,
           () ->
               PasetoLocal.encrypt(
-                  new SecretKey(hexToBytes(key)),
+                  SecretKey.fromHexString(key),
                   hexToBytes(nonce),
                   payload,
                   footer,
@@ -91,10 +87,7 @@ class PasetoLocalTest {
       assertEquals(
           payload,
           PasetoLocal.decrypt(
-              new SecretKey(hexToBytes(key)),
-              encryptedToken,
-              footer,
-              implicitAssertion));
+              SecretKey.fromHexString(key), encryptedToken, footer, implicitAssertion));
     }
   }
 }

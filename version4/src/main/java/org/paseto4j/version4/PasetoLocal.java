@@ -112,11 +112,11 @@ public class PasetoLocal {
 
   private static byte[] encryptionKey(SecretKey key, byte[] nonce) {
     return CryptoFunctions.blake2b(
-        56, concat("paseto-encryption-key".getBytes(UTF_8), nonce), key.key());
+        56, concat("paseto-encryption-key".getBytes(UTF_8), nonce), key.toBytes());
   }
 
   private static byte[] authenticationKey(SecretKey key, byte[] nonce) {
     return CryptoFunctions.blake2b(
-        32, concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce), key.key());
+        32, concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce), key.toBytes());
   }
 }

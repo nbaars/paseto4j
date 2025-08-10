@@ -70,12 +70,14 @@ class PasetoLocal {
 
   private static byte[] encryptionKey(SecretKey key, byte[] nonce) {
     return hkdfSha384(
-        key.key(), Arrays.copyOfRange(nonce, 0, 16), "paseto-encryption-key".getBytes(UTF_8));
+        key.toBytes(), Arrays.copyOfRange(nonce, 0, 16), "paseto-encryption-key".getBytes(UTF_8));
   }
 
   private static byte[] authenticationKey(SecretKey key, byte[] nonce) {
     return hkdfSha384(
-        key.key(), Arrays.copyOfRange(nonce, 0, 16), "paseto-auth-key-for-aead".getBytes(UTF_8));
+        key.toBytes(),
+        Arrays.copyOfRange(nonce, 0, 16),
+        "paseto-auth-key-for-aead".getBytes(UTF_8));
   }
 
   /**

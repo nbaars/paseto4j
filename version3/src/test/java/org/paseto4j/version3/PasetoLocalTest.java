@@ -52,7 +52,7 @@ class PasetoLocalTest {
           Exception.class,
           () ->
               PasetoLocal.encrypt(
-                  new SecretKey(hexToBytes(key)),
+                  SecretKey.fromHexString(key),
                   hexToBytes(nonce),
                   payload,
                   footer,
@@ -61,11 +61,7 @@ class PasetoLocalTest {
       assertEquals(
           expectedToken,
           PasetoLocal.encrypt(
-              new SecretKey(hexToBytes(key)),
-              hexToBytes(nonce),
-              payload,
-              footer,
-              implicitAssertion));
+              SecretKey.fromHexString(key), hexToBytes(nonce), payload, footer, implicitAssertion));
     }
   }
 
@@ -85,7 +81,7 @@ class PasetoLocalTest {
           Exception.class,
           () ->
               PasetoLocal.encrypt(
-                  new SecretKey(hexToBytes(key)),
+                  SecretKey.fromHexString(key),
                   hexToBytes(nonce),
                   payload,
                   footer,
@@ -93,20 +89,14 @@ class PasetoLocalTest {
     } else {
       assertEquals(
           payload,
-          Paseto.decrypt(
-              new SecretKey(hexToBytes(key)),
-              encryptedToken,
-              footer,
-              implicitAssertion));
+          Paseto.decrypt(SecretKey.fromHexString(key), encryptedToken, footer, implicitAssertion));
     }
   }
 
   @Test
   void normalUsage() {
     SecretKey key =
-        new SecretKey(
-            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f")
-        );
+        SecretKey.fromHexString("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
     String encryptedToken =
         Paseto.encrypt(
             key,
@@ -124,9 +114,7 @@ class PasetoLocalTest {
   @Test
   void wrongFooter() {
     SecretKey key =
-        new SecretKey(
-            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f")
-        );
+        SecretKey.fromHexString("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
     String encryptedToken =
         Paseto.encrypt(
             key,

@@ -24,17 +24,14 @@ class PasetoLocalTest {
       String key, String nonce, String payload, String footer, String expectedToken) {
     assertEquals(
         expectedToken,
-        PasetoLocal.encrypt(
-            new SecretKey(hexToBytes(key)), hexToBytes(nonce), payload, footer));
+        PasetoLocal.encrypt(SecretKey.fromHexString(key), hexToBytes(nonce), payload, footer));
   }
 
   @ParameterizedTest
   @MethodSource("testVectors")
   void decryptTestVectors(
       String key, String nonce, String payload, String footer, String encryptedToken) {
-    assertEquals(
-        payload,
-        Paseto.decrypt(new SecretKey(hexToBytes(key)), encryptedToken, footer));
+    assertEquals(payload, Paseto.decrypt(SecretKey.fromHexString(key), encryptedToken, footer));
   }
 
   private static Stream<Arguments> testVectors() {
@@ -80,9 +77,7 @@ class PasetoLocalTest {
   @Test
   void normalUsage() {
     SecretKey key =
-        new SecretKey(
-            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f")
-        );
+        SecretKey.fromHexString("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
     String encryptedToken =
         PasetoLocal.encrypt(
             key,
@@ -100,9 +95,7 @@ class PasetoLocalTest {
   @Test
   void wrongFooter() {
     SecretKey key =
-        new SecretKey(
-            hexToBytes("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f")
-        );
+        SecretKey.fromHexString("707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f");
     String encryptedToken =
         PasetoLocal.encrypt(
             key,
