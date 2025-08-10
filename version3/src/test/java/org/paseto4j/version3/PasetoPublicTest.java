@@ -6,7 +6,6 @@ package org.paseto4j.version3;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.paseto4j.commons.Version.V3;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -19,6 +18,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.SignatureException;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.security.spec.ECGenParameterSpec;
 import java.util.stream.Stream;
 import org.bouncycastle.asn1.ASN1Object;
@@ -34,8 +35,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.Purpose;
 import org.paseto4j.commons.TestVectors;
 
@@ -74,8 +73,8 @@ class PasetoPublicTest {
       String expectedToken)
       throws IOException, SignatureException {
     var keyPair = readEC(privateKeyPem);
-    var privateKey = new PrivateKey(keyPair.getPrivate(), V3);
-    var publicKey = new PublicKey(keyPair.getPublic(), V3);
+    var privateKey = (ECPrivateKey) keyPair.getPrivate();
+    var publicKey = (ECPublicKey) keyPair.getPublic();
     if (expectFail) {
       assertThrows(
           Exception.class, () -> Paseto.sign(privateKey, payload, footer, implicitAssertion));
@@ -111,9 +110,8 @@ class PasetoPublicTest {
     var expectedPayload = "test message";
     var keyPair = generator.generateKeyPair();
 
-    var signedMessage = Paseto.sign(new PrivateKey(keyPair.getPrivate(), V3), expectedPayload);
-    var payload =
-        Paseto.parse(new org.paseto4j.commons.PublicKey(keyPair.getPublic(), V3), signedMessage);
+    var signedMessage = Paseto.sign((ECPrivateKey) keyPair.getPrivate(), expectedPayload);
+    var payload = Paseto.parse((ECPublicKey) keyPair.getPublic(), signedMessage);
 
     Assertions.assertEquals(expectedPayload, payload);
   }
@@ -125,9 +123,8 @@ class PasetoPublicTest {
     var keyPair = readEC(pem);
     var expectedPayload = "test message";
 
-    var signedMessage = Paseto.sign(new PrivateKey(keyPair.getPrivate(), V3), expectedPayload);
-    var payload =
-        Paseto.parse(new org.paseto4j.commons.PublicKey(keyPair.getPublic(), V3), signedMessage);
+    var signedMessage = Paseto.sign((ECPrivateKey) keyPair.getPrivate(), expectedPayload);
+    var payload = Paseto.parse((ECPublicKey) keyPair.getPublic(), signedMessage);
 
     Assertions.assertEquals(expectedPayload, payload);
   }

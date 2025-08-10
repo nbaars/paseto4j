@@ -14,6 +14,7 @@ import static org.paseto4j.commons.Version.V3;
 import java.math.BigInteger;
 import java.security.SignatureException;
 import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import java.util.Arrays;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -21,7 +22,6 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.math.ec.ECPoint;
 import org.paseto4j.commons.ByteUtils;
 import org.paseto4j.commons.PreAuthenticationEncoder;
-import org.paseto4j.commons.PrivateKey;
 import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.Token;
 import org.paseto4j.commons.TokenOut;
@@ -35,10 +35,9 @@ class PasetoPublic {
    * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign">...</a>
    */
   static String sign(
-      PrivateKey privateKey, String payload, String footer, String implicitAssertion) {
+      ECPrivateKey privateKey, String payload, String footer, String implicitAssertion) {
     requireNonNull(privateKey);
     requireNonNull(payload);
-    verify(privateKey.isValidFor(V3, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
     TokenOut token = new TokenOut(V3, PURPOSE_PUBLIC);
 
@@ -57,7 +56,7 @@ class PasetoPublic {
             implicitAssertion.getBytes(UTF_8));
 
     // 4
-    byte[] signature = CryptoFunctions.sign(privateKey.getKey(), m2);
+    byte[] signature = CryptoFunctions.sign(privateKey, m2);
     verify(signature.length == 96, "The length of the signature **MUST** be 96 bytes long");
 
     // 5
@@ -68,15 +67,14 @@ class PasetoPublic {
   }
 
   /**
-   * Parse the token,
-   * <a href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify">...</a>
+   * Parse the token, <a
+   * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify">...</a>
    */
   static String parse(
-      PublicKey publicKey, String signedMessage, String footer, String implicitAssertion)
+      ECPublicKey publicKey, String signedMessage, String footer, String implicitAssertion)
       throws SignatureException {
     requireNonNull(publicKey);
     requireNonNull(signedMessage);
-    verify(publicKey.isValidFor(V3, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
     // 1 and 2
     Token token = new Token(signedMessage, V3, PURPOSE_PUBLIC, footer);
@@ -98,18 +96,15 @@ class PasetoPublic {
     return new String(message, UTF_8);
   }
 
-  private static void verifySignature(PublicKey key, byte[] m2, byte[] signature)
+  private static void verifySignature(ECPublicKey key, byte[] m2, byte[] signature)
       throws SignatureException {
-    if (!CryptoFunctions.verify(key.getKey(), m2, signature)) {
+    if (!CryptoFunctions.verify(key, m2, signature)) {
       throw new SignatureException("Invalid signature");
     }
   }
 
-  public static byte[] publicKey(PrivateKey key) {
-    if (key.getKey() instanceof ECPrivateKey) {
-      return publicKeyFromPrivate(((ECPrivateKey) key.getKey()).getS());
-    }
-    throw new IllegalStateException("Only supported for EC");
+  public static byte[] publicKey(ECPrivateKey key) {
+    return publicKeyFromPrivate(key.getS());
   }
 
   /** ECDSA Public Key Point Compression */
@@ -121,10 +116,12 @@ class PasetoPublic {
     return point.getEncoded(true);
   }
 
-  private static byte[] toCompressed(PublicKey key) {
-    if (key.getKey() instanceof org.bouncycastle.jce.interfaces.ECPublicKey) {
-      return ((org.bouncycastle.jce.interfaces.ECPublicKey) key.getKey()).getQ().getEncoded(true);
-    }
-    throw new IllegalStateException("Public key is not an EC public key ");
+  private static byte[] toCompressed(ECPublicKey key) {
+    X9ECParameters params = SECNamedCurves.getByName("secp384r1");
+
+    org.bouncycastle.math.ec.ECPoint bcPoint =
+        params.getCurve().createPoint(key.getW().getAffineX(), key.getW().getAffineY());
+
+    return bcPoint.getEncoded(true);
   }
 }

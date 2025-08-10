@@ -5,7 +5,9 @@
 package org.paseto4j.version3;
 
 import java.security.SignatureException;
-import org.paseto4j.commons.PrivateKey;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
+
 import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.SecretKey;
 
@@ -51,7 +53,7 @@ public class Paseto {
    * <a
    * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign">sign</a>
    */
-  public static String sign(PrivateKey privateKey, String payload) {
+  public static String sign(ECPrivateKey privateKey, String payload) {
     return sign(privateKey, payload, "");
   }
 
@@ -59,7 +61,7 @@ public class Paseto {
    * <a
    * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign">sign</a>
    */
-  public static String sign(PrivateKey privateKey, String payload, String footer) {
+  public static String sign(ECPrivateKey privateKey, String payload, String footer) {
     return sign(privateKey, payload, footer, "");
   }
 
@@ -68,7 +70,7 @@ public class Paseto {
    * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#sign">sign</a>
    */
   public static String sign(
-      PrivateKey privateKey, String payload, String footer, String implicitAssertion) {
+      ECPrivateKey privateKey, String payload, String footer, String implicitAssertion) {
     return PasetoPublic.sign(privateKey, payload, footer, implicitAssertion);
   }
 
@@ -76,7 +78,8 @@ public class Paseto {
    * <a
    * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify">verify</a>
    */
-  public static String parse(PublicKey publicKey, String signedMessage) throws SignatureException {
+  public static String parse(ECPublicKey publicKey, String signedMessage)
+      throws SignatureException {
     return parse(publicKey, signedMessage, "");
   }
 
@@ -84,7 +87,7 @@ public class Paseto {
    * <a
    * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify">verify</a>
    */
-  public static String parse(PublicKey publicKey, String signedMessage, String footer)
+  public static String parse(ECPublicKey publicKey, String signedMessage, String footer)
       throws SignatureException {
     return parse(publicKey, signedMessage, footer, "");
   }
@@ -94,7 +97,7 @@ public class Paseto {
    * href="https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version3.md#verify">verify</a>
    */
   public static String parse(
-      PublicKey publicKey, String signedMessage, String footer, String implicitAssertion)
+      ECPublicKey publicKey, String signedMessage, String footer, String implicitAssertion)
       throws SignatureException {
     return PasetoPublic.parse(publicKey, signedMessage, footer, implicitAssertion);
   }
