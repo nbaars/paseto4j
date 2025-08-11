@@ -16,12 +16,8 @@ public record SecretKey(Hex key) {
    * @throws PasetoException if the key is null or not 32 bytes in length
    */
   public SecretKey {
-    if (key == null) {
-      throw new PasetoException("Key must not be null");
-    }
-    if (key.length() != 32) {
-      throw new PasetoException("Key must be 32 bytes in length");
-    }
+    Conditions.verify(key != null, "Key must not be null");
+    Conditions.verify(key.length() == 32, "Key must be 32 bytes in length");
   }
 
   /**
@@ -32,12 +28,8 @@ public record SecretKey(Hex key) {
    * @throws PasetoException if the key is null or not 32 bytes in length
    */
   public static SecretKey fromBytes(byte[] keyBytes) {
-    if (keyBytes == null) {
-      throw new PasetoException("Key must not be null");
-    }
-    if (keyBytes.length != 32) {
-      throw new PasetoException("Key must be a byte array of length 32");
-    }
+    Conditions.verify(keyBytes != null, "Key must not be null");
+    Conditions.verify(keyBytes.length == 32, "Key must be a byte array of length 32");
     return new SecretKey(new Hex(keyBytes));
   }
 
