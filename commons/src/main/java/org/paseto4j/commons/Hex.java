@@ -14,14 +14,10 @@ import java.util.Objects;
  */
 public record Hex(String hexValue) {
 
-  /**
-   * Creates a new Hex instance with validation.
-   */
+  /** Creates a new Hex instance with validation. */
   public Hex {
     Objects.requireNonNull(hexValue, "Hex string cannot be null");
-    // Validate that the string is valid hex by trying to decode it
     HexToBytes.hexToBytes(hexValue);
-    // Normalize to lowercase
     hexValue = hexValue.toLowerCase(Locale.ROOT);
   }
 
@@ -31,7 +27,7 @@ public record Hex(String hexValue) {
    * @param bytes the byte array to convert to hexadecimal
    */
   public Hex(byte[] bytes) {
-    this(Objects.requireNonNull(bytes, "Bytes cannot be null") == null ? null : HexToBytes.hexEncode(bytes));
+    this(HexToBytes.hexEncode(Objects.requireNonNull(bytes, "Bytes cannot be null")));
   }
 
   /**
@@ -71,36 +67,5 @@ public record Hex(String hexValue) {
    */
   public int length() {
     return hexValue.length() / 2;
-  }
-
-  /**
-   * Concatenates this Hex with another Hex instance.
-   *
-   * @param other the Hex to concatenate with
-   * @return a new Hex instance representing the concatenation
-   */
-  public Hex concat(Hex other) {
-    return new Hex(hexValue + other.hexValue);
-  }
-
-  /**
-   * Extracts a subset of the bytes.
-   *
-   * @param start the start index (inclusive)
-   * @param end the end index (exclusive)
-   * @return a new Hex instance representing the subset
-   * @throws IndexOutOfBoundsException if the indices are out of bounds
-   */
-  public Hex slice(int start, int end) {
-    if (start < 0 || end > length() || start > end) {
-      throw new IndexOutOfBoundsException(
-          "Invalid slice indices: start=" + start + ", end=" + end + ", length=" + length());
-    }
-
-    // Each byte is represented by 2 hex characters
-    int hexStart = start * 2;
-    int hexEnd = end * 2;
-
-    return new Hex(hexValue.substring(hexStart, hexEnd));
   }
 }
