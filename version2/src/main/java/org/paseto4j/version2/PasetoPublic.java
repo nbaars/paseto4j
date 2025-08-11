@@ -42,7 +42,7 @@ class PasetoPublic {
 
     byte[] m2 = encode(token.header(), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
     byte[] signature = new byte[64];
-    byte[] sk = Arrays.copyOf(privateKey.key(), 64);
+    byte[] sk = Arrays.copyOf(privateKey.toBytes(), 64);
     SODIUM.cryptoSignDetached(signature, m2, m2.length, sk);
 
     return token.payload(concat(payload.getBytes(UTF_8), signature)).footer(footer).doFinal();
@@ -72,7 +72,7 @@ class PasetoPublic {
 
   private static void verifySignature(PublicKey key, byte[] message, byte[] signature)
       throws SignatureException {
-    byte[] pk = Arrays.copyOf(key.key(), 32);
+    byte[] pk = Arrays.copyOf(key.toBytes(), 32);
     boolean valid = SODIUM.cryptoSignVerifyDetached(signature, message, message.length, pk);
     if (!valid) {
       throw new SignatureException("Invalid signature");

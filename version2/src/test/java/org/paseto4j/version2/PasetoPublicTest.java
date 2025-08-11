@@ -30,7 +30,7 @@ class PasetoPublicTest {
     byte[] privateKey =
         hexToBytes(
             "b4cbfb43df4ce210727d953e4a713307fa19bb7d9f85041438d9e11b942a37741eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
-    assertEquals(expectedToken, Paseto.sign(new PrivateKey(privateKey), payload, footer));
+    assertEquals(expectedToken, Paseto.sign(PrivateKey.fromBytes(privateKey), payload, footer));
   }
 
   private static Stream<Arguments> sign() {
@@ -97,17 +97,15 @@ class PasetoPublicTest {
   @ParameterizedTest
   @MethodSource("sign")
   void verify(String payload, String footer, String signedMessage) throws SignatureException {
-    byte[] publicKey =
-        hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
+    var publicKey = "1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2";
 
-    assertEquals(payload, parse(new PublicKey(publicKey), signedMessage, footer));
+    assertEquals(payload, parse(PublicKey.fromHexString(publicKey), signedMessage, footer));
   }
 
   @Test
   void invalidSignature() {
     PublicKey publicKey =
-        new PublicKey(
-            hexToBytes("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2"));
+        PublicKey.fromHexString("1eb9dbbbbc047c03fd70604e0071f0987e16b28b757225c11f00415d0e20b1a2");
 
     assertThrows(
         SignatureException.class,
@@ -125,7 +123,7 @@ class PasetoPublicTest {
     byte[] pk = new byte[32];
     LazySodiumJava lazySodium = new LazySodiumJava(new SodiumJava());
     lazySodium.cryptoSignSeedKeypair(pk, sk, seed);
-    PrivateKey privateKey = new PrivateKey(sk);
+    PrivateKey privateKey = PrivateKey.fromBytes(sk);
     String token =
         PasetoPublic.sign(
             privateKey,
@@ -138,7 +136,7 @@ class PasetoPublicTest {
 
   @Test
   void keyTooSmall() {
-    Assertions.assertThrows(PasetoException.class, () -> new PrivateKey(new byte[] {'0'}));
+    Assertions.assertThrows(PasetoException.class, () -> PrivateKey.fromBytes(new byte[] {'0'}));
   }
 
   @Test
@@ -146,8 +144,7 @@ class PasetoPublicTest {
     Assertions.assertThrows(
         PasetoException.class,
         () ->
-            new PrivateKey(
-                "b4cbfb43df4ce210727d953e4a713333307fa19bb7d9f85041438d9e11b942a3774"
-                    .getBytes(StandardCharsets.UTF_8)));
+            PrivateKey.fromHexString(
+                "b4cbfb43df4ce210727d953e4a713333307fa19bb7d9f85041438d9e11b942a37746"));
   }
 }

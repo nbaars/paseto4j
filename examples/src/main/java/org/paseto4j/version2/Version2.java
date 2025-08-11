@@ -22,8 +22,8 @@ public class Version2 {
     byte[] pk = new byte[32];
     LazySodiumJava lazySodium = new LazySodiumJava(new SodiumJava());
     lazySodium.cryptoSignSeedKeypair(pk, sk, seed);
-    var publicKey = new PublicKey(pk);
-    var privateKey = new PrivateKey(sk);
+    var publicKey = PublicKey.fromBytes(pk);
+    var privateKey = PrivateKey.fromBytes(sk);
 
     String signedToken =
         Paseto.sign(
