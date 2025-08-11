@@ -12,8 +12,18 @@ import java.util.Objects;
  * provides a better alternative to using byte arrays in records and ensures proper equals,
  * hashCode, and toString behavior.
  */
-public final class Hex {
-  private final String hexValue;
+public record Hex(String hexValue) {
+
+  /**
+   * Creates a new Hex instance with validation.
+   */
+  public Hex {
+    Objects.requireNonNull(hexValue, "Hex string cannot be null");
+    // Validate that the string is valid hex by trying to decode it
+    HexToBytes.hexToBytes(hexValue);
+    // Normalize to lowercase
+    hexValue = hexValue.toLowerCase(Locale.ROOT);
+  }
 
   /**
    * Creates a new Hex instance from a byte array.
@@ -21,21 +31,7 @@ public final class Hex {
    * @param bytes the byte array to convert to hexadecimal
    */
   public Hex(byte[] bytes) {
-    Objects.requireNonNull(bytes, "Bytes cannot be null");
-    this.hexValue = HexToBytes.hexEncode(bytes);
-  }
-
-  /**
-   * Creates a new Hex instance from a hexadecimal string.
-   *
-   * @param hexString the hexadecimal string
-   * @throws IllegalArgumentException if the string is not valid hexadecimal
-   */
-  public Hex(String hexString) {
-    Objects.requireNonNull(hexString, "Hex string cannot be null");
-    // Validate that the string is valid hex by trying to decode it
-    HexToBytes.hexToBytes(hexString);
-    this.hexValue = hexString.toLowerCase(Locale.ROOT);
+    this(Objects.requireNonNull(bytes, "Bytes cannot be null") == null ? null : HexToBytes.hexEncode(bytes));
   }
 
   /**
@@ -45,25 +41,6 @@ public final class Hex {
    */
   public byte[] toBytes() {
     return HexToBytes.hexToBytes(hexValue);
-  }
-
-  /**
-   * Returns the hexadecimal string representation.
-   *
-   * @return the hexadecimal string
-   */
-  public String toString() {
-    return hexValue;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    return o instanceof Hex hex && hexValue.equals(hex.hexValue);
-  }
-
-  @Override
-  public int hashCode() {
-    return hexValue.hashCode();
   }
 
   /**
