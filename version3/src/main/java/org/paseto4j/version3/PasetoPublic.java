@@ -27,8 +27,7 @@ import org.paseto4j.commons.TokenOut;
 
 class PasetoPublic {
 
-  // Cache the EC parameters for secp384r1 curve to avoid repeated lookups
-  private static final X9ECParameters PARAMS = SECNamedCurves.getByName("secp384r1");
+  private static final String CURVE_NAME = "secp384r1";
 
   private PasetoPublic() {}
 
@@ -111,16 +110,18 @@ class PasetoPublic {
 
   /** ECDSA Public Key Point Compression */
   private static byte[] publicKeyFromPrivate(BigInteger privKey) {
+    X9ECParameters params = SECNamedCurves.getByName(CURVE_NAME);
     var curve =
-        new ECDomainParameters(PARAMS.getCurve(), PARAMS.getG(), PARAMS.getN(), PARAMS.getH());
+        new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
     ECPoint point = curve.getG().multiply(privKey);
     return point.getEncoded(true);
   }
 
   private static byte[] toCompressed(ECPublicKey key) {
+    X9ECParameters params = SECNamedCurves.getByName(CURVE_NAME);
 
-    org.bouncycastle.math.ec.ECPoint bcPoint =
-        PARAMS.getCurve().createPoint(key.getW().getAffineX(), key.getW().getAffineY());
+    ECPoint bcPoint =
+        params.getCurve().createPoint(key.getW().getAffineX(), key.getW().getAffineY());
 
     return bcPoint.getEncoded(true);
   }
