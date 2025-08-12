@@ -6,19 +6,16 @@ package org.paseto4j.version2;
 
 import org.paseto4j.commons.Hex;
 import org.paseto4j.commons.PasetoException;
+import org.paseto4j.commons.Conditions;
 
 /**
- * Represents a private key for use with PASETO Version 2 tokens.
- * This class is immutable and thread-safe.
+ * Represents a private key for use with PASETO Version 2 tokens. This class is immutable and
+ * thread-safe.
  */
 public record PrivateKey(Hex key) {
   public PrivateKey {
-    if (key == null) {
-      throw new PasetoException("Key must not be null");
-    }
-    if (key.length() != 64) {
-      throw new PasetoException("Key must be 64 bytes in length");
-    }
+    Conditions.verify(key != null, "Key must not be null");
+    Conditions.verify(key.length() == 64, "Key must be 64 bytes in length");
   }
 
   /**
@@ -29,12 +26,8 @@ public record PrivateKey(Hex key) {
    * @throws PasetoException if the key is null or not 64 bytes in length
    */
   public static PrivateKey fromBytes(byte[] keyBytes) {
-    if (keyBytes == null) {
-      throw new PasetoException("Key must not be null");
-    }
-    if (keyBytes.length != 64) {
-      throw new PasetoException("Key must be a byte array of length 64");
-    }
+    Conditions.verify(keyBytes != null, "Key must not be null");
+    Conditions.verify(keyBytes.length == 64, "Key must be a byte array of length 64");
     return new PrivateKey(new Hex(keyBytes));
   }
 
@@ -48,9 +41,7 @@ public record PrivateKey(Hex key) {
    */
   public static PrivateKey fromHexString(String hexString) {
     Hex hex = Hex.fromString(hexString);
-    if (hex.length() != 64) {
-      throw new PasetoException("Key must be 64 bytes in length");
-    }
+    Conditions.verify(hex.length() == 64, "Key must be 64 bytes in length");
     return new PrivateKey(hex);
   }
 
@@ -65,6 +56,6 @@ public record PrivateKey(Hex key) {
 
   @Override
   public String toString() {
-    return "PrivateKey{key=****}";
+    return "****";
   }
 }

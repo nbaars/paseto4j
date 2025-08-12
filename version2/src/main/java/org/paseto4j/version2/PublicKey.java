@@ -4,12 +4,13 @@
  */
 package org.paseto4j.version2;
 
+import org.paseto4j.commons.Conditions;
 import org.paseto4j.commons.Hex;
 import org.paseto4j.commons.PasetoException;
 
 /**
- * An immutable representation of a public key used in PASETO v2 operations.
- * Uses Hex for internal storage to ensure proper equals, hashCode, and toString behavior.
+ * An immutable representation of a public key used in PASETO v2 operations. Uses Hex for internal
+ * storage to ensure proper equals, hashCode, and toString behavior.
  */
 public record PublicKey(Hex key) {
   /**
@@ -19,12 +20,8 @@ public record PublicKey(Hex key) {
    * @throws PasetoException if the key is null or not 32 bytes in length
    */
   public PublicKey {
-    if (key == null) {
-      throw new PasetoException("Key must not be null");
-    }
-    if (key.length() != 32) {
-      throw new PasetoException("Key must be 32 bytes in length");
-    }
+    Conditions.verify(key != null, "Key must not be null");
+    Conditions.verify(key.length() == 32, "Key must be 32 bytes in length");
   }
 
   /**
@@ -35,12 +32,9 @@ public record PublicKey(Hex key) {
    * @throws PasetoException if the key is null or not 32 bytes in length
    */
   public static PublicKey fromBytes(byte[] keyBytes) {
-    if (keyBytes == null) {
-      throw new PasetoException("Key must not be null");
-    }
-    if (keyBytes.length != 32) {
-      throw new PasetoException("Key must be a byte array of length 32");
-    }
+    Conditions.verify(keyBytes != null, "Key must not be null");
+    Conditions.verify(keyBytes.length == 32, "Key must be a byte array of length 32");
+
     return new PublicKey(new Hex(keyBytes));
   }
 
@@ -54,9 +48,8 @@ public record PublicKey(Hex key) {
    */
   public static PublicKey fromHexString(String hexString) {
     Hex hex = Hex.fromString(hexString);
-    if (hex.length() != 32) {
-      throw new PasetoException("Key must be 32 bytes in length");
-    }
+    Conditions.verify(hex.length() == 32, "Key must be 32 bytes in length");
+
     return new PublicKey(hex);
   }
 

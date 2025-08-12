@@ -48,6 +48,6 @@ public record SecretKey(Hex key) {
 
   @Override
   public String toString() {
-    return "SecretKey{key=****}";
+    return "****";
   }
 }
