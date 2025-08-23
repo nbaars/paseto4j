@@ -229,7 +229,7 @@
             <goals>
               <goal>apply</goal>
             </goals>
-            <phase>verify</phase>
+            <phase>compile</phase>
           </execution>
         </executions>
       </plugin>
