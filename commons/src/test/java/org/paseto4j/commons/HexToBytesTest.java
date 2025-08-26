@@ -6,7 +6,11 @@ package org.paseto4j.commons;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,16 +19,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HexToBytesTest {
 
-  @Test
-  void hexToBytesConvertsValidHexString() {
-    // Given a valid hex string
-    String hexString = "deadbeef";
-
+  @ParameterizedTest
+  @MethodSource("validHexStringsProvider")
+  void hexToBytesConvertsValidHexStrings(String hexString, byte[] expectedBytes) {
     // When converting to bytes
     byte[] result = HexToBytes.hexToBytes(hexString);
 
     // Then the bytes match the expected values
-    assertArrayEquals(new byte[] {(byte) 0xde, (byte) 0xad, (byte) 0xbe, (byte) 0xef}, result);
+    assertArrayEquals(expectedBytes, result);
+  }
+
+  static Stream<Arguments> validHexStringsProvider() {
+    return Stream.of(
+        // Standard lowercase
+        Arguments.of("deadbeef", new byte[]{(byte) 0xde, (byte) 0xad, (byte) 0xbe, (byte) 0xef}),
+        // Uppercase
+        Arguments.of("DEADBEEF", new byte[]{(byte) 0xde, (byte) 0xad, (byte) 0xbe, (byte) 0xef}),
+        // Mixed case
+        Arguments.of("DeAdBeEf", new byte[]{(byte) 0xde, (byte) 0xad, (byte) 0xbe, (byte) 0xef})
+    );
   }
 
   @Test
@@ -37,30 +50,6 @@ class HexToBytesTest {
 
     // Then an empty byte array is returned
     assertEquals(0, result.length);
-  }
-
-  @Test
-  void hexToBytesHandlesUppercaseHex() {
-    // Given uppercase hex string
-    String hexString = "DEADBEEF";
-
-    // When converting to bytes
-    byte[] result = HexToBytes.hexToBytes(hexString);
-
-    // Then the bytes match the expected values
-    assertArrayEquals(new byte[] {(byte) 0xde, (byte) 0xad, (byte) 0xbe, (byte) 0xef}, result);
-  }
-
-  @Test
-  void hexToBytesHandlesMixedCaseHex() {
-    // Given mixed case hex string
-    String hexString = "DeAdBeEf";
-
-    // When converting to bytes
-    byte[] result = HexToBytes.hexToBytes(hexString);
-
-    // Then the bytes match the expected values
-    assertArrayEquals(new byte[] {(byte) 0xde, (byte) 0xad, (byte) 0xbe, (byte) 0xef}, result);
   }
 
   @ParameterizedTest

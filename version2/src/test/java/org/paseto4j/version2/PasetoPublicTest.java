@@ -7,12 +7,10 @@ package org.paseto4j.version2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.paseto4j.commons.HexToBytes.hexToBytes;
-import static org.paseto4j.commons.Version.V2;
 import static org.paseto4j.version2.Paseto.*;
 
 import com.goterl.lazysodium.LazySodiumJava;
 import com.goterl.lazysodium.SodiumJava;
-import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;

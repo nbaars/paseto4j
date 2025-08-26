@@ -5,11 +5,9 @@
 package org.paseto4j.version4;
 
 import java.security.GeneralSecurityException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
-import java.security.interfaces.EdECKey;
 import java.security.interfaces.EdECPrivateKey;
 
 import org.bouncycastle.crypto.Digest;

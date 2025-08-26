@@ -94,12 +94,15 @@ class PasetoPublicTest {
 
   @Test
   void keySizeShouldBe2048() throws NoSuchAlgorithmException {
+    // Given: generate an RSA key that is too small (1024 bits)
     KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
     keyGen.initialize(1024);
     KeyPair keyPair = keyGen.generateKeyPair();
+    RSAPrivateCrtKey privateKey = (RSAPrivateCrtKey) keyPair.getPrivate();
+    String message = "msg";
+    String footer = "";
 
-    assertThrows(
-        PasetoException.class,
-        () -> Paseto.sign((RSAPrivateCrtKey) keyPair.getPrivate(), "msg", ""));
+    // When/Then: verify that using this key throws an exception
+    assertThrows(PasetoException.class, () -> Paseto.sign(privateKey, message, footer));
   }
 }
