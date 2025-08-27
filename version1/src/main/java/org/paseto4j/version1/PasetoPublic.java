@@ -7,16 +7,15 @@ package org.paseto4j.version1;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Objects.requireNonNull;
-import static org.paseto4j.commons.Conditions.verify;
 import static org.paseto4j.commons.Purpose.PURPOSE_PUBLIC;
 import static org.paseto4j.commons.Version.V1;
 
 import java.security.SignatureException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import org.paseto4j.commons.ByteUtils;
 import org.paseto4j.commons.PreAuthenticationEncoder;
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.Token;
 import org.paseto4j.commons.TokenOut;
 
@@ -25,13 +24,12 @@ class PasetoPublic {
   private PasetoPublic() {}
 
   /**
-   * Sign the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign
+   * Sign the token, <a
+   * href="https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#sign">...</a>
    */
-  static String sign(PrivateKey privateKey, String payload, String footer) {
+  static String sign(RSAPrivateKey privateKey, String payload, String footer) {
     requireNonNull(privateKey);
     requireNonNull(payload);
-    verify(privateKey.isValidFor(V1, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
     TokenOut token = new TokenOut(V1, PURPOSE_PUBLIC);
 
@@ -41,7 +39,7 @@ class PasetoPublic {
             token.header(), payload.getBytes(UTF_8), footer.getBytes(UTF_8));
 
     // 3
-    byte[] signature = CryptoFunctions.signRsaPssSha384(privateKey.getMaterial(), m2);
+    byte[] signature = CryptoFunctions.signRsaPssSha384(privateKey, m2);
 
     // 4
     return token
@@ -51,14 +49,13 @@ class PasetoPublic {
   }
 
   /**
-   * Parse the token,
-   * https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify
+   * Parse the token, <a
+   * href="https://github.com/paragonie/paseto/blob/master/docs/01-Protocol-Versions/Version1.md#verify">...</a>
    */
-  static String parse(PublicKey publicKey, String signedMessage, String footer)
+  static String parse(RSAPublicKey publicKey, String signedMessage, String footer)
       throws SignatureException {
     requireNonNull(publicKey);
     requireNonNull(signedMessage);
-    verify(publicKey.isValidFor(V1, PURPOSE_PUBLIC), "Key is not valid for purpose and version");
 
     // 1 & 2
     Token token = new Token(signedMessage, V1, PURPOSE_PUBLIC, footer);
@@ -77,9 +74,9 @@ class PasetoPublic {
     return new String(message, UTF_8);
   }
 
-  private static void verifySignature(PublicKey key, byte[] m2, byte[] signature)
+  private static void verifySignature(RSAPublicKey key, byte[] m2, byte[] signature)
       throws SignatureException {
-    if (!CryptoFunctions.verifyRsaPssSha384(key.getMaterial(), m2, signature)) {
+    if (!CryptoFunctions.verifyRsaPssSha384(key, m2, signature)) {
       throw new SignatureException("Invalid signature");
     }
   }

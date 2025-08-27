@@ -5,8 +5,6 @@
 package org.paseto4j.version2;
 
 import java.security.SignatureException;
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
 import org.paseto4j.commons.SecretKey;
 
 public class Paseto {

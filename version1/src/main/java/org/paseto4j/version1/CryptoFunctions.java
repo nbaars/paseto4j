@@ -9,9 +9,15 @@ import static org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -114,7 +120,7 @@ public class CryptoFunctions {
     return out;
   }
 
-  public static byte[] signRsaPssSha384(byte[] privateKey, byte[] msg) {
+  public static byte[] signRsaPssSha384(RSAPrivateKey privateKey, byte[] msg) {
     PSSSigner signer =
         new PSSSigner(
             new RSAEngine(),
@@ -124,7 +130,7 @@ public class CryptoFunctions {
 
     try {
       RSAPrivateCrtKeyParameters key =
-          (RSAPrivateCrtKeyParameters) PrivateKeyFactory.createKey(privateKey);
+          (RSAPrivateCrtKeyParameters) PrivateKeyFactory.createKey(privateKey.getEncoded());
       Conditions.verify(key.getModulus().bitLength() == 2048, "RSA 2048 should be used");
 
       signer.init(true, key);
@@ -135,7 +141,7 @@ public class CryptoFunctions {
     }
   }
 
-  public static boolean verifyRsaPssSha384(byte[] publicKey, byte[] msg, byte[] signature) {
+  public static boolean verifyRsaPssSha384(RSAPublicKey publicKey, byte[] msg, byte[] signature) {
     PSSSigner signer =
         new PSSSigner(
             new RSAEngine(),
@@ -144,11 +150,31 @@ public class CryptoFunctions {
             new SHA384Digest().getDigestSize());
 
     try {
-      signer.init(false, PublicKeyFactory.createKey(publicKey));
+      signer.init(false, PublicKeyFactory.createKey(publicKey.getEncoded()));
       signer.update(msg, 0, msg.length);
       return signer.verifySignature(signature);
     } catch (IOException e) {
       throw new IllegalStateException(e);
+    }
+  }
+
+  public static RSAPrivateKey convertBytesToRSAPrivateKey(byte[] keyBytes) {
+    try {
+      KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+      PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
+      return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
+    } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+      throw new IllegalArgumentException("Unable to convert bytes to RSAPrivateCrtKey", e);
+    }
+  }
+
+  public static RSAPublicKey convertBytesToRSAPublicKey(byte[] keyBytes) {
+    try {
+      KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+      X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+      return (RSAPublicKey) keyFactory.generatePublic(keySpec);
+    } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+      throw new IllegalArgumentException(e);
     }
   }
 }

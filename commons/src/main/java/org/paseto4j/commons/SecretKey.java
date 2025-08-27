@@ -4,12 +4,50 @@
  */
 package org.paseto4j.commons;
 
-public class SecretKey extends Key<javax.crypto.SecretKey> {
-  public SecretKey(byte[] keyMaterial, Version version) {
-    super(keyMaterial, version, 32);
+/**
+ * An immutable representation of a secret key used in PASETO operations. Uses Hex for internal
+ * storage to ensure proper equals, hashCode, and toString behavior.
+ */
+public record SecretKey(Hex key) {
+  /**
+   * Creates a new SecretKey with the given Hex key.
+   *
+   * @param key the key material as a Hex object
+   * @throws PasetoException if the key is null or not 32 bytes in length
+   */
+  public SecretKey {
+    Conditions.verify(key != null, "Key must not be null");
+    Conditions.verify(key.length() == 32, "Key must be 32 bytes in length");
   }
 
-  public boolean isValidFor(Version v, Purpose p) {
-    return v == this.getVersion() && p == Purpose.PURPOSE_LOCAL;
+  /**
+   * Creates a new SecretKey with the given byte array.
+   *
+   * @param keyBytes the key material as a byte array
+   * @return a new SecretKey instance
+   * @throws PasetoException if the key is null or not 32 bytes in length
+   */
+  public static SecretKey fromBytes(byte[] keyBytes) {
+    Conditions.verify(keyBytes != null, "Key must not be null");
+    Conditions.verify(keyBytes.length == 32, "Key must be a byte array of length 32");
+    return new SecretKey(new Hex(keyBytes));
+  }
+
+  public static SecretKey fromHexString(String key) {
+    return new SecretKey(Hex.fromString(key));
+  }
+
+  /**
+   * Returns the key material as a byte array.
+   *
+   * @return a new byte array containing the key material
+   */
+  public byte[] toBytes() {
+    return key.toBytes();
+  }
+
+  @Override
+  public String toString() {
+    return "****";
   }
 }

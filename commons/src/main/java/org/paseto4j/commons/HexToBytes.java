@@ -5,10 +5,12 @@
 package org.paseto4j.commons;
 
 /**
- * Copied from
- * <a href="http://www.docjar.com/html/api/com/sun/xml/internal/bind/DatatypeConverterImpl.java.html">...</a>
+ * Copied from <a
+ * href="http://www.docjar.com/html/api/com/sun/xml/internal/bind/DatatypeConverterImpl.java.html">...</a>
  */
 public class HexToBytes {
+
+  private HexToBytes() {}
 
   public static byte[] hexToBytes(String s) {
     final int len = s.length();

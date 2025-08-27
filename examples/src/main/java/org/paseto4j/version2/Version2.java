@@ -8,9 +8,6 @@ import java.security.SignatureException;
 
 import com.goterl.lazysodium.LazySodiumJava;
 import com.goterl.lazysodium.SodiumJava;
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
-import org.paseto4j.commons.Version;
 import org.paseto4j.version1.CryptoFunctions;
 
 public class Version2 {
@@ -25,8 +22,8 @@ public class Version2 {
     byte[] pk = new byte[32];
     LazySodiumJava lazySodium = new LazySodiumJava(new SodiumJava());
     lazySodium.cryptoSignSeedKeypair(pk, sk, seed);
-    var publicKey = new PublicKey(pk, Version.V2);
-    var privateKey = new PrivateKey(sk, Version.V2);
+    var publicKey = PublicKey.fromBytes(pk);
+    var privateKey = PrivateKey.fromBytes(sk);
 
     String signedToken =
         Paseto.sign(

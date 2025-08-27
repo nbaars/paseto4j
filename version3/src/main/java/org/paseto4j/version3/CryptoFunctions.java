@@ -10,10 +10,10 @@ import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.ECPublicKey;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -128,7 +128,7 @@ public class CryptoFunctions {
     return bs;
   }
 
-  public static byte[] sign(PrivateKey privateKey, byte[] msg) {
+  public static byte[] sign(ECPrivateKey privateKey, byte[] msg) {
     try {
       Signature signature = Signature.getInstance("SHA384withECDDSA", "BC");
       signature.initSign(privateKey);
@@ -149,7 +149,7 @@ public class CryptoFunctions {
     }
   }
 
-  public static boolean verify(PublicKey publicKey, byte[] msg, byte[] signature) {
+  public static boolean verify(ECPublicKey publicKey, byte[] msg, byte[] signature) {
     try {
       Signature verifier = Signature.getInstance("SHA384withECDDSA", "BC");
       verifier.initVerify(publicKey);

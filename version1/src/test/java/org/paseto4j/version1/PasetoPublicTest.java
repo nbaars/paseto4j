@@ -7,13 +7,15 @@ package org.paseto4j.version1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.paseto4j.commons.HexToBytes.hexToBytes;
-import static org.paseto4j.commons.Version.V1;
+import static org.paseto4j.version1.CryptoFunctions.convertBytesToRSAPrivateKey;
+import static org.paseto4j.version1.CryptoFunctions.convertBytesToRSAPublicKey;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.security.SignatureException;
+import java.security.interfaces.RSAPrivateCrtKey;
 import java.util.stream.Stream;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
@@ -21,8 +23,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.paseto4j.commons.PasetoException;
-import org.paseto4j.commons.PrivateKey;
-import org.paseto4j.commons.PublicKey;
 
 class PasetoPublicTest {
 
@@ -71,9 +71,11 @@ class PasetoPublicTest {
   @MethodSource("testVectors")
   void encryptTestVectors(String privateKey, String publicKey, String payload, String footer)
       throws SignatureException {
-    String signedToken = Paseto.sign(new PrivateKey(hexToBytes(privateKey), V1), payload, footer);
+    String signedToken =
+        Paseto.sign(convertBytesToRSAPrivateKey(hexToBytes(privateKey)), payload, footer);
     assertEquals(
-        payload, Paseto.parse(new PublicKey(hexToBytes(publicKey), V1), signedToken, footer));
+        payload,
+        Paseto.parse(convertBytesToRSAPublicKey(hexToBytes(publicKey)), signedToken, footer));
   }
 
   private static Stream<Arguments> testVectors() {
@@ -92,11 +94,15 @@ class PasetoPublicTest {
 
   @Test
   void keySizeShouldBe2048() throws NoSuchAlgorithmException {
+    // Given: generate an RSA key that is too small (1024 bits)
     KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
     keyGen.initialize(1024);
     KeyPair keyPair = keyGen.generateKeyPair();
-    PrivateKey privateKey = new PrivateKey(keyPair.getPrivate().getEncoded(), V1);
+    RSAPrivateCrtKey privateKey = (RSAPrivateCrtKey) keyPair.getPrivate();
+    String message = "msg";
+    String footer = "";
 
-    assertThrows(PasetoException.class, () -> Paseto.sign(privateKey, "msg", ""));
+    // When/Then: verify that using this key throws an exception
+    assertThrows(PasetoException.class, () -> Paseto.sign(privateKey, message, footer));
   }
 }
