@@ -3,7 +3,7 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nbaars_paseto4j&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=nbaars_paseto4j)
 [![GitHub release](https://img.shields.io/github/release/nbaars/paseto4j.svg)](https://github.com/nbaars/paseto4j/releases/latest)
-[![java-jdk](https://img.shields.io/badge/java%20jdk-11-green.svg)](https://jdk.java.net/)
+[![java-jdk](https://img.shields.io/badge/java%20jdk-21-green.svg)](https://jdk.java.net/)
 [![Build](https://github.com/nbaars/paseto4j/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/nbaars/paseto4j/actions/workflows/build.yml)
 
 Implementation of [PASETO](https://github.com/paragonie/paseto) library written in Java. This library is focused
@@ -116,6 +116,8 @@ Why use this library over the other Java implementations?
 
 # Development
 
+This project now requires JDK 21 or newer to build and run.
+
 `paseto-version2` needs Libsodium to be present, to avoid installing it on your local machine, you can use the following command to build it locally:
 
 ```shell
@@ -136,4 +138,3 @@ Then run `./mvnw verify` to run the tests and build the project.
 # Release
 
 We use [Calendar Versioning](https://calver.org/) as version numbers. Creating a new tag and pushing it to GitHub will start the release process.
-

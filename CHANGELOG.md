@@ -21,7 +21,8 @@ All notable changes to the paseto4j project will be documented in this file.
 ### 🔧 Technical Updates
 
 - 📈 Upgraded to Bouncy Castle 1.80
-- 🏗️ Moved to Java 17 as minimum supported version
+- 📈 Upgraded to lazysodium-java 5.2.0
+- 🏗️ Moved to Java 21 as minimum supported version
 - 🧹 Added Google Error Prone for enhanced static code analysis
 - 🧪 Improved test coverage with parameterized tests
 - 📝 Added Spotless formatting integration in the compile phase
