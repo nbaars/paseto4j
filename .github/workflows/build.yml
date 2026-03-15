@@ -37,5 +37,9 @@ jobs:
         run: |
           ./mvnw --no-transfer-progress spotless:check 
           ./mvnw --no-transfer-progress tidy:check
-      - name: Build
+      - name: Build and analyze (pushes only)
+        if: github.event_name == 'push'
         run: ./mvnw --no-transfer-progress clean install org.sonarsource.scanner.maven:sonar-maven-plugin:5.1.0.4751:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=nbaars-github -Dsonar.projectKey=nbaars_paseto4j -Dsonar.cpd.exclusions=version1/src/main/java/org/paseto4j/version1/CryptoFunctions.java
+      - name: Build (pull requests)
+        if: github.event_name != 'push'
+        run: ./mvnw --no-transfer-progress clean install
