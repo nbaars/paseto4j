@@ -16,6 +16,7 @@ be a JSON object.
 * [What is Paseto?](#what-is-paseto)
   * [Key Differences between Paseto and JWT](#key-differences-between-paseto-and-jwt)
 * [Installation](#installation)
+  * [PASERK](#paserk)
 
 # What is Paseto?
 
@@ -38,7 +39,7 @@ use Paseto in [an insecure way](https://auth0.com/blog/critical-vulnerabilities-
 
 # Installation
 
-There are four version available in Maven Central.
+There are four PASETO versions available in Maven Central.
 
 ## Version 4
 
@@ -70,9 +71,10 @@ Add the following dependency to your project:
 
 ## Version 2
 
-Version 2 (the recommended version by the specification) is supported, this version depends on Libsodium
-see [here](https://download.libsodium.org/doc/installation/) on how to install this library. The Dockerfile
-contains an example how to install it on a Linux based system.
+[Version 2 is deprecated](https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version2.md)
+by the PASETO specification. New applications should use Version 4. Version 2 remains supported for backward
+compatibility and depends on Libsodium; see [here](https://download.libsodium.org/doc/installation/) for installation
+instructions. The Dockerfile contains an example of how to install it on a Linux-based system.
 
 Add the following dependency to your project:
 
@@ -97,6 +99,40 @@ Add the following dependency to your project:
     <version>${paseto4j.version}</version>
 </dependency>
 ```
+
+## PASERK
+
+[PASERK](https://github.com/paseto-standard/paserk) key serialization and wrapping is available as an optional
+module for PASETO versions 3 and 4:
+
+```xml
+<dependency>
+    <groupId>io.github.nbaars</groupId>
+    <artifactId>paseto4j-paserk</artifactId>
+    <version>${paseto4j.version}</version>
+</dependency>
+```
+
+Each supported version has a static entry class matching the PASETO API style. For example, with version 4:
+
+```java
+import org.paseto4j.commons.SecretKey;
+import org.paseto4j.commons.Version;
+import org.paseto4j.paserk.operations.key.SealingSecretKey;
+import org.paseto4j.paserk.version4.Paserk;
+
+SecretKey localKey = SecretKey.fromHexString(keyHex);
+String encoded = Paserk.encodeLocal(localKey);
+SecretKey decoded = Paserk.decodeLocal(encoded);
+
+SealingSecretKey sealingKey = SealingSecretKey.generate(Version.V4);
+String sealed = Paserk.seal(localKey, sealingKey.publicKey());
+SecretKey unsealed = Paserk.unseal(sealed, sealingKey);
+```
+
+The module supports `local`, `public`, `secret`, `lid`, `pid`, `sid`, password wrapping, PIE wrapping, and sealing.
+Sealing keys are deliberately distinct from signing keys to discourage key reuse. The version 3 API is available
+from `org.paseto4j.paserk.version3.Paserk`.
 
 ## Usage
 

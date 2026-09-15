@@ -4,6 +4,8 @@
  */
 package org.paseto4j.commons;
 
+import java.util.Arrays;
+
 public class ByteUtils {
 
   private ByteUtils() {}
@@ -33,5 +35,18 @@ public class ByteUtils {
     System.arraycopy(array, splitLength, r2, 0, array.length - splitLength);
 
     return new Pair<>(r1, r2);
+  }
+
+  /**
+   * Best-effort clearing of mutable byte arrays that contain sensitive temporary values.
+   *
+   * <p>This cannot clear copies made by the JVM or cryptographic providers.
+   */
+  public static void wipe(byte[]... arrays) {
+    for (byte[] array : arrays) {
+      if (array != null) {
+        Arrays.fill(array, (byte) 0);
+      }
+    }
   }
 }

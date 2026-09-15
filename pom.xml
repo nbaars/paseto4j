@@ -34,6 +34,7 @@
   <modules>
     <module>commons</module>
     <module>examples</module>
+    <module>paserk</module>
     <module>version1</module>
     <module>version2</module>
     <module>version3</module>
@@ -107,6 +108,11 @@
       <dependency>
         <groupId>io.github.nbaars</groupId>
         <artifactId>paseto4j-examples</artifactId>
+        <version>2024.3-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.nbaars</groupId>
+        <artifactId>paseto4j-paserk</artifactId>
         <version>2024.3-SNAPSHOT</version>
       </dependency>
       <dependency>

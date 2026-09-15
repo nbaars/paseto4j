@@ -25,6 +25,26 @@ Add this version to your project. For example, for Maven, you can add:
 </dependency>
 ```
 
+For PASERK key serialization, wrapping, identifiers, and sealing, add the optional module:
+
+```xml
+<dependency>
+  <groupId>io.github.nbaars</groupId>
+  <artifactId>paseto4j-paserk</artifactId>
+  <version>${paseto4j.version}</version>
+</dependency>
+```
+
+PASERK supports PASETO versions 3 and 4 through static entry classes:
+`org.paseto4j.paserk.version3.Paserk` and
+`org.paseto4j.paserk.version4.Paserk`.
+
+```java
+SecretKey localKey = SecretKey.fromHexString(keyHex);
+String paserk = Paserk.encodeLocal(localKey);
+SecretKey decoded = Paserk.decodeLocal(paserk);
+```
+
 ## Using V{1,2,3,4}.local
 
 Each version works in the same way:
@@ -64,7 +84,9 @@ Why use this library over the other Java implementations?
 
 # Development
 
-Version 2 needs Libsodium to be present, to avoid installing it on your local machine, you can use the following command to build it locally:
+[Version 2 is deprecated](https://github.com/paseto-standard/paseto-spec/blob/master/docs/01-Protocol-Versions/Version2.md)
+by the PASETO specification. It remains available for backward compatibility and needs Libsodium to be present.
+To avoid installing it on your local machine, use the following command to build it locally:
 
 ```
 docker build -t paseto4j .
