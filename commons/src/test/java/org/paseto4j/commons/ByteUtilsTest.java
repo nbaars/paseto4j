@@ -79,4 +79,15 @@ class ByteUtilsTest {
     Assertions.assertEquals(0, result.getFirst().length);
     Assertions.assertEquals(0, result.getSecond().length);
   }
+
+  @Test
+  void wipeArrays() {
+    byte[] first = new byte[] {1, 2, 3};
+    byte[] second = new byte[] {4, 5};
+
+    ByteUtils.wipe(first, null, second);
+
+    Assertions.assertArrayEquals(new byte[3], first);
+    Assertions.assertArrayEquals(new byte[2], second);
+  }
 }

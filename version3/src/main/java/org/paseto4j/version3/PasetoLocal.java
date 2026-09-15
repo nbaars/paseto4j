@@ -8,6 +8,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getUrlDecoder;
 import static java.util.Objects.requireNonNull;
 import static org.paseto4j.commons.ByteUtils.concat;
+import static org.paseto4j.commons.ByteUtils.wipe;
 import static org.paseto4j.commons.Purpose.PURPOSE_LOCAL;
 import static org.paseto4j.commons.Version.V3;
 import static org.paseto4j.version3.CryptoFunctions.decryptAesCtr;
@@ -52,28 +53,41 @@ class PasetoLocal {
     byte[] ek = split.getFirst();
     byte[] n2 = split.getSecond();
     byte[] ak = authenticationKey(key, nonce);
+    try {
+      // 5
+      byte[] cipherText = encryptAesCtr(ek, n2, payload.getBytes(UTF_8));
 
-    // 5
-    byte[] cipherText = encryptAesCtr(ek, n2, payload.getBytes(UTF_8));
+      // 6
+      byte[] preAuth =
+          PreAuthenticationEncoder.encode(
+              token.header(), nonce, cipherText, footer.getBytes(UTF_8), implicit.getBytes(UTF_8));
 
-    // 6
-    byte[] preAuth =
-        PreAuthenticationEncoder.encode(
-            token.header(), nonce, cipherText, footer.getBytes(UTF_8), implicit.getBytes(UTF_8));
+      // 7
+      byte[] t = hmac384(ak, preAuth);
 
-    // 7
-    byte[] t = hmac384(ak, preAuth);
-
-    // 8
-    return token.payload(concat(nonce, cipherText, t)).footer(footer).doFinal();
+      // 8
+      return token.payload(concat(nonce, cipherText, t)).footer(footer).doFinal();
+    } finally {
+      wipe(tmp, ek, n2, ak);
+    }
   }
 
   private static byte[] encryptionKey(SecretKey key, byte[] nonce) {
-    return hkdfSha384(key.toBytes(), concat("paseto-encryption-key".getBytes(UTF_8), nonce));
+    byte[] rawKey = key.toBytes();
+    try {
+      return hkdfSha384(rawKey, concat("paseto-encryption-key".getBytes(UTF_8), nonce));
+    } finally {
+      wipe(rawKey);
+    }
   }
 
   private static byte[] authenticationKey(SecretKey key, byte[] nonce) {
-    return hkdfSha384(key.toBytes(), concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce));
+    byte[] rawKey = key.toBytes();
+    try {
+      return hkdfSha384(rawKey, concat("paseto-auth-key-for-aead".getBytes(UTF_8), nonce));
+    } finally {
+      wipe(rawKey);
+    }
   }
 
   /**
@@ -111,26 +125,30 @@ class PasetoLocal {
     byte[] ek = split.getFirst();
     byte[] n2 = split.getSecond();
     byte[] ak = authenticationKey(key, nonce);
+    byte[] message = null;
+    try {
+      // 6
+      byte[] preAuth =
+          PreAuthenticationEncoder.encode(
+              pasetoToken.header(),
+              nonce,
+              c,
+              footer.getBytes(UTF_8),
+              implicitAssertion.getBytes(UTF_8));
 
-    // 6
-    byte[] preAuth =
-        PreAuthenticationEncoder.encode(
-            pasetoToken.header(),
-            nonce,
-            c,
-            footer.getBytes(UTF_8),
-            implicitAssertion.getBytes(UTF_8));
+      // 7
+      byte[] t2 = hmac384(ak, preAuth);
 
-    // 7
-    byte[] t2 = hmac384(ak, preAuth);
+      // 8
+      if (!MessageDigest.isEqual(t, t2)) {
+        throw new IllegalStateException("HMAC verification failed");
+      }
 
-    // 8
-    if (!MessageDigest.isEqual(t, t2)) {
-      throw new IllegalStateException("HMAC verification failed");
+      // 9
+      message = decryptAesCtr(ek, n2, c);
+      return new String(message, UTF_8);
+    } finally {
+      wipe(tmp, ek, n2, ak, message);
     }
-
-    // 9
-    byte[] message = decryptAesCtr(ek, n2, c);
-    return new String(message, UTF_8);
   }
 }
