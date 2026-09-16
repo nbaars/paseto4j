@@ -25,7 +25,7 @@
     <developer>
       <id>nbaars</id>
       <name>Nanne Baars</name>
-      <email>nanneb@gmail.com</email>
+      <email>nanne.baars@owasp.org</email>
       <organizationUrl>https://github.com/nbaars</organizationUrl>
       <timezone>Europe/Amsterdam</timezone>
     </developer>
@@ -46,20 +46,9 @@
     <developerConnection>scm:svn:https://github.com/nbaars/paseto4j</developerConnection>
     <url>https://github.com/nbaars/paseto4j</url>
   </scm>
-  <distributionManagement>
-    <repository>
-      <id>ossrh</id>
-      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
-
   <properties>
+    <central.skipPublishing>false</central.skipPublishing>
     <maven.compiler.release>21</maven.compiler.release>
-    <paseto4j.deploy.skip>false</paseto4j.deploy.skip>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <sonar.host.url>https://sonarcloud.io/</sonar.host.url>
     <sonar.junit.reportsPath>${project.build.directory}/surefire-reports</sonar.junit.reportsPath>
@@ -473,14 +462,6 @@
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-deploy-plugin</artifactId>
-            <version>3.1.4</version>
-            <configuration>
-              <skip>${paseto4j.deploy.skip}</skip>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
             <version>3.2.7</version>
             <executions>
@@ -524,6 +505,20 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.11.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <autoPublish>true</autoPublish>
+              <deploymentName>paseto4j ${project.version}</deploymentName>
+              <excludeArtifacts>paseto4j-examples</excludeArtifacts>
+              <publishingServerId>central</publishingServerId>
+              <skipPublishing>${central.skipPublishing}</skipPublishing>
+              <waitUntil>published</waitUntil>
+            </configuration>
           </plugin>
         </plugins>
       </build>

@@ -1,67 +1,67 @@
 name: "Release"
+
 on:
   push:
     tags:
       - '*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: CalVer version to publish
+        required: true
+        default: 2026.0
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
 jobs:
   release:
     name: Release
+    if: github.event_name == 'push' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: release
+    env:
+      CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+      CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      RELEASE_VERSION: ${{ inputs.version || github.ref_name }}
     steps:
       - uses: actions/checkout@v7
 
       - name: Setup Maven Central Repository
         uses: actions/setup-java@v6
         with:
+          cache: maven
           distribution: 'zulu'
           java-version: 21
           architecture: x64
-          server-id: ossrh
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_PASSWORD
+          gpg-passphrase-env-var: GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          server-id: central
+          server-password-env-var: CENTRAL_PASSWORD
+          server-username-env-var: CENTRAL_USERNAME
 
-      - name: Install gpg secret key
+      - name: Verify release input
         run: |
-          echo -n "${{ secrets.OSSRH_GPG_SECRET_KEY }}" | base64 --decode | gpg --batch --import
-          gpg --list-secret-keys --keyid-format LONG
+          test -n "$CENTRAL_USERNAME"
+          test -n "$CENTRAL_PASSWORD"
+          test -n "$GPG_PASSPHRASE"
+          test -n "$RELEASE_VERSION"
 
       - name: Publish to Maven Central
         run: |
-          mvn --no-transfer-progress versions:set -DnewVersion=${{ github.ref_name }}
-          mvn --batch-mode --no-transfer-progress -P release -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} clean deploy -DskipTests
-        env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          mvn --batch-mode --no-transfer-progress versions:set -DnewVersion="$RELEASE_VERSION"
+          mvn --batch-mode --no-transfer-progress -P release clean deploy -DskipTests
+
       - name: "Create release"
         uses: softprops/action-gh-release@v3
         with:
           draft: false
-          body: |
-            ## Version ${{ github.ref_name }} 
-
-            ### New functionality ✨ 
-            
-            - 
-             
-            ### Bug fixes 🐞
-            
-            -
-            
-            ### Technical improvements 👩‍💻
-            
-            - 
-            
-            
-            ### Dependency upgrades 📈
-            
-            -
-            
-            
-            Full Changelog: https://github.com/nbaars/paseto4j/compare/${{ github.ref_name }}...2024.1
-            
-            
-            -
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
+          name: ${{ env.RELEASE_VERSION }}
+          tag_name: ${{ env.RELEASE_VERSION }}

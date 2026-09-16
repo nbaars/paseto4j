@@ -14,7 +14,6 @@
   <name>paseto4j-examples</name>
 
   <properties>
-    <paseto4j.deploy.skip>true</paseto4j.deploy.skip>
     <sonar.skip>true</sonar.skip>
   </properties>
 
