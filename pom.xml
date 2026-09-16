@@ -46,6 +46,7 @@
     <developerConnection>scm:svn:https://github.com/nbaars/paseto4j</developerConnection>
     <url>https://github.com/nbaars/paseto4j</url>
   </scm>
+
   <properties>
     <central.skipPublishing>false</central.skipPublishing>
     <maven.compiler.release>21</maven.compiler.release>
