@@ -1,3 +1,8 @@
+# paseto4j
+
+> **DEPRECATED** This documentation is for version 1 and 2 of paseto4j. 
+> For the latest version (v3), please refer to [the new documentation](https://github.com/nbaars/paseto4j/blob/main/docs/index.md).
+
 ---
 
 layout: default
@@ -25,6 +30,7 @@ Add this version to your project. For example, for Maven, you can add:
 </dependency>
 ```
 
+> **DEPRECATED** Version 1 and 2 of paseto4j are deprecated. Please use version 3.
 # PASERK
 
 For PASERK key serialization, wrapping, identifiers, and sealing, add the optional module:
