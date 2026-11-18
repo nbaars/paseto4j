@@ -202,7 +202,7 @@
                             <include>src/test/java/**/*.java</include>
                         </includes>
                         <removeUnusedImports></removeUnusedImports>
-                        <removeWildcardImports></removeWildcardImports>
+                        <forbidWildcardImports></forbidWildcardImports>
                         <googleJavaFormat>
                             <style>GOOGLE</style>
                             <reflowLongStrings>true</reflowLongStrings>
